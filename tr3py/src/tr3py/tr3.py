@@ -38,7 +38,8 @@ class TR3:
 
 	def __init__(self):
 		self.b0 = Joint(self, "b0")
-		self.a0 = Joint(self, "a0")
+		self.b1 = Joint(self, "b1")
+                self.a0 = Joint(self, "a0")
 		self.a1 = Joint(self, "a1")
 		self.a2 = Joint(self, "a2")
 		self.a3 = Joint(self, "a3")
@@ -46,12 +47,18 @@ class TR3:
 		self.g0 = Joint(self, "g0")
 		self.h0 = Joint(self, "h0")
 		self.h1 = Joint(self, "h1")
-		self._msgs.state_change = self.handle_state_change
+                self.p0 = Joint(self, "p0")
+		self.p1 = Joint(self, "p1")
+                self.p2 = Joint(self, "p2")
+                self._msgs.state_change = self.handle_state_change
 
 		print("TR3 waiting for state")
 		while self._state == None:
 			self.step()
-		print("TR3 ready")
+		
+                self.p0.setPosition(1)
+                
+                print("TR3 ready")
 
 	def handle_state_change(self, state):
 		if self.state_change != None:
@@ -82,6 +89,17 @@ class TR3:
 		self.a4.release()
 		self.h0.release()
 		self.h1.release()
+
+        def shutdown(self):
+            self.a0.shutdown()
+            self.a1.shutdown()
+            self.a2.shutdown()
+            self.a3.shutdown()
+            self.a4.shutdown()
+            self.h0.shutdown()
+            self.h1.shutdown()
+            self.sleep(2)
+            self.close()
 		
 	def stop(self):
 		self.a0.stop()
@@ -138,6 +156,7 @@ class TR3:
 			self.step()
 			
 	def close(self):
+                self.p0.setPosition(0)
 		self.sleep(1)
 		while self._msgs._msgs != "":
 			self.step()

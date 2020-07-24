@@ -1,0 +1,4 @@
+<launch>
+  <!--<include file="$(find tr3_hardware_interface)/launch/tr3_effort_controllers.launch" />-->
+  <node pkg="tr3_keyboard_teleop" name="tr3_keyboard_teleop_node" type="tr3_keyboard_teleop.py" output="screen" required="true" />
+</launch>

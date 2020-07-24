@@ -50,7 +50,7 @@ class Packet:
 		self.computeLength()
 
 		result = [self._startByte, self.address, self.msgId, self.length, self.cmd]
-
+                
 		for p in self.params:
 			result.append(p)
 
@@ -67,7 +67,7 @@ class Packet:
 
 		for p in self.params:
 			msgString = msgString + str(p) + ','
-
+                
 		return msgString + ';'
 
 class Msgs:
@@ -143,7 +143,7 @@ class Msgs:
 
 	def add(self, packet):
 		packet.msgId = self._msgId
-		self.incrementMsgId()
+                self.incrementMsgId()
 		self._msgs = self._msgs + packet.toString()
 
 	def close(self):
