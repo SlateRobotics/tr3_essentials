@@ -1,0 +1,6 @@
+controller_list:
+  - name: /tr3/arm
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints: [a0, a1, a2, a3, a4]

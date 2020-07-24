@@ -1,0 +1,23 @@
+<launch>
+  <arg name="fake_states" default="false" />
+
+	<param name="robot_description" command="$(find xacro)/xacro.py $(find tr3_description)/robots/tr3.urdf.xacro" />
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find tr3_description)/urdf.rviz" required="true" />
+
+	<group if="$(arg fake_states)">
+		<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+			<param name="/use_gui" value="true"/>
+			<rosparam param="/source_list">[/move_group/fake_controller_joint_states]</rosparam>
+		</node>
+	</group>
+
+	<group unless="$(arg fake_states)">
+		<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+			<param name="/use_gui" value="false"/>
+			<rosparam param="/source_list">[/tr3/state]</rosparam>
+		</node>
+	</group>
+
+</launch>

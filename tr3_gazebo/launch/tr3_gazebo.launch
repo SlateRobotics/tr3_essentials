@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<!-- ARGS -->
+  <arg name="control" default="trajectory" />
+  <arg name="world" default="$(find tr3_gazebo)/worlds/tr3_empty.world"/>
+  <arg name="gui" default="true"/>
+
+	<!-- REMAPS -->
+	<remap from="/joint_states" to="/tr3/state"/>
+	<remap from="/tr3/joints/b0/control/velocity/command" to="/tr3/joints/b0/control/velocity"/>
+	<remap from="/tr3/joints/b1/control/velocity/command" to="/tr3/joints/b1/control/velocity"/>
+
+	<remap from="/tr3/joints/b0/control/effort/command" to="/tr3/joints/b0/control/effort"/>
+	<remap from="/tr3/joints/b1/control/effort/command" to="/tr3/joints/b1/control/effort"/>
+	<remap from="/tr3/joints/a0/control/effort/command" to="/tr3/joints/a0/control/effort"/>
+	<remap from="/tr3/joints/a1/control/effort/command" to="/tr3/joints/a1/control/effort"/>
+	<remap from="/tr3/joints/a2/control/effort/command" to="/tr3/joints/a2/control/effort"/>
+	<remap from="/tr3/joints/a3/control/effort/command" to="/tr3/joints/a3/control/effort"/>
+	<remap from="/tr3/joints/a4/control/effort/command" to="/tr3/joints/a4/control/effort"/>
+	<remap from="/tr3/joints/g0/control/effort/command" to="/tr3/joints/g0/control/effort"/>
+	<remap from="/tr3/joints/h0/control/effort/command" to="/tr3/joints/h0/control/effort"/>
+	<remap from="/tr3/joints/h1/control/effort/command" to="/tr3/joints/h1/control/effort"/>
+
+	<remap from="/tr3/joints/b0/control/position/command" to="/tr3/joints/b0/control/position"/>
+	<remap from="/tr3/joints/b1/control/position/command" to="/tr3/joints/b1/control/position"/>
+	<remap from="/tr3/joints/a0/control/position/command" to="/tr3/joints/a0/control/position"/>
+	<remap from="/tr3/joints/a1/control/position/command" to="/tr3/joints/a1/control/position"/>
+	<remap from="/tr3/joints/a2/control/position/command" to="/tr3/joints/a2/control/position"/>
+	<remap from="/tr3/joints/a3/control/position/command" to="/tr3/joints/a3/control/position"/>
+	<remap from="/tr3/joints/a4/control/position/command" to="/tr3/joints/a4/control/position"/>
+	<remap from="/tr3/joints/g0/control/position/command" to="/tr3/joints/g0/control/position"/>
+	<remap from="/tr3/joints/h0/control/position/command" to="/tr3/joints/h0/control/position"/>
+	<remap from="/tr3/joints/h1/control/position/command" to="/tr3/joints/h1/control/position"/>
+
+	<!-- PARAMS + ROSPARAMS -->
+	<rosparam file="$(find tr3_gazebo)/config/gazebo_ros_control.yaml" command="load"/>
+	<param name="robot_description" command="xacro --inorder $(find tr3_description)/robots/tr3.urdf.xacro" />
+
+	<!-- INCLUDES -->
+	<include file="$(find tr3_hardware_interface)/launch/tr3_sim.launch"  if="$(eval control != 'none')">
+		<arg name="control" value="$(arg control)"/>
+	</include>
+
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">+
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="$(arg gui)"/>
+	</include>
+
+	<!-- NODES -->
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+		<param name="publish_frequency" type="double" value="30.0"/>
+	</node>
+
+  <node name="tr3_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model tr3 -x 0 -y 0 -z 0.050" />
+</launch>

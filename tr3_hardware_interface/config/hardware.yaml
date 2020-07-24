@@ -1,0 +1,14 @@
+tr3:
+  hardware_interface:
+     loop_hz: 20 # hz
+     joints:
+       - b0
+       - b1
+       - a0
+       - a1
+       - a2
+       - a3
+       - a4
+       - g0
+       - h0
+       - h1

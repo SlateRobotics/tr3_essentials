@@ -1,0 +1,151 @@
+tr3:
+  state:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  base:
+    diff:
+      type: "diff_drive_controller/DiffDriveController"
+      left_wheel: "b0"
+      right_wheel: "b1"
+      wheel_separation: 0.6038
+      wheel_radius: 0.200
+      cmd_vel_timeout: 0.25
+      enable_odom_tf: false
+      pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+      twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+      linear:
+        x:
+          has_velocity_limits: true
+          max_velocity: 8.8
+          min_velocity: -8.8
+          has_acceleration_limits: true
+          max_acceleration: 0.8
+          min_acceleration: -0.4
+          has_jerk_limits: true
+          max_jerk: 5.0
+      angular:
+        z:
+          has_velocity_limits: true
+          max_velocity: 1.7
+          has_acceleration_limits: true
+          max_acceleration: 1.5
+          has_jerk_limits: true
+          max_jerk: 2.5
+  arm:
+    follow_joint_trajectory:
+      type: effort_controllers/JointTrajectoryController
+      joints:
+        - a0
+        - a1
+        - a2
+        - a3
+        - a4
+      gains:
+        a0: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        a1: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        a2: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        a3: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        a4: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+      constraints:
+        goal_time: 10.0
+        a0:
+          goal: 0.1
+        a1:
+          goal: 0.1
+        a2:
+          goal: 0.1
+        a3:
+          goal: 0.1
+        a4:
+          goal: 0.1
+  joints:
+    b0:
+      control:
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: b0
+        velocity:
+          type: effort_controllers/JointVelocityController
+          joint: b0
+          pid: {p: 0.4, i: 0.1, d: 0.0, i_clamp: 0.1}
+    b1:
+      control:
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: b1
+        velocity:
+          type: effort_controllers/JointVelocityController
+          joint: b1
+          pid: {p: 0.4, i: 0.1, d: 0.0, i_clamp: 0.1}
+    a0:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: a0
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: a0
+    a1:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: a1
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: a1
+    a2:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: a2
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: a2
+    a3:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: a3
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: a3
+    a4:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: a4
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: a4
+    g0:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: g0
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: g0
+    h0:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: h0
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: h0
+    h1:
+      control:
+        position:
+          type: effort_controllers/JointPositionController
+          joint: h1
+          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+        effort:
+          type: effort_controllers/JointEffortController
+          joint: h1

@@ -1,0 +1,54 @@
+<launch>
+	<!-- ARGS -->
+
+	<remap from="/joint_states" to="/tr3/state"/>
+	<remap from="/tr3/joints/b0/control/effort/command" to="/tr3/joints/b0/control/effort"/>
+	<remap from="/tr3/joints/b1/control/effort/command" to="/tr3/joints/b1/control/effort"/>
+	<remap from="/tr3/joints/a0/control/effort/command" to="/tr3/joints/a0/control/effort"/>
+	<remap from="/tr3/joints/a1/control/effort/command" to="/tr3/joints/a1/control/effort"/>
+	<remap from="/tr3/joints/a2/control/effort/command" to="/tr3/joints/a2/control/effort"/>
+	<remap from="/tr3/joints/a3/control/effort/command" to="/tr3/joints/a3/control/effort"/>
+	<remap from="/tr3/joints/a4/control/effort/command" to="/tr3/joints/a4/control/effort"/>
+	<remap from="/tr3/joints/g0/control/effort/command" to="/tr3/joints/g0/control/effort"/>
+	<remap from="/tr3/joints/h0/control/effort/command" to="/tr3/joints/h0/control/effort"/>
+	<remap from="/tr3/joints/h1/control/effort/command" to="/tr3/joints/h1/control/effort"/>
+
+	<remap from="/tr3/joints/b0/control/position/command" to="/tr3/joints/b0/control/position"/>
+	<remap from="/tr3/joints/b1/control/position/command" to="/tr3/joints/b1/control/position"/>
+	<remap from="/tr3/joints/a0/control/position/command" to="/tr3/joints/a0/control/position"/>
+	<remap from="/tr3/joints/a1/control/position/command" to="/tr3/joints/a1/control/position"/>
+	<remap from="/tr3/joints/a2/control/position/command" to="/tr3/joints/a2/control/position"/>
+	<remap from="/tr3/joints/a3/control/position/command" to="/tr3/joints/a3/control/position"/>
+	<remap from="/tr3/joints/a4/control/position/command" to="/tr3/joints/a4/control/position"/>
+	<remap from="/tr3/joints/g0/control/position/command" to="/tr3/joints/g0/control/position"/>
+	<remap from="/tr3/joints/h0/control/position/command" to="/tr3/joints/h0/control/position"/>
+	<remap from="/tr3/joints/h1/control/position/command" to="/tr3/joints/h1/control/position"/>
+
+	<!-- PARAMS + ROSPARAMS -->
+  <rosparam file="$(find tr3_hardware_interface)/config/hardware.yaml" command="load"/>
+  <rosparam file="$(find tr3_hardware_interface)/config/controllers.yaml" command="load"/>
+
+	<param name="robot_description" command="xacro --inorder $(find tr3_description)/robots/tr3.urdf.xacro" />
+
+	<!-- INCLUDES -->
+
+
+	<!-- NODES -->
+  <node name="tr3_hardware_interface" pkg="tr3_hardware_interface" type="tr3_hardware_interface_node" output="screen" />
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/"
+		args="
+			/tr3/state
+			/tr3/joints/b0/control/effort
+			/tr3/joints/b1/control/effort
+			/tr3/joints/a0/control/position
+			/tr3/joints/a1/control/position
+			/tr3/joints/a2/control/position
+			/tr3/joints/a3/control/position
+			/tr3/joints/a4/control/position
+			/tr3/joints/g0/control/position
+			/tr3/joints/h0/control/position
+			/tr3/joints/h1/control/position
+		"/>
+
+</launch>

@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="tr3py" name="tr3_hello_world_sim" type="tr3_hello_world_sim.py" output="screen" required="true" />
+</launch>

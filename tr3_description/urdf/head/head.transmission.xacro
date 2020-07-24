@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <transmission name="h0_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="h0_actuator">
+      <mechanicalReduction>2000</mechanicalReduction>
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </actuator>
+    <joint name="h0">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+
+  <transmission name="h1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="h1_actuator">
+      <mechanicalReduction>2000</mechanicalReduction>
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </actuator>
+    <joint name="h1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+</robot>
+
+

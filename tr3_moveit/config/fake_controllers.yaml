@@ -1,0 +1,13 @@
+controller_list:
+  - name: fake_arm_controller
+    joints:
+      - a0
+      - a1
+      - a2
+      - a3
+      - a4
+  - name: fake_end_effector_controller
+    joints:
+      - a4
+      - g0
+      - g0_b

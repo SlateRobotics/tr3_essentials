@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find tr3_description)/urdf/arm/arm.macros.xacro" />
+
+	<xacro:arm_trans joint_name="a0" />
+	<xacro:arm_trans joint_name="a1" />
+	<xacro:arm_trans joint_name="a2" />
+	<xacro:arm_trans joint_name="a3" />
+	<xacro:arm_trans joint_name="a4" />
+	<xacro:arm_trans joint_name="g0" />
+
+</robot>
+
+

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tr3">
+
+	<xacro:property name="M_PI" value="3.141509" />
+
+	<xacro:include filename="$(find tr3_description)/urdf/base/base.urdf.xacro"/>
+	<xacro:include filename="$(find tr3_description)/urdf/head/head.urdf.xacro"/>
+	<xacro:include filename="$(find tr3_description)/urdf/arm/arm.urdf.xacro"/>
+
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+		</plugin>
+    <material>Gazebo/LightGrey</material>
+
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+       <alwaysOn>true</alwaysOn>
+       <updateRate>20</updateRate>
+       <leftJoint>b0</leftJoint>
+       <rightJoint>b1</rightJoint>
+       <wheelSeparation>0.6038</wheelSeparation>
+       <wheelDiameter>0.200</wheelDiameter>
+       <wheelTorque>2.5</wheelTorque>
+       <commandTopic>/tr3/base/diff/cmd_vel</commandTopic>
+       <odometryTopic>/tr3/base/odom</odometryTopic>
+       <odometryFrame>odom</odometryFrame>
+       <publishTf>true</publishTf>
+       <publishWheelJointState>false</publishWheelJointState>
+       <robotBaseFrame>base_link</robotBaseFrame>
+    </plugin>
+	</gazebo>
+
+</robot>

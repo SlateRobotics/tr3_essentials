@@ -1,0 +1,10 @@
+gazebo_ros_control:
+  pid_gains:
+    b0:
+      p: 0.4
+      i: 0.1
+      d: 0.0
+    b1:
+      p: 0.4
+      i: 0.1
+      d: 0.0

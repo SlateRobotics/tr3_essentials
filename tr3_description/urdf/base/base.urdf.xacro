@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find tr3_description)/urdf/base/base.gazebo.xacro" />
+	<xacro:include filename="$(find tr3_description)/urdf/base/base.transmission.xacro" />
+
+	<!-- wheel macros -->
+  <xacro:macro name="tr3_wheel" params="name *origin">
+		<joint name="${name}" type="continuous">
+			<parent link="base_link"/>
+			<child link="link_${name}"/>
+		  <axis xyz="0 1 0"/>
+			<limit effort="100.0" velocity="8.8"/>
+			<xacro:insert_block name="origin" />
+    	<dynamics damping="0.001" friction="0.001"/>
+		</joint>
+		<link name="link_${name}">
+			<collision>
+				<geometry>
+		      <mesh filename="package://tr3_description/meshes/stl/xt-wl-a.stl" scale="0.001 0.001 0.001"/>
+				</geometry>
+				<origin rpy="0 0 0" />
+			</collision>
+			<inertial>
+      	<mass value="0.01" />
+		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+				</inertial>
+			<visual>
+				<geometry>
+		      <mesh filename="package://tr3_description/meshes/stl/xt-wl-a.stl" scale="0.001 0.001 0.001"/>
+				</geometry>
+		    <material name="slate_gray">
+		      <color rgba="0.2 0.2 0.2 1"/>
+		    </material>
+				<origin rpy="0 0 0" />
+			</visual>
+		</link>
+	</xacro:macro>
+
+	<!-- resulting links and joints -->
+	<link name="base_link">
+		<collision>
+			<geometry>
+        <mesh filename="package://tr3_description/meshes/stl/tr-bs-a.stl" scale="0.001 0.001 0.001"/>
+			</geometry>
+			<origin rpy="0 0 0" />
+		</collision>
+		<inertial>
+      	<mass value="0.5" />
+		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+		</inertial>
+		<visual>
+			<geometry>
+        <mesh filename="package://tr3_description/meshes/stl/tr-bs-a.stl" scale="0.001 0.001 0.001"/>
+			</geometry>
+      <material name="slate_gray">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+			<origin rpy="0 0 0" />
+		</visual>
+	</link>
+
+	<xacro:tr3_wheel name="b0">
+		<origin rpy="0 0 -1.5708" xyz="0.3281 0 0"/>
+	</xacro:tr3_wheel>
+
+	<xacro:tr3_wheel name="b1">
+		<origin rpy="0 0 1.5708" xyz="-0.3281 0 0"/>
+	</xacro:tr3_wheel>
+
+</robot>

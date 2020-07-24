@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find tr3_description)/urdf/arm/arm.macros.xacro" />
+  <xacro:include filename="$(find tr3_description)/urdf/arm/arm.gazebo.xacro" />
+	<xacro:include filename="$(find tr3_description)/urdf/arm/arm.transmission.xacro" />
+
+	<xacro:arm_link name="a0" mesh_name="xt-lg-b" origin_xyz="0 0 0" origin_rpy="1.5708 0 1.5708" />
+	<xacro:arm_link name="a1" mesh_name="xt-lg-c" origin_xyz="0 0 0" origin_rpy="0 3.1415 -1.5708" />
+	<xacro:arm_link name="a2" mesh_name="xt-lg-b" origin_xyz="0 0 0" origin_rpy="0 0 -1.5708" />
+  <xacro:arm_link name="a3" mesh_name="xt-sm-c" origin_xyz="0.008 -0.3 0" origin_rpy="0 -1.5708 1.5708" />
+  <xacro:arm_link name="a4" mesh_name="xt-sm-b" origin_xyz="0.067 0 -0.067" origin_rpy="1.5708 0 -1.5708" />
+  <xacro:arm_link name="g0" mesh_name="xt-gp-a" origin_xyz="0 0 0" origin_rpy="1.5708 0 1.5708" />
+	<xacro:arm_link name="g1" mesh_name="xt-gp-b" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
+	<xacro:arm_link name="g1_b" mesh_name="xt-gp-c" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
+
+	<joint name="a0" type="revolute">
+		<parent link="base_link"/>
+		<child link="link_a0"/>
+		<origin xyz="-0.1016 0.1229 0.459937" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+		<limit effort="100.0" lower="-2" upper="2" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="a1" type="revolute">
+		<parent link="link_a0"/>
+		<child link="link_a1"/>
+		<origin xyz="0.070 0.0000 0.076" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="a1_fixed" type="fixed">
+		<parent link="link_a1"/>
+		<child link="link_a2"/>
+		<origin xyz="0 0 -0.190" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="a2" type="revolute">
+		<parent link="link_a2"/>
+		<child link="link_a3"/>
+		<origin xyz="0 0 0" rpy="-0.698132 0 0"/>
+    <axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="a3" type="revolute">
+		<parent link="link_a3"/>
+		<child link="link_a4"/>
+		<origin xyz="0.008 -0.3 0" rpy="0.698132 0 0"/>
+    <axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="a4" type="revolute">
+		<parent link="link_a4"/>
+		<child link="link_g0"/>
+		<origin xyz="0.067 0 -0.067" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="g0" type="prismatic">
+		<parent link="link_g0"/>
+		<child link="link_g1"/>
+		<origin rpy="0 0 1.5708" xyz="-0.0075 0 -0.235"/>
+    <axis xyz="0 1 0"/>
+		<limit effort="100.0" lower="0" upper="0.041" velocity="0.01"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+	<joint name="g0_b" type="prismatic">
+		<parent link="link_g0"/>
+		<child link="link_g1_b"/>
+		<origin rpy="0 0 1.5708" xyz="0.0075 0 -0.235"/>
+    <axis xyz="0 1 0"/>
+		<mimic joint="g0" multiplier="-1" offset="0"/>
+		<limit effort="100.0" lower="-0.041" upper="0" velocity="0.01"/>
+    <dynamics damping="0.1" friction="0.1"/>
+	</joint>
+
+</robot>
+
+
