@@ -34,7 +34,8 @@ class TR3_Node:
 		if init_node == True:
 			rospy.init_node('tr3_node', anonymous=True)
 
-		rospy.Subscriber("/tr3/mode", UInt8, self.mode_tr3)
+		rospy.Subscriber("/tr3/shutdown", Bool, self.shutdown_tr3)
+                rospy.Subscriber("/tr3/mode", UInt8, self.mode_tr3)
 		rospy.Subscriber("/tr3/mode/servo", Bool, self.mode_tr3_servo)
 		rospy.Subscriber("/tr3/mode/backdrive", Bool, self.mode_tr3_backdrive)
 		rospy.Subscriber("/tr3/mode/rotate", Bool, self.mode_tr3_rotate)
@@ -98,6 +99,11 @@ class TR3_Node:
 		self.tr3_state_h1_pub = rospy.Publisher("/tr3/joints/h1/state", Float64, queue_size=1)
 
 		self.tr3.state_change = self.tr3_state_change
+
+        def shutdown_tr3(self, d):
+            b = bool(d)
+            if b == True:
+                self.tr3.shutdown()
 
 	def change_mode(self, d, j = -1):
 		b = int(d)
