@@ -14,6 +14,13 @@
 	<xacro:arm_link name="g1" mesh_name="xt-gp-b" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
 	<xacro:arm_link name="g1_b" mesh_name="xt-gp-c" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
 
+  <link name="link_g0_fixed">
+    <inertial>
+      <mass value="0.005"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+  </link>
+
 	<joint name="a0" type="revolute">
 		<parent link="base_link"/>
 		<child link="link_a0"/>
@@ -67,6 +74,14 @@
 		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
     <dynamics damping="0.1" friction="0.1"/>
 	</joint>
+
+  <joint name="a4_fixed" type="fixed">
+		<parent link="link_g0"/>
+    <child link="link_g0_fixed"/>
+		<origin xyz="0 0 -0.235" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
 
 	<joint name="g0" type="prismatic">
 		<parent link="link_g0"/>

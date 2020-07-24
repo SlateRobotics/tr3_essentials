@@ -120,7 +120,7 @@ planner_configs:
     sparse_delta_fraction: 0.25  # delta fraction for connection distance. This value represents the visibility range of sparse samples. default: 0.25
     dense_delta_fraction: 0.001  # delta fraction for interface detection. default: 0.001
     max_failures: 5000  # maximum consecutive failure limit. default: 5000
-arm:
+tr3_arm:
   default_planner_config: None
   planner_configs:
     - SBL
@@ -148,7 +148,7 @@ arm:
     - SPARStwo
   projection_evaluator: joints(a0,a1)
   longest_valid_segment_fraction: 0.005
-end_effector:
+tr3_gripper:
   default_planner_config: ""
   planner_configs:
     - SBL
@@ -174,5 +174,5 @@ end_effector:
     - LazyPRMstar
     - SPARS
     - SPARStwo
-  projection_evaluator: joints(a4,g0)
+  projection_evaluator: joints(g0,g0_b)
   longest_valid_segment_fraction: 0.005

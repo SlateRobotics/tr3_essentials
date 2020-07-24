@@ -1,11 +1,11 @@
 moveit_setup_assistant_config:
   URDF:
-    package: tr2_description
-    relative_path: robots/tr2.urdf.xacro
-    xacro_args: "--inorder "
+    package: tr3_description
+    relative_path: robots/tr3.urdf.xacro
+    xacro_args: ""
   SRDF:
-    relative_path: config/tr2.srdf
+    relative_path: config/tr3.srdf
   CONFIG:
     author_name: Zach Allen
-    author_email: zach@slaterobots.com
-    generated_timestamp: 1565017875
+    author_email: zach@slaterobotics.com
+    generated_timestamp: 1595554806
