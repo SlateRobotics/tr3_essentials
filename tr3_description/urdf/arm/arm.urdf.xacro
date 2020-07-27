@@ -25,54 +25,53 @@
 		<parent link="base_link"/>
 		<child link="link_a0"/>
 		<origin xyz="-0.1016 0.1229 0.459937" rpy="0 0 0"/>
-    <axis xyz="0 0 -1"/>
-		<limit effort="100.0" lower="-2" upper="2" velocity="0.8"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="100.0" lower="-10" upper="10" velocity="0.8"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
 	<joint name="a1" type="revolute">
 		<parent link="link_a0"/>
 		<child link="link_a1"/>
 		<origin xyz="0.070 0.0000 0.076" rpy="0 0 0"/>
-    <axis xyz="-1 0 0"/>
-		<limit effort="100.0" lower="-15" upper="15" velocity="0.80"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="-1 0 0"/>
+		<limit effort="100.0" lower="-10" upper="10" velocity="0.8"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
 	<joint name="a1_fixed" type="fixed">
 		<parent link="link_a1"/>
 		<child link="link_a2"/>
 		<origin xyz="0 0 -0.190" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
-		<limit effort="100.0" lower="-15" upper="15" velocity="0.80"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="1 0 0"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
 	<joint name="a2" type="revolute">
 		<parent link="link_a2"/>
 		<child link="link_a3"/>
 		<origin xyz="0 0 0" rpy="-0.698132 0 0"/>
-    <axis xyz="1 0 0"/>
-		<limit effort="100.0" lower="-15" upper="15" velocity="0.80"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-10" upper="10" velocity="0.8"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
 	<joint name="a3" type="revolute">
 		<parent link="link_a3"/>
 		<child link="link_a4"/>
 		<origin xyz="0.008 -0.3 0" rpy="0.698132 0 0"/>
-    <axis xyz="1 0 0"/>
-		<limit effort="100.0" lower="-15" upper="15" velocity="0.80"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="100.0" lower="-10" upper="10" velocity="0.8"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
 	<joint name="a4" type="revolute">
 		<parent link="link_a4"/>
 		<child link="link_g0"/>
 		<origin xyz="0.067 0 -0.067" rpy="0 0 0"/>
-    <axis xyz="0 0 1"/>
-		<limit effort="100.0" lower="-15" upper="15" velocity="0.80"/>
-    <dynamics damping="0.1" friction="0.1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="100.0" lower="-10" upper="10" velocity="0.8"/>
+		<dynamics damping="0.1" friction="0.1"/>
 	</joint>
 
   <joint name="a4_fixed" type="fixed">
@@ -103,5 +102,3 @@
 	</joint>
 
 </robot>
-
-
