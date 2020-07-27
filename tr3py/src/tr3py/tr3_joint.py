@@ -18,6 +18,7 @@ CMD_STOP_EMERGENCY = 0x16
 CMD_FLIP_MOTOR = 0x17
 CMD_CALIBRATE = 0x18
 CMD_SHUTDOWN = 0x19
+CMD_UPDATE_PID = 0x20
 
 class Joint:
         _tr3 = None
@@ -118,6 +119,17 @@ class Joint:
                 
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
+
+        def updatePID(self, p, i, d):
+            packet = tr3_msgs.Packet()
+            packet.address = self._id
+            packet.cmd = CMD_UPDATE_PID
+            packet.addParam(int(math.floor(p * 10.0)))
+            packet.addParam(int(math.floor(i * 10.0)))
+            packet.addParam(int(math.floor(d * 10.0)))
+
+            self._tr3._msgs.add(packet)
+            self._tr3.step()
 
         def updateFirmware(self, file_path):
 		packet = tr3_msgs.Packet()

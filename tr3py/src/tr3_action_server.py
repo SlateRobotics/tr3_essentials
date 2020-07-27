@@ -64,6 +64,7 @@ def tr3_arm_follow_joint_trajectory(goal):
 
 	t_start = datetime.datetime.now()
 	for point in goal.trajectory.points:
+                print point
 		tr3_a0_pub.publish(point.positions[0])
 		tr3_a1_pub.publish(point.positions[1])
 		tr3_a2_pub.publish(point.positions[2])
@@ -82,7 +83,6 @@ def tr3_arm_follow_joint_trajectory(goal):
 			tr3_arm_action_server.publish_feedback(feedback)
 
 	tr3_arm_action_server.set_succeeded(result)
-	time.sleep(5)
 	#tr3_stop_pub.publish(1)
 
 def program():

@@ -23,5 +23,4 @@ tr3.a2.setPosition(a2_state)
 tr3.a4.setPosition(a4_state)
 tr3.sleep(5)'''
 
-tr3.stop()
-tr3.close()
+tr3.shutdown()

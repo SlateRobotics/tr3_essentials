@@ -9,6 +9,7 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
 from std_msgs.msg import UInt8
 from std_msgs.msg import Float64
+from std_msgs.msg import Float32MultiArray
 
 class TR3_Node:
 	tr3 = None
@@ -63,6 +64,11 @@ class TR3_Node:
 		rospy.Subscriber("/tr3/joints/g0/flip", Bool, self.flip_g0)
 		rospy.Subscriber("/tr3/joints/h0/flip", Bool, self.flip_h0)
 		rospy.Subscriber("/tr3/joints/h1/flip", Bool, self.flip_h1)
+		rospy.Subscriber("/tr3/joints/a0/pid", Float32MultiArray, self.pid_a0)
+		rospy.Subscriber("/tr3/joints/a1/pid", Float32MultiArray, self.pid_a1)
+		rospy.Subscriber("/tr3/joints/a2/pid", Float32MultiArray, self.pid_a2)
+		rospy.Subscriber("/tr3/joints/a3/pid", Float32MultiArray, self.pid_a3)
+		rospy.Subscriber("/tr3/joints/a4/pid", Float32MultiArray, self.pid_a4)
 		rospy.Subscriber("/tr3/stop", Bool, self.tr3_stop)
 		rospy.Subscriber("/tr3/joints/a0/stop", Bool, self.tr3_a0_stop)
 		rospy.Subscriber("/tr3/joints/a1/stop", Bool, self.tr3_a1_stop)
@@ -212,6 +218,24 @@ class TR3_Node:
 
 	def reset_h1(self, msg):
 		self.reset(bool(msg.data), self.tr3.h1)
+
+        def pid(self, d, a):
+            a.updatePID(d[0], d[1], d[2])
+
+        def pid_a0(self, msg):
+            self.pid(msg.data, self.tr3.a0)
+
+        def pid_a1(self, msg):
+            self.pid(msg.data, self.tr3.a1)
+
+        def pid_a2(self, msg):
+            self.pid(msg.data, self.tr3.a2)
+
+        def pid_a3(self, msg):
+            self.pid(msg.data, self.tr3.a3)
+
+        def pid_a4(self, msg):
+            self.pid(msg.data, self.tr3.a4)
 
 	def flip(self, b, a):
 		if b == True:
