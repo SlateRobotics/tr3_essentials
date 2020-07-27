@@ -51,9 +51,9 @@ def tr3_arm_follow_joint_trajectory(goal):
 	global tr3_arm_action_server, tr3_a0_state, tr3_a1_state, tr3_a2_state, tr3_a3_state, tr3_a4_state, tr3_a0_pub, tr3_a1_pub, tr3_a2_pub, tr3_a3_pub, tr3_a4_pub, tr3_mode_servo_pub, tr3_stop_pub
 
 	tr3_mode_servo_pub.publish(1)
-	tr3_stop_pub.publish(0)
+	#tr3_stop_pub.publish(0)
 
-	time.sleep(0.050)
+	time.sleep(0.200)
 
 	success = True
 	feedback = FollowJointTrajectoryFeedback()
@@ -61,8 +61,6 @@ def tr3_arm_follow_joint_trajectory(goal):
 
 	joint_names = goal.trajectory.joint_names
 	feedback.joint_names = joint_names
-
-	print len(goal.trajectory.points)
 
 	t_start = datetime.datetime.now()
 	for point in goal.trajectory.points:
@@ -85,7 +83,7 @@ def tr3_arm_follow_joint_trajectory(goal):
 
 	tr3_arm_action_server.set_succeeded(result)
 	time.sleep(5)
-	tr3_stop_pub.publish(1)
+	#tr3_stop_pub.publish(1)
 
 def program():
 	global tr3_arm_action_server, tr3_arm_follow_joint_trajectory, tr3_a0_state, tr3_a1_state, tr3_a2_state, tr3_a3_state, tr3_a4_state, tr3_a0_pub, tr3_a1_pub, tr3_a2_pub, tr3_a3_pub, tr3_a4_pub, tr3_mode_servo_pub, tr3_stop_pub
@@ -93,10 +91,10 @@ def program():
 	rospy.init_node('tr3_action_server')
 
 	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a0_state)
-	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a1_state)
-	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a2_state)
-	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a3_state)
-	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a4_state)
+	rospy.Subscriber("/tr3/joints/a1/state", Float64, cb_tr3_a1_state)
+	rospy.Subscriber("/tr3/joints/a2/state", Float64, cb_tr3_a2_state)
+	rospy.Subscriber("/tr3/joints/a3/state", Float64, cb_tr3_a3_state)
+	rospy.Subscriber("/tr3/joints/a4/state", Float64, cb_tr3_a4_state)
 	tr3_a0_pub = rospy.Publisher("/tr3/joints/a0/control/position", Float64, queue_size=1)
 	tr3_a1_pub = rospy.Publisher("/tr3/joints/a1/control/position", Float64, queue_size=1)
 	tr3_a2_pub = rospy.Publisher("/tr3/joints/a2/control/position", Float64, queue_size=1)

@@ -6,7 +6,10 @@ tr3 = TR3()
 tr3.setMode(tr3.mode_servo)
 tr3.release()
 
-a0_state = tr3.a0.state()
+for i in range(62):
+    tr3.a3.setPosition(i / 10.0)
+
+'''a0_state = tr3.a0.state()
 a2_state = tr3.a2.state()
 a4_state = tr3.a4.state()
 
@@ -18,7 +21,7 @@ tr3.sleep(5)
 tr3.a0.setPosition(a0_state)
 tr3.a2.setPosition(a2_state)
 tr3.a4.setPosition(a4_state)
-tr3.sleep(5)
+tr3.sleep(5)'''
 
 tr3.stop()
 tr3.close()
