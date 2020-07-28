@@ -24,20 +24,13 @@ def camera_depth_callback(msg):
 		processing = True
 		time_start = time.clock()
 
-		#(b0, b1) = tr3_nav.step(msg)
-		#tr3.b0.setVelocity(b0)
-		#tr3.b1.setVelocity(b1)
-
 		cmd_vel = tr3_nav.step(msg)
 		tr3.drive(cmd_vel)
 
 		tr3.h0.setPosition(0.0)
 		tr3.h1.setPosition(-0.2)
 
-		#rospy.loginfo(str(b0) + ", " + str(b1))
-
 		time_elapsed = (time.clock() - time_start)
-		#rospy.loginfo("PointCloud processed in " + str(time_elapsed) + " sec")
 		processing = False
 
 if __name__ == '__main__':

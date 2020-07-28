@@ -14,26 +14,26 @@ class avoid_obstacle:
     new_flag = False
     initial_omega = 0.0
 
-    min_dist = 0
+    min_dist = 3.0
     avoid_vectors = []
 
     def __init__(self):
         pass
 
     def flag(self, cloud):
-        av_coef = 0.01
+        av_coef = 1
         self.avoid_vectors = []
         max_dist = 3.0
         for row in range(cloud.shape[0]):
             for col in range(cloud.shape[1]):
                 p = cloud[row][col]
                 dist = math.sqrt(((0-p[0])**2)+((0-p[1])**2))
-                if (dist < max_dist):
-                    self.min_dist = dist
                 if self.should_avoid(p[0], p[1], p[2], dist):
-					x = -1.0 / dist * p[0] * av_coef
-					y = -1.0 / dist * p[1] * av_coef
-					self.avoid_vectors.append([x, y])
+                    if (dist < self.min_dist):
+                        self.min_dist = dist
+                    x = -1.0 / dist * p[0] * av_coef
+                    y = -1.0 / dist * p[1] * av_coef
+                    self.avoid_vectors.append([x, y])
 
         initial_flag = self.flag_set
         self.flag_set = len(self.avoid_vectors) > 0
@@ -56,7 +56,6 @@ class avoid_obstacle:
 
         x = avoid_sum[0]
         y = avoid_sum[1]
-        #print x, y
 
         velocity = 0
         if self.min_dist <= 1.0:
@@ -89,7 +88,7 @@ class avoid_obstacle:
         cmd_vel.linear.z = 0
         cmd_vel.angular.x = 0
         cmd_vel.angular.y = 0
-        cmd_vel.angular.z = -omega
+        cmd_vel.angular.z = omega
 
         return cmd_vel
 

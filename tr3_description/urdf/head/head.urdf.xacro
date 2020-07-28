@@ -73,13 +73,13 @@
 	<joint name="camera_joint" type="fixed">
 		<parent link="head_link"/>
 		<child link="camera_link"/>
-		<origin rpy="0 0 0" xyz="0.025 0.150 0.0"/>
+		<origin rpy="0 0 3.1415" xyz="-0.105 -0.145 0.085"/>
 	</joint>
 
 	<joint name="h0" type="revolute">
 		<parent link="base_link"/>
 		<child link="neck_link"/>
-		<origin xyz="0 0.3579 0.70325"/>
+		<origin rpy="0 0 3.1415" xyz="0 -0.3579 0.70325"/>
     <axis xyz="0 0 1"/>
 		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
     <dynamics damping="0.1" friction="0.1"/>
@@ -89,7 +89,7 @@
 		<parent link="neck_link"/>
 		<child link="head_link"/>
 		<origin xyz="0.067 -0.16617 0.24917" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
+    <axis xyz="-1 0 0"/>
 		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
     <dynamics damping="0.1" friction="0.1"/>
 	</joint>

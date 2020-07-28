@@ -5,11 +5,11 @@
 	<xacro:include filename="$(find tr3_description)/urdf/base/base.transmission.xacro" />
 
 	<!-- wheel macros -->
-  <xacro:macro name="tr3_wheel" params="name *origin">
+  <xacro:macro name="tr3_wheel" params="name *origin *axis">
 		<joint name="${name}" type="continuous">
 			<parent link="base_link"/>
 			<child link="link_${name}"/>
-		  <axis xyz="0 1 0"/>
+			<xacro:insert_block name="axis" />
 			<limit effort="100.0" velocity="8.8"/>
 			<xacro:insert_block name="origin" />
     	<dynamics damping="0.001" friction="0.001"/>
@@ -43,10 +43,11 @@
 			<geometry>
         <mesh filename="package://tr3_description/meshes/stl/tr-bs-a.stl" scale="0.001 0.001 0.001"/>
 			</geometry>
-			<origin rpy="0 0 0" />
+			<origin rpy="0 0 3.1415" />
 		</collision>
 		<inertial>
-      	<mass value="0.5" />
+      	<mass value="1" />
+        <origin xyz="0 -0.300 0" />
 		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
 		</inertial>
 		<visual>
@@ -56,15 +57,17 @@
       <material name="slate_gray">
         <color rgba="0.2 0.2 0.2 1"/>
       </material>
-			<origin rpy="0 0 0" />
+			<origin rpy="0 0 3.1415" />
 		</visual>
 	</link>
 
 	<xacro:tr3_wheel name="b0">
+    <axis xyz="0 -1 0"/>
 		<origin rpy="0 0 -1.5708" xyz="0.3281 0 0"/>
 	</xacro:tr3_wheel>
 
 	<xacro:tr3_wheel name="b1">
+    <axis xyz="0 1 0"/>
 		<origin rpy="0 0 1.5708" xyz="-0.3281 0 0"/>
 	</xacro:tr3_wheel>
 

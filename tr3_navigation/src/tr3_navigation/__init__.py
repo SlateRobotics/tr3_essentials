@@ -46,6 +46,7 @@ class TR3_Nav:
         for r in self.routines:
             if r.flag(cloud) == True:
             	self.travelDesired = r.step()
+
         #self.computeVelocity()
         #return self.wheelVelocityDesired
 
@@ -63,5 +64,4 @@ class TR3_Nav:
         b0_vel = velocity + (omega * wheel_width / 2)
         b1_vel = velocity - (omega * wheel_width / 2)
 
-        #print b0_vel, b1_vel, velocity, omega
         self.wheelVelocityDesired = (b0_vel, b1_vel)
