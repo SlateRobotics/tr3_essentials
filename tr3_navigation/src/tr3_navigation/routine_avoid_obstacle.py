@@ -21,7 +21,7 @@ class avoid_obstacle:
         pass
 
     def flag(self, cloud):
-        av_coef = 1
+        av_coef = 0.1
         self.avoid_vectors = []
         max_dist = 3.0
         for row in range(cloud.shape[0]):
