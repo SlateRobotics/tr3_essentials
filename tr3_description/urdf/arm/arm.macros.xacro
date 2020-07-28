@@ -18,6 +18,10 @@
 		      <mesh filename="package://tr3_description/meshes/stl/${mesh_name}.stl" scale="0.001 0.001 0.001"/>
 				</geometry>
 		    <material name="slate_gray">
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.1 0.1 0.2 1</diffuse>
+          <specular>0 0 0 0</specular>
+          <emissive>0 0 0 1</emissive>
 		      <color rgba="0.2 0.2 0.2 1"/>
 		    </material>
 				<origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
@@ -50,5 +54,3 @@
 	</xacro:macro>
 
 </robot>
-
-
