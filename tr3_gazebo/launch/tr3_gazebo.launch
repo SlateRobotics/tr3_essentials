@@ -37,7 +37,7 @@
 	<param name="robot_description" command="xacro --inorder $(find tr3_description)/robots/tr3.urdf.xacro" />
 
 	<!-- INCLUDES -->
-	<include file="$(find tr3_hardware_interface)/launch/tr3_sim.launch"  if="$(eval control != 'none')">
+	<include file="$(find tr3_gazebo)/launch/tr3_sim.launch"  if="$(eval control != 'none')">
 		<arg name="control" value="$(arg control)"/>
 	</include>
 
