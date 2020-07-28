@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="tr3_os" name="index" type="index.js" output="screen" />
+</launch>

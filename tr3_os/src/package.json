@@ -1,0 +1,29 @@
+{
+  "name": "tr-os",
+  "version": "1.0.0",
+  "description": "GUI for controlling TR3 robots on its embedded screen",
+  "main": "index.js",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "js-beautify": "^1.11.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build-loop": "while true; do sleep 2; npm run build --silent; done &",
+    "beautify": "node scripts/beautify.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlateRobotics/tr-os.git"
+  },
+  "author": "Slate Robotics",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SlateRobotics/tr-os/issues"
+  },
+  "homepage": "https://github.com/SlateRobotics/tr-os#readme"
+}
