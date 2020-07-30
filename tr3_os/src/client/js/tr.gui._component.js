@@ -157,7 +157,6 @@ tr.gui.component = function(componentConfig) {
     s.w = this.size.w - this.margin * 2.0;
     s.h = this.size.h - this.margin * 2.0;
 
-
     this.translateParent.x = this.parent.translateState.x;
     this.translateParent.y = this.parent.translateState.y;
 

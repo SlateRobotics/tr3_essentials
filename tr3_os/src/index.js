@@ -22,13 +22,28 @@ console.log("Server hosted on port " + port);
 var rostopics = [
   { name: "/tr3/stop", type: "std_msgs/Bool"},
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
+  { name: "/tr3/powerup", type: "std_msgs/Bool"},
   { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a2/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a3/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a4/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/h0/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/h1/control/position", type: "std_msgs/Float64"}
+  { name: "/tr3/joints/h1/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a0/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/a1/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/a2/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/a3/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/a4/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/h0/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/h1/mode", type: "std_msgs/UInt8"},
+  { name: "/tr3/joints/a0/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/a1/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/a2/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/a3/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/a4/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/h0/reset", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/h1/reset", type: "std_msgs/Bool"},
 ]
 
 var io = require('socket.io')(httpServer);
