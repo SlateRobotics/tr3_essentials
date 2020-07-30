@@ -3,6 +3,7 @@
 var http = require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
+var rosnodejs = require('rosnodejs');
 
 var app = express();
 
@@ -18,16 +19,31 @@ var httpServer = http.createServer(app).listen(port);
 
 console.log("Server hosted on port " + port);
 
+var rostopics = [
+  { name: "/tr3/stop", type: "std_msgs/Bool"},
+  { name: "/tr3/shutdown", type: "std_msgs/Bool"},
+  { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a2/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a3/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a4/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/h0/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/h1/control/position", type: "std_msgs/Float64"}
+]
+
 var io = require('socket.io')(httpServer);
 io.on('connection', function (socket) {
-  var state = {a0: 0.0, a1: 0.0, a2: 0.0, a3: 0.0, a4: 0.0, h0: 0.0, h1: 0.0, g0: 0.0};
+  rosnodejs.initNode('/tr3_os').then(function () {
+    var nh = rosnodejs.nh;
+    nh.subscribe('/tr3/state', 'sensor_msgs/JointState', function (msg) {
+      socket.emit('/tr3/state', msg);
+    });
 
-  function sendState() {
-    socket.emit('robot_state', state);
-    for (var j in state) {
-      state[j] += 1
+    for (var i = 0; i < rostopics.length; i++) {
+      const rt = nh.advertise(rostopics[i].name, rostopics[i].type);
+      socket.on(rostopics[i].name, function (data) {
+        rt.publish({ data: data });
+      }.bind(rt))
     }
-  }
-
-  setInterval(sendState, 50);
+  });
 });

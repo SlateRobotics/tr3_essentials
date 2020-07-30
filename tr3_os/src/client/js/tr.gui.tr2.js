@@ -81,6 +81,11 @@ tr.gui.tr2 = {
   },
 
   draw: function() {
+    var s = tr.data.robotState;
+    for (var i = 0; i < s.name.length; i++) {
+      this.state[s.name[i]] = s.position[i];
+    }
+
     var absPos = this.getAbsolutePosition();
 
     this.container.style.display = "block";
@@ -115,16 +120,15 @@ tr.gui.tr2 = {
         id: link.id,
         mesh: this.links[link.meshId],
         link: link,
-        state: this.tr2.state,
+        state: this.state,
         rotate: link.rotate,
         translate: link.translate,
         animate: function() {
           this.p5.rotateY(this.link.offset);
-          this.p5.rotateY(this.state[this.link.id]);
-          return {x: 0, y: this.link.offset + this.state[this.link.id], z: 0}
+          this.p5.rotateY(this.state[this.link.id] * 57.2958);
         }
       });
-    } 
+    }
 
     arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
       this.p5.translate(0, -5);
@@ -138,13 +142,13 @@ tr.gui.tr2 = {
 
     var head = new tr.gui.chain(this.p5);
     head.chain.push([this.links["h0"], -90, 0, 180, 0, 907.1, 122.7, function() {
-      this.p5.rotateY(this.state.h0);
+      this.p5.rotateY(this.state.h0 * 57.2958);
     }.bind(this)]);
     head.chain.push([this.links["h1"], 180, 0, 0, 68.8, -161.4, 174.5, function() {
       this.p5.rotateX(-20);
-      this.p5.rotateX(this.state.h1);
+      this.p5.rotateX(this.state.h1 * 57.2958);
     }.bind(this)]);
-    //head.draw();
+    head.draw();
   },
 
   mousePressed: function() {

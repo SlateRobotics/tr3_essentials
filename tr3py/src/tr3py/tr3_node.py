@@ -36,7 +36,8 @@ class TR3_Node:
 			rospy.init_node('tr3_node', anonymous=True)
 
 		rospy.Subscriber("/tr3/shutdown", Bool, self.shutdown_tr3)
-                rospy.Subscriber("/tr3/mode", UInt8, self.mode_tr3)
+		rospy.Subscriber("/tr3/powerup", Bool, self.powerup_tr3)
+        rospy.Subscriber("/tr3/mode", UInt8, self.mode_tr3)
 		rospy.Subscriber("/tr3/mode/servo", Bool, self.mode_tr3_servo)
 		rospy.Subscriber("/tr3/mode/backdrive", Bool, self.mode_tr3_backdrive)
 		rospy.Subscriber("/tr3/mode/rotate", Bool, self.mode_tr3_rotate)
@@ -110,6 +111,11 @@ class TR3_Node:
             b = bool(d)
             if b == True:
                 self.tr3.shutdown()
+
+        def powerup_tr3(self, d):
+            b = bool(d)
+            if b == True:
+                self.tr3.powerup()
 
 	def change_mode(self, d, j = -1):
 		b = int(d)

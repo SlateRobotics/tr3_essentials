@@ -1,7 +1,7 @@
 tr.gui.chain = function(_p5) {
   this.p5 = _p5;
   if (!_p5) this.p5 = window;
- 
+
   this.eef = {x: 0, y: 0, z: 0}
   this.chain = [];
 
@@ -12,7 +12,7 @@ tr.gui.chain = function(_p5) {
     this.p5.directionalLight(250, 250, 250, 500, -1250, -500);
     this.p5.noStroke();
     this.p5.ambientMaterial(100);
-    
+
     this.eef.x = 0;
     this.eef.y = 0;
     this.eef.z = 0;
@@ -62,8 +62,8 @@ tr.gui.chain = function(_p5) {
       }
 
       this.p5.rotateX(r_x);
-      //this.p5.rotateY(r_y);
-      //this.p5.rotateZ(r_z);
+      this.p5.rotateY(r_y);
+      this.p5.rotateZ(r_z);
       this.p5.translate(x, y, z);
 
       if (animate) {
@@ -79,11 +79,9 @@ tr.gui.chain = function(_p5) {
         r.z += a.z;
       }
 
-      console.log(",", this.eef, r, v);
       this.addEef(r, v);
 
       this.p5.model(link);
-      break;
     }
 
     this.p5.pop();
@@ -91,7 +89,6 @@ tr.gui.chain = function(_p5) {
     if (this.chain.length == 7) {
       this.p5.push();
       this.p5.scale(0.2);
-      console.log(this.eef);
       this.p5.translate(this.eef.x, this.eef.y, this.eef.z);
       this.p5.normalMaterial();
       this.p5.fill('orange');
@@ -109,7 +106,7 @@ tr.gui.chain = function(_p5) {
     v = this.rotateX(v, r.x);
     //v = this.rotateY(v, r.y);
     //v = this.rotateZ(v, r.z);
-    
+
     this.eef.x += v.x;
     this.eef.y += v.y;
     this.eef.z += v.z;
@@ -133,6 +130,6 @@ tr.gui.chain = function(_p5) {
     var v2 = Object.assign({}, v);
     v2.x = v.x * Math.cos(z) - v.y * Math.sin(z);
     v2.y = v.x * Math.sin(z) + v.y * Math.cos(z);
-    return v2;  
+    return v2;
   }
 }

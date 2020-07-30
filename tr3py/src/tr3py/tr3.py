@@ -26,7 +26,7 @@ def signal_handler(sig, frame):
 	global close
 	close = True
 	sys.exit(0)
-	
+
 signal.signal(signal.SIGINT, signal_handler)
 
 class TR3:
@@ -42,7 +42,7 @@ class TR3:
 	def __init__(self):
 		self.b0 = Joint(self, "b0")
 		self.b1 = Joint(self, "b1")
-                self.a0 = Joint(self, "a0")
+        self.a0 = Joint(self, "a0")
 		self.a1 = Joint(self, "a1")
 		self.a2 = Joint(self, "a2")
 		self.a3 = Joint(self, "a3")
@@ -50,29 +50,28 @@ class TR3:
 		self.g0 = Joint(self, "g0")
 		self.h0 = Joint(self, "h0")
 		self.h1 = Joint(self, "h1")
-                self.p0 = Joint(self, "p0")
+        self.p0 = Joint(self, "p0")
 		self.p1 = Joint(self, "p1")
-                self.p2 = Joint(self, "p2")
-                self._msgs.state_change = self.handle_state_change
+        self.p2 = Joint(self, "p2")
+        self._msgs.state_change = self.handle_state_change
 
 		print("TR3 waiting for state")
 		while self._state == None:
 			self.step()
-		
-                self.p0.setPosition(1)
-                
-                print("TR3 ready")
+
+        self.powerup()
+        print("TR3 ready")
 
 	def handle_state_change(self, state):
 		if self.state_change != None:
 			self.state_change(state)
-			
+
 	def state(self):
 		return self._state
-		
+
 	def drive(self, motorLeft, motorRight, motorDuration = 250):
 		offsetBinary = 100
-			
+
 		packet = tr3_msgs.Packet()
 		packet.address = "b0"
 		packet.cmd = CMD_ROTATE
@@ -80,7 +79,7 @@ class TR3:
 		packet.addParam(int((motorRight * 100.0) + offsetBinary))
 		packet.addParam(int(math.floor(motorDuration % 256)))
 		packet.addParam(int(math.floor(motorDuration / 256)))
-		
+
 		self._msgs.add(packet)
 		self.step()
 
@@ -93,17 +92,21 @@ class TR3:
 		self.h0.release()
 		self.h1.release()
 
-        def shutdown(self):
-            self.a0.shutdown()
-            self.a1.shutdown()
-            self.a2.shutdown()
-            self.a3.shutdown()
-            self.a4.shutdown()
-            self.h0.shutdown()
-            self.h1.shutdown()
-            self.sleep(2)
-            self.close()
-		
+    def powerup(self):
+        self.p0.setPosition(1)
+        self.sleep(2)
+
+    def shutdown(self):
+        self.a0.shutdown()
+        self.a1.shutdown()
+        self.a2.shutdown()
+        self.a3.shutdown()
+        self.a4.shutdown()
+        self.h0.shutdown()
+        self.h1.shutdown()
+        self.sleep(2)
+        self.close()
+
 	def stop(self):
 		self.a0.stop()
 		self.a1.stop()
@@ -112,7 +115,7 @@ class TR3:
 		self.a4.stop()
 		self.h0.stop()
 		self.h1.stop()
-		
+
 	def setMode(self, mode):
 		self.a0.setMode(mode)
 		self.a1.setMode(mode)
@@ -132,7 +135,7 @@ class TR3:
 			return getattr(self,id)
 		except:
 			pass
-    
+
 	def step(self):
 		global close
 		if close == True:
@@ -152,14 +155,14 @@ class TR3:
 				getattr(self,ids[i])._state = states[i]
 			except:
 				pass
-		
+
 	def spin(self, condition = True):
 		global close
 		while condition == True or close == True:
 			self.step()
-			
+
 	def close(self):
-                self.p0.setPosition(0)
+        self.p0.setPosition(0)
 		self.sleep(1)
 		while self._msgs._msgs != "":
 			self.step()
