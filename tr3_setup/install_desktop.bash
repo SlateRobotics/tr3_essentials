@@ -41,6 +41,6 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 12.18.3
 cd ~/ros_ws/src/tr3_essentials/tr3_os/src/
 npm i
-
+cd ~/ros_ws
 
 echo "Install complete."
