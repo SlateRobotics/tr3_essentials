@@ -59,6 +59,15 @@ cd installACMModule
 ./installCP210x.sh
 ./installCDCACM.sh
 
+echo "Installing Node.js"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm install 12.18.3
+cd ~/ros_ws/src/tr3_essentials/tr3_os/src/
+npm i
+cd ~/ros_ws
+
 echo "Updating Packages"
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
