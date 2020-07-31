@@ -11,18 +11,6 @@ tr.gui.tr2 = {
     this.border = false;
 
     this.links = {};
-    this.links.b0 = '';
-    this.links.b1 = '';
-    this.links.b2 = '';
-    this.links.b3 = '';
-    this.links.a0 = '';
-    this.links.a1 = '';
-    this.links.a2 = '';
-    this.links.a3 = '';
-    this.links.g0 = '';
-    this.links.g1 = '';
-    this.links.h0 = '';
-    this.links.h1 = '';
 
     this.tr2 = new tr.lib.tr2();
 
@@ -73,11 +61,20 @@ tr.gui.tr2 = {
     this.p5 = new p5(function(p) {}, this.container.id);
     this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
-    this.p5.angleMode(DEGREES);
+    this.p5.angleMode(RADIANS);
     this.p5.perspective();
-    for (l in this.links) {
-      this.links[l] = this.p5.loadModel("/stl/link_" + l + ".stl");
-    }
+
+    this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
+    this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
+    this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
+    this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
+    this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
+    this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
+    this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
+    this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
+    this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
+    this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
+    this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
   },
 
   draw: function() {
@@ -104,50 +101,60 @@ tr.gui.tr2 = {
 
     this.p5.camera(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z, 0, 0, 100, 0, 0, -1);
 
-    tr.gui.drawLink(this.links["b0"], 90, -90, 0, 0, 0, 0, null, this.p5);
-    tr.gui.drawLink(this.links["b1"], 0, 0, 0, 301.9, -150.2, 50.8, function() {
-      this.p5.rotateX(this.p5.frameCount);
-    }.bind(this), this.p5);
-    tr.gui.drawLink(this.links["b1"], 0, 0, 0, -301.9, -150.2, 50.8, function() {
-      this.p5.rotateX(this.p5.frameCount);
-    }.bind(this), this.p5);
+    tr.gui.drawLink(this.links["b0"], 1.5708, 3.1415, 0, 0, 0, 0, null, this.p5);
+    tr.gui.drawLink(this.links["w0"], 0, 1.5708, 0, 328.1, 0, 0, null, this.p5);
+    tr.gui.drawLink(this.links["w0"], 0, -1.5708, 0, -328.1, 0, 0, null, this.p5);
 
     var arm = new tr.gui.chain(this.p5);
     for (var i = 0; i < this.tr2.arm.length; i++) {
       var link = this.tr2.arm[i];
-
       arm.chain.push({
         id: link.id,
+        axis: link.axis,
         mesh: this.links[link.meshId],
         link: link,
         state: this.state,
         rotate: link.rotate,
         translate: link.translate,
         animate: function() {
-          this.p5.rotateY(this.link.offset);
-          this.p5.rotateY(this.state[this.link.id] * 57.2958);
+          if (this.link.fixed) return;
+          var f = 1.0;
+          if (this.link.flip) f = -1.0;
+          this.p5["rotate" + this.axis](this.link.offset * f);
+          this.p5["rotate" + this.axis](this.state[this.link.id] * f);
         }
       });
     }
 
-    arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
+    /*arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
       this.p5.translate(0, -5);
       this.p5.translate(0, this.state.g0 / 100.0 * -40);
     }.bind(this)]);
     arm.chain.push([this.links["g1"], 0, 0, 0, 0, 7.5, 0, function() {
       this.p5.translate(0, 10);
       this.p5.translate(0, this.state.g0 / 100.0 * 80);
-    }.bind(this)]);
+    }.bind(this)]);*/
     arm.draw();
 
     var head = new tr.gui.chain(this.p5);
-    head.chain.push([this.links["h0"], -90, 0, 180, 0, 907.1, 122.7, function() {
-      this.p5.rotateY(this.state.h0 * 57.2958);
-    }.bind(this)]);
-    head.chain.push([this.links["h1"], 180, 0, 0, 68.8, -161.4, 174.5, function() {
-      this.p5.rotateX(-20);
-      this.p5.rotateX(this.state.h1 * 57.2958);
-    }.bind(this)]);
+    for (var i = 0; i < this.tr2.head.length; i++) {
+      var link = this.tr2.head[i];
+      head.chain.push({
+        id: link.id,
+        axis: link.axis,
+        mesh: this.links[link.meshId],
+        link: link,
+        state: this.state,
+        rotate: link.rotate,
+        translate: link.translate,
+        animate: function() {
+          var f = 1.0;
+          if (this.link.flip) f = -1.0;
+          this.p5["rotate" + this.axis](this.link.offset * f);
+          this.p5["rotate" + this.axis](this.state[this.link.id] * f);
+        }
+      });
+    }
     head.draw();
   },
 

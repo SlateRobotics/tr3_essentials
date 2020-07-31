@@ -169,6 +169,7 @@ app.drawing = new App({
       type: "container",
       size: {
         w: 0.666,
+        //w: 0.25,
         h: 1.0
       },
       margin: 10,
@@ -193,6 +194,7 @@ app.drawing = new App({
       type: "container",
       size: {
         w: 0.333,
+        //w: 0.75,
         h: 1.0
       },
       margin: 10,

@@ -8,15 +8,17 @@ tr.gui.drawLink = function(link, r_x, r_y, r_z, x, y, z, animate, _p5) {
   _p5.noStroke();
   _p5.ambientMaterial(100);
 
+  _p5.translate(x, y, z);
   _p5.rotateX(r_x);
   _p5.rotateY(r_y);
   _p5.rotateZ(r_z);
-  _p5.translate(x, y, z);
 
   if (animate) {
     animate();
   }
 
+  _p5.ambientLight(100);
+  _p5.ambientMaterial(40, 40, 40);
   _p5.model(link);
 
   _p5.pop();

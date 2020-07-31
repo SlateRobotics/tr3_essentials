@@ -61,10 +61,10 @@ tr.gui.chain = function(_p5) {
         animate = this.chain[i].animate.bind(this.chain[i]);
       }
 
+      this.p5.translate(x, y, z);
       this.p5.rotateX(r_x);
       this.p5.rotateY(r_y);
       this.p5.rotateZ(r_z);
-      this.p5.translate(x, y, z);
 
       if (animate) {
         var a = animate();
@@ -81,20 +81,19 @@ tr.gui.chain = function(_p5) {
 
       this.addEef(r, v);
 
-      this.p5.model(link);
+      if (!link) continue;
+
+      var mo = this.chain[i].link.meshOffset;
+      if (mo) {
+        this.p5.translate(mo.x, mo.y, mo.z);
+        this.p5.model(link);
+        this.p5.translate(-mo.x, -mo.y, -mo.z);
+      } else {
+        this.p5.model(link);
+      }
     }
 
     this.p5.pop();
-
-    if (this.chain.length == 7) {
-      this.p5.push();
-      this.p5.scale(0.2);
-      this.p5.translate(this.eef.x, this.eef.y, this.eef.z);
-      this.p5.normalMaterial();
-      this.p5.fill('orange');
-      this.p5.sphere(50);
-      this.p5.pop();
-    }
   }
 
   this.addEef = function (r, v) {

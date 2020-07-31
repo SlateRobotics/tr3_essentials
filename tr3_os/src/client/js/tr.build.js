@@ -830,6 +830,7 @@ app.drawing = new App({
       type: "container",
       size: {
         w: 0.666,
+        //w: 0.25,
         h: 1.0
       },
       margin: 10,
@@ -854,6 +855,7 @@ app.drawing = new App({
       type: "container",
       size: {
         w: 0.333,
+        //w: 0.75,
         h: 1.0
       },
       margin: 10,
@@ -2983,10 +2985,10 @@ tr.gui.chain = function(_p5) {
         animate = this.chain[i].animate.bind(this.chain[i]);
       }
 
+      this.p5.translate(x, y, z);
       this.p5.rotateX(r_x);
       this.p5.rotateY(r_y);
       this.p5.rotateZ(r_z);
-      this.p5.translate(x, y, z);
 
       if (animate) {
         var a = animate();
@@ -3003,20 +3005,19 @@ tr.gui.chain = function(_p5) {
 
       this.addEef(r, v);
 
-      this.p5.model(link);
+      if (!link) continue;
+
+      var mo = this.chain[i].link.meshOffset;
+      if (mo) {
+        this.p5.translate(mo.x, mo.y, mo.z);
+        this.p5.model(link);
+        this.p5.translate(-mo.x, -mo.y, -mo.z);
+      } else {
+        this.p5.model(link);
+      }
     }
 
     this.p5.pop();
-
-    if (this.chain.length == 7) {
-      this.p5.push();
-      this.p5.scale(0.2);
-      this.p5.translate(this.eef.x, this.eef.y, this.eef.z);
-      this.p5.normalMaterial();
-      this.p5.fill('orange');
-      this.p5.sphere(50);
-      this.p5.pop();
-    }
   }
 
   this.addEef = function (r, v) {
@@ -3171,15 +3172,17 @@ tr.gui.drawLink = function(link, r_x, r_y, r_z, x, y, z, animate, _p5) {
   _p5.noStroke();
   _p5.ambientMaterial(100);
 
+  _p5.translate(x, y, z);
   _p5.rotateX(r_x);
   _p5.rotateY(r_y);
   _p5.rotateZ(r_z);
-  _p5.translate(x, y, z);
 
   if (animate) {
     animate();
   }
 
+  _p5.ambientLight(100);
+  _p5.ambientMaterial(40, 40, 40);
   _p5.model(link);
 
   _p5.pop();
@@ -3769,18 +3772,6 @@ tr.gui.tr2 = {
     this.border = false;
 
     this.links = {};
-    this.links.b0 = '';
-    this.links.b1 = '';
-    this.links.b2 = '';
-    this.links.b3 = '';
-    this.links.a0 = '';
-    this.links.a1 = '';
-    this.links.a2 = '';
-    this.links.a3 = '';
-    this.links.g0 = '';
-    this.links.g1 = '';
-    this.links.h0 = '';
-    this.links.h1 = '';
 
     this.tr2 = new tr.lib.tr2();
 
@@ -3831,11 +3822,20 @@ tr.gui.tr2 = {
     this.p5 = new p5(function(p) {}, this.container.id);
     this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
-    this.p5.angleMode(DEGREES);
+    this.p5.angleMode(RADIANS);
     this.p5.perspective();
-    for (l in this.links) {
-      this.links[l] = this.p5.loadModel("/stl/link_" + l + ".stl");
-    }
+
+    this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
+    this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
+    this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
+    this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
+    this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
+    this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
+    this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
+    this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
+    this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
+    this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
+    this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
   },
 
   draw: function() {
@@ -3862,50 +3862,60 @@ tr.gui.tr2 = {
 
     this.p5.camera(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z, 0, 0, 100, 0, 0, -1);
 
-    tr.gui.drawLink(this.links["b0"], 90, -90, 0, 0, 0, 0, null, this.p5);
-    tr.gui.drawLink(this.links["b1"], 0, 0, 0, 301.9, -150.2, 50.8, function() {
-      this.p5.rotateX(this.p5.frameCount);
-    }.bind(this), this.p5);
-    tr.gui.drawLink(this.links["b1"], 0, 0, 0, -301.9, -150.2, 50.8, function() {
-      this.p5.rotateX(this.p5.frameCount);
-    }.bind(this), this.p5);
+    tr.gui.drawLink(this.links["b0"], 1.5708, 3.1415, 0, 0, 0, 0, null, this.p5);
+    tr.gui.drawLink(this.links["w0"], 0, 1.5708, 0, 328.1, 0, 0, null, this.p5);
+    tr.gui.drawLink(this.links["w0"], 0, -1.5708, 0, -328.1, 0, 0, null, this.p5);
 
     var arm = new tr.gui.chain(this.p5);
     for (var i = 0; i < this.tr2.arm.length; i++) {
       var link = this.tr2.arm[i];
-
       arm.chain.push({
         id: link.id,
+        axis: link.axis,
         mesh: this.links[link.meshId],
         link: link,
         state: this.state,
         rotate: link.rotate,
         translate: link.translate,
         animate: function() {
-          this.p5.rotateY(this.link.offset);
-          this.p5.rotateY(this.state[this.link.id] * 57.2958);
+          if (this.link.fixed) return;
+          var f = 1.0;
+          if (this.link.flip) f = -1.0;
+          this.p5["rotate" + this.axis](this.link.offset * f);
+          this.p5["rotate" + this.axis](this.state[this.link.id] * f);
         }
       });
     }
 
-    arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
+    /*arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
       this.p5.translate(0, -5);
       this.p5.translate(0, this.state.g0 / 100.0 * -40);
     }.bind(this)]);
     arm.chain.push([this.links["g1"], 0, 0, 0, 0, 7.5, 0, function() {
       this.p5.translate(0, 10);
       this.p5.translate(0, this.state.g0 / 100.0 * 80);
-    }.bind(this)]);
+    }.bind(this)]);*/
     arm.draw();
 
     var head = new tr.gui.chain(this.p5);
-    head.chain.push([this.links["h0"], -90, 0, 180, 0, 907.1, 122.7, function() {
-      this.p5.rotateY(this.state.h0 * 57.2958);
-    }.bind(this)]);
-    head.chain.push([this.links["h1"], 180, 0, 0, 68.8, -161.4, 174.5, function() {
-      this.p5.rotateX(-20);
-      this.p5.rotateX(this.state.h1 * 57.2958);
-    }.bind(this)]);
+    for (var i = 0; i < this.tr2.head.length; i++) {
+      var link = this.tr2.head[i];
+      head.chain.push({
+        id: link.id,
+        axis: link.axis,
+        mesh: this.links[link.meshId],
+        link: link,
+        state: this.state,
+        rotate: link.rotate,
+        translate: link.translate,
+        animate: function() {
+          var f = 1.0;
+          if (this.link.flip) f = -1.0;
+          this.p5["rotate" + this.axis](this.link.offset * f);
+          this.p5["rotate" + this.axis](this.state[this.link.id] * f);
+        }
+      });
+    }
     head.draw();
   },
 
@@ -3946,6 +3956,15 @@ tr.lib.link = function (config) {
   this.id = config.id || "j0";
   this.meshId = config.meshId || this.id;
   this.offset = config.offset || 0;
+  this.axis = config.axis || "Y";
+  this.flip = config.flip || false;
+  this.fixed = config.fixed || false;
+
+  this.meshOffset = config.meshOffset || {
+    x: 0,
+    y: 0,
+    z: 0
+  }
 
   this.rotate = config.rotate || {
     x: 0,
@@ -3981,42 +4000,79 @@ tr.lib.tr2 = function () {
   this.state.h1 = 0;
 
   this.setup = function () {
+    // HEAD
+    this.head.push(new tr.lib.link({
+      id: "h0",
+      meshId: "h0",
+      axis: "Z",
+      flip: true,
+      rotate: {x: 0, y: 0, z: 1.5708},
+      translate: {x: 0, y: 357.9, z: 703.25},
+    }));
+
+    this.head.push(new tr.lib.link({
+      id: "h1",
+      meshId: "h1",
+      axis: "Z",
+      flip: true,
+      rotate: {x: -1.5708, y: 3.1415, z: -1.5708},
+      translate: {x: -166.17, y: 67, z: 249.17},
+    }));
+
+    // ARM
     this.arm.push(new tr.lib.link({
       id: "a0",
       meshId: "a0",
-      rotate: {x: 90, y: 0, z: 0},
-      translate: {x: 93.3, y: 729.2, z: 129.2},
-      offset: -90,
+      axis: "Z",
+      rotate: {x: 0, y: 0, z: 0},
+      translate: {x: 101.6, y: 122.9, z: 459.937},
+      offset: 1.5708,
     }));
 
     this.arm.push(new tr.lib.link({
       id: "a1",
       meshId: "a1",
-      rotate: {x: 180, y: 0, z: -90},
-      translate: {x: 89.7, y: 80.0, z: -214.6},
-      offset: -90,
+      axis: "Z",
+      rotate: {x: -1.5708, y: 0, z: 0},
+      translate: {x: 0, y: 70, z: 76},
+      offset: 0,
+    }));
+
+    this.arm.push(new tr.lib.link({
+      id: "a1_fixed",
+      meshId: "a2",
+      fixed: true,
+      rotate: {x: 0, y: 0, z: 0},
+      translate: {x: 0, y: 190, z: 0},
     }));
 
     this.arm.push(new tr.lib.link({
       id: "a2",
-      meshId: "a2",
-      rotate: {x: 90, y: -90, z: 0},
-      translate: {x: -109.7, y: 166.9, z: 0},
+      meshId: "a3",
+      axis: "Z",
+      meshOffset: {x: 8, y: 300, z: 0},
+      rotate: {x: 3.1415, y: 0, z: 1.5708},
+      translate: {x: 0, y: 0, z: 0},
+      offset: -0.698132,
     }));
 
     this.arm.push(new tr.lib.link({
       id: "a3",
-      meshId: "a1",
-      rotate: {x: 180, y: 0, z: -90},
-      translate: {x: 154.4, y: 80.0, z: 0},
-      offset: 20,
+      meshId: "a4",
+      axis: "Z",
+      flip: true,
+      rotate: {x: 0, y: 3.1415, z: -1.5708},
+      translate: {x: 8, y: 300, z: 0},
+      offset: 0.698132,
     }));
-    
+
     this.arm.push(new tr.lib.link({
       id: "a4",
       meshId: "g0",
-      rotate: {x: 90, y: 90, z: 0},
-      translate: {x: 109.7, y: 166.9, z: 0},
+      axis: "Z",
+      flip: true,
+      rotate: {x: 1.5708, y: 0, z: 0},
+      translate: {x: 0, y: 67, z: 67},
     }));
   }
 
