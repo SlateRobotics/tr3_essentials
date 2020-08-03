@@ -77,3 +77,5 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+package-lock.json
