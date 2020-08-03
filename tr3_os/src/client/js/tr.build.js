@@ -827,46 +827,52 @@ app.drawing = new App({
       text: "Control Panel",
     },
     children: [{
-      type: "container",
-      size: {
-        w: 0.666,
-        //w: 0.25,
-        h: 1.0
-      },
-      margin: 10,
-      padding: 10,
-      background: "rgba(255, 255, 255, 0.2)",
-      radius: 15,
-      children: [
-        label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
-        label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
-        label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
-        label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
-        label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
-        label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
-        label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
-        label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
-        { type: "container", size: { w: 1.0, h: 10 }, border: false },
-        button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
-        { type: "container", size: { w: 1.0, h: 10 }, border: false },
-        button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
-      ],
-    }, {
-      type: "container",
-      size: {
-        w: 0.333,
-        //w: 0.75,
-        h: 1.0
-      },
-      margin: 10,
-      padding: 10,
-      background: "rgba(255, 255, 255, 0.2)",
-      radius: 15,
-      children: [{
-        type: "tr2",
-        onDraw: function() {
-          //this.tr2.state.a0 += 1;
-        }
+      type: "tabControl",
+      labels: ["Control", "Config", "3D Render"],
+      pages: [{
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [
+          label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
+          label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
+          label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
+          label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
+          label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
+          label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
+          label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
+          label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
+          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
+          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
+        ],
+      }, {
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+      }, {
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [{
+          type: "tr2",
+          onDraw: function() {
+            //this.tr2.state.a0 += 1;
+          }
+        }],
       }],
     }],
   }],
@@ -2644,6 +2650,7 @@ tr.gui.component = function(componentConfig) {
     var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
     var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
 
+    this.size = Object.assign({}, this.size);
     if (this.size.w == "fill") {
       var offset = 0;
       var shift = {
@@ -2695,6 +2702,7 @@ tr.gui.component = function(componentConfig) {
     if (!this.config.children) {
       this.config.children = [];
     }
+
     for (var i = 0; i < this.config.children.length; i++) {
       this.config.children[i].parent = this;
       this.config.children[i].index = i;
@@ -2733,12 +2741,12 @@ tr.gui.component = function(componentConfig) {
     stroke(0);
     fill(this.background);
 
-    if (this.size.w == "fill") {
+    if (this.config.size && this.config.size.w == "fill") {
       var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
       this.size.w = parentWidth - this.parent.translateState.x;
     }
 
-    if (this.size.h == "fill") {
+    if (this.config.size && this.config.size.h == "fill") {
       var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
       this.size.h = parentHeight - this.parent.translateState.y;
     }
@@ -2851,6 +2859,18 @@ tr.gui.component = function(componentConfig) {
       x: x,
       y: y
     };
+  }
+
+  this.clear = function () {
+    for(var i = 0; i < this.children.length; i++) {
+      if (this.children[i].clear) {
+        this.children[i].clear();
+      }
+
+      if (this.children[i].componentConfig.clear) {
+        this.children[i].componentConfig.clear.bind(this.children[i])();
+      }
+    }
   }
 
   this.mouseClicked = function() {
@@ -3647,6 +3667,92 @@ tr.gui.select = {
   },
 
 }
+tr.gui.tabControl = {
+  defaults: function() {
+    this.labels = this.config.labels || [];
+    this.pages = this.config.pages || [];
+    this.config.currentPage = this.config.currentPage || 0;
+  },
+
+  setup: function() {
+    var buttons = this.componentConfig.createButtons.bind(this)();
+    var page = this.config.pages[this.config.currentPage];
+    var container = new tr.gui.component(tr.gui.container);
+    container.setup({
+      type: "container",
+      border: false,
+      parent: this,
+      margin: 5,
+      padding: 10,
+      size: {
+        w: 1,
+        h: 1
+      },
+      children: [buttons, page]
+    });
+    this.children.push(container);
+  },
+
+  createButtons: function () {
+    var c = [];
+    var w = 1 / this.config.pages.length;
+    for (var i = 0; i < this.config.pages.length; i++) {
+      var b = this.componentConfig.createButton(this.config.labels[i], w);
+      b.onClick = function () {
+        var i = this.index;
+
+        var tc = this.parent.parent.parent;
+        tc.config.currentPage = i;
+
+        var c = tc.config.pages[i];
+        c.parent = tc.children[0];
+
+        var t = new tr.gui.component(tr.gui.container);
+        t.setup(c);
+
+        tc.children[0].children[1].clear();
+        tc.children[0].children[1] = t;
+
+        //tc.componentConfig.setup();
+      }
+      c.push(b);
+    }
+    return {
+      type: "container",
+      background: "rgba(255, 255, 255, 0.1)",
+      size: {
+        w: 1.0,
+        h: 30
+      },
+      children: c,
+    };
+  },
+
+  createButton: function (label, w) {
+    return {
+      type: "container",
+      size: {
+        w: w,
+        h: 30
+      },
+      children: [{
+        type: "container",
+        border: false,
+        children: [{
+          type: "text",
+          text: label,
+          textSize: 18,
+          size: {w: 1, h: 1},
+          padding: 4,
+          align: {
+            v: "TOP",
+            h: "CENTER"
+          },
+        }],
+      }]
+    };
+  }
+}
 tr.gui.text = {
   defaults: function() {
     this.border = false;
@@ -3839,6 +3945,40 @@ tr.gui.tr2 = {
   },
 
   draw: function() {
+    if (this.p5.height != this.parent.size.h) {
+        this.pos = this.parent.pos;
+        this.size = this.parent.size;
+
+        this.p5.remove();
+        this.container.remove();
+
+        this.container = document.createElement('div');
+        this.container.id = "tr2-render-" + Math.floor(Math.random() * 1000000);
+        this.container.style.position = "absolute";
+        this.container.style.left = this.pos.x;
+        this.container.style.top = this.pos.y;
+        this.container.style.display = "none";
+        document.body.appendChild(this.container);
+
+        this.p5 = new p5(function(p) {}, this.container.id);
+        this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
+
+        this.p5.angleMode(RADIANS);
+        this.p5.perspective();
+
+        this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
+        this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
+        this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
+        this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
+        this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
+        this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
+        this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
+        this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
+        this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
+        this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
+        this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+    }
+
     var s = tr.data.robotState;
     for (var i = 0; i < s.name.length; i++) {
       this.state[s.name[i]] = s.position[i];
@@ -3917,6 +4057,11 @@ tr.gui.tr2 = {
       });
     }
     head.draw();
+  },
+
+  clear: function () {
+    this.p5.clear();
+    this.p5.remove();
   },
 
   mousePressed: function() {

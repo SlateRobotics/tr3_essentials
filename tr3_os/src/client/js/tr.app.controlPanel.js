@@ -166,46 +166,52 @@ app.drawing = new App({
       text: "Control Panel",
     },
     children: [{
-      type: "container",
-      size: {
-        w: 0.666,
-        //w: 0.25,
-        h: 1.0
-      },
-      margin: 10,
-      padding: 10,
-      background: "rgba(255, 255, 255, 0.2)",
-      radius: 15,
-      children: [
-        label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
-        label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
-        label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
-        label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
-        label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
-        label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
-        label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
-        label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
-        { type: "container", size: { w: 1.0, h: 10 }, border: false },
-        button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
-        { type: "container", size: { w: 1.0, h: 10 }, border: false },
-        button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
-      ],
-    }, {
-      type: "container",
-      size: {
-        w: 0.333,
-        //w: 0.75,
-        h: 1.0
-      },
-      margin: 10,
-      padding: 10,
-      background: "rgba(255, 255, 255, 0.2)",
-      radius: 15,
-      children: [{
-        type: "tr2",
-        onDraw: function() {
-          //this.tr2.state.a0 += 1;
-        }
+      type: "tabControl",
+      labels: ["Control", "Config", "3D Render"],
+      pages: [{
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [
+          label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
+          label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
+          label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
+          label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
+          label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
+          label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
+          label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
+          label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
+          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
+          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
+        ],
+      }, {
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+      }, {
+        type: "container",
+        size: {
+          w: 1.0,
+          h: "fill"
+        },
+        padding: 10,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [{
+          type: "tr2",
+          onDraw: function() {
+            //this.tr2.state.a0 += 1;
+          }
+        }],
       }],
     }],
   }],

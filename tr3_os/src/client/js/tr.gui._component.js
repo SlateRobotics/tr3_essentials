@@ -54,6 +54,7 @@ tr.gui.component = function(componentConfig) {
     var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
     var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
 
+    this.size = Object.assign({}, this.size);
     if (this.size.w == "fill") {
       var offset = 0;
       var shift = {
@@ -105,6 +106,7 @@ tr.gui.component = function(componentConfig) {
     if (!this.config.children) {
       this.config.children = [];
     }
+
     for (var i = 0; i < this.config.children.length; i++) {
       this.config.children[i].parent = this;
       this.config.children[i].index = i;
@@ -143,12 +145,12 @@ tr.gui.component = function(componentConfig) {
     stroke(0);
     fill(this.background);
 
-    if (this.size.w == "fill") {
+    if (this.config.size && this.config.size.w == "fill") {
       var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
       this.size.w = parentWidth - this.parent.translateState.x;
     }
 
-    if (this.size.h == "fill") {
+    if (this.config.size && this.config.size.h == "fill") {
       var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
       this.size.h = parentHeight - this.parent.translateState.y;
     }
@@ -261,6 +263,18 @@ tr.gui.component = function(componentConfig) {
       x: x,
       y: y
     };
+  }
+
+  this.clear = function () {
+    for(var i = 0; i < this.children.length; i++) {
+      if (this.children[i].clear) {
+        this.children[i].clear();
+      }
+
+      if (this.children[i].componentConfig.clear) {
+        this.children[i].componentConfig.clear.bind(this.children[i])();
+      }
+    }
   }
 
   this.mouseClicked = function() {
