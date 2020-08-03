@@ -49,74 +49,26 @@ function label_state (id) {
     }]
   }
 }
-
-function button_pos (id, label) {
-  var i = 0;
-  if (label == "--") {
-    i = -1.0;
-  } else if (label == "-") {
-    i = -0.1;
-  } else if (label == "+") {
-    i = 0.1;
-  } else if (label == "++") {
-    i = 1.0;
-  }
-
+function slider_label (id) {
   return {
     type: "container",
     size: {
       w: 0.111,
       h: 25
     },
-    onClick: function() {
-      tr.data.socket.emit("/tr3/joints/" + id + "/control/position", tr.data.getState(id).position + i);
-    },
     children: [{
       type: "container",
       border: false,
       children: [{
+        id: id +"sliderl",
         type: "text",
-        text: label,
+        text: "0",
         textSize: 18,
         align: {
           v: "CENTER",
           h: "CENTER"
         },
-      }],
-    }]
-  }
-}
-
-function button_mode (id, label) {
-  var i = 0;
-  if (label == "EFF") {
-    i = 0;
-  } else if (label == "BACK") {
-    i = 1;
-  } else if (label == "SRVO") {
-    i = 2;
-  }
-
-  return {
-    type: "container",
-    size: {
-      w: 0.111,
-      h: 25
-    },
-    onClick: function() {
-      tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
-    },
-    children: [{
-      type: "container",
-      border: false,
-      children: [{
-        type: "text",
-        text: label,
-        textSize: 18,
-        align: {
-          v: "CENTER",
-          h: "CENTER"
-        },
+        onDraw: function() {}
       }],
     }]
   }
@@ -150,6 +102,135 @@ function button_big (text, rostopic, value, background) {
   }
 }
 
+function map_range(val,low1,high1,low2,high2){
+  return low2 + (high2 - low2) * (val-low1) / (high1 - low1);
+}
+
+function pos_Slider (id) {
+  return {
+    type: "container",
+    size: {
+      w: .334,
+      h: 25
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id+"slider",
+        type: "slider",
+      onInput: function(val) { //  tr.data.socket.emit("/tr3/joints/" + id + "/control/position", tr.data.getState(id).position + i);
+        var i = 0;
+        if(val < 314){i = map_range(val,0,314,-314,0).toFixed(0)/100}
+        else if(val > 464) {i = map_range(val,464,728,0,314).toFixed(0)/100}
+        else{i = 0}
+        var app = this.getApp();
+        var page = app.getCurrentPage();
+        var p = page.getChild(id+"sliderl")
+        if (p) {
+          p.text = i;
+        }
+        tr.data.socket.emit("/tr3/joints/" + id + "/control/position",i);
+  },
+      onChange: function(val) {
+        var i = 0;
+        if(val < 314){i = map_range(val,0,314,-314,0).toFixed(0)/100}
+        else if(val > 464) {i = map_range(val,464,728,0,314).toFixed(0)/100}
+        else{i = 0}
+        if(i==0){
+          console.log("boop")
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+        var x =  page.getChild(id+"slider")
+        console.log(x)
+            x.setval(364);
+        }
+      },
+
+
+        min: 0,
+        max: 728,
+        val: 364,
+        step: 1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+function templabel (text,w,h) {
+  var ww  = 0;
+  var hh = 0;
+  if(w == 0){ww = 1;}
+  else{ww = w;}
+  if(h == 0){hh = 25;}
+  else{hh = h;}
+  return {
+    type: "container",
+    size: {
+      w: ww,
+      h: hh
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: text,
+        textSize: 18,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+function select_mode (id) {
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 25
+    },
+
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "select",
+        options: ["EFFORT","BACKDRIVE","SERVO"],
+        onChange: function(val) {
+          var i = 0;
+           if (val == "EFFORT") {
+            i = 0;
+          } else if (val == "BACKDRIVE") {
+             i = 1;
+          } else if (val == "SERVO") {
+             i = 2;
+           }
+          //console.log(id,i,"ModeTest")
+          tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
+        },
+        Size: {
+          w:1,
+          h:25},
+          textSize: 12,
+          padding: 0,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+
 app.drawing = new App({
   name: "Control Panel",
   iconUrl: "/img/icon-app-control",
@@ -163,13 +244,27 @@ app.drawing = new App({
       h: 1.0
     },
     header: {
-      text: "Control Panel",
+      text: "Control Panel V2",
+    },
+    setup: function() {
+      var app = this._app;
+      var page = app.getCurrentPage();
+      var ids = [a0,a1,a2,a3,a4,h0,h1]
+
+      for(i=0; i < ids.length;i++){
+        var pos = tr.data.getState(ids[i]).position.toFixed(2);
+        var p = page.getChild(id+"slider")
+        if(pos){
+        p.setval(pos);
+        }
+      }
+
+
     },
     children: [{
       type: "container",
       size: {
-        w: 0.666,
-        //w: 0.25,
+        w: 1,
         h: 1.0
       },
       margin: 10,
@@ -177,36 +272,22 @@ app.drawing = new App({
       background: "rgba(255, 255, 255, 0.2)",
       radius: 15,
       children: [
-        label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
-        label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
-        label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
-        label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
-        label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
-        label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
-        label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
-        label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
+        templabel("TAB CONTROLL HERE",1,30),
+        { type: "container", size: { w: 1.0, h: 10 }, border: false },
+        label("IDs"),label("Position"),templabel("Mode Select",.333,25),label("Target"),templabel("Position Slider",.334,25),
+        { type: "container", size: { w: 1.0, h: 10 }, border: false },
+        label("a0"),label_state("a0"),select_mode("a0"),slider_label("a0"),pos_Slider("a0"),
+        label("a1"),label_state("a1"),select_mode("a1"),slider_label("a1"),pos_Slider("a1"),
+        label("a2"),label_state("a2"),select_mode("a2"),slider_label("a2"),pos_Slider("a2"),
+        label("a3"),label_state("a3"),select_mode("a3"),slider_label("a3"),pos_Slider("a3"),
+        label("a4"),label_state("a4"),select_mode("a4"),slider_label("a4"),pos_Slider("a4"),
+        label("h0"),label_state("h0"),select_mode("h0"),slider_label("h0"),pos_Slider("h0"),
+        label("h1"),label_state("h1"),select_mode("h1"),slider_label("h1"),pos_Slider("h1"),
         { type: "container", size: { w: 1.0, h: 10 }, border: false },
         button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
         { type: "container", size: { w: 1.0, h: 10 }, border: false },
         button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
       ],
-    }, {
-      type: "container",
-      size: {
-        w: 0.333,
-        //w: 0.75,
-        h: 1.0
-      },
-      margin: 10,
-      padding: 10,
-      background: "rgba(255, 255, 255, 0.2)",
-      radius: 15,
-      children: [{
-        type: "tr2",
-        onDraw: function() {
-          //this.tr2.state.a0 += 1;
-        }
-      }],
     }],
   }],
 });
