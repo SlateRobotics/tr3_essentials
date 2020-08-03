@@ -79,37 +79,37 @@ tr.gui.tr2 = {
 
   draw: function() {
     if (this.p5.height != this.parent.size.h) {
-        this.pos = this.parent.pos;
-        this.size = this.parent.size;
+      this.pos = this.parent.pos;
+      this.size = this.parent.size;
 
-        this.p5.remove();
-        this.container.remove();
+      this.p5.remove();
+      this.container.remove();
 
-        this.container = document.createElement('div');
-        this.container.id = "tr2-render-" + Math.floor(Math.random() * 1000000);
-        this.container.style.position = "absolute";
-        this.container.style.left = this.pos.x;
-        this.container.style.top = this.pos.y;
-        this.container.style.display = "none";
-        document.body.appendChild(this.container);
+      this.container = document.createElement('div');
+      this.container.id = "tr2-render-" + Math.floor(Math.random() * 1000000);
+      this.container.style.position = "absolute";
+      this.container.style.left = this.pos.x;
+      this.container.style.top = this.pos.y;
+      this.container.style.display = "none";
+      document.body.appendChild(this.container);
 
-        this.p5 = new p5(function(p) {}, this.container.id);
-        this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
+      this.p5 = new p5(function(p) {}, this.container.id);
+      this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
-        this.p5.angleMode(RADIANS);
-        this.p5.perspective();
+      this.p5.angleMode(RADIANS);
+      this.p5.perspective();
 
-        this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-        this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-        this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-        this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-        this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-        this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-        this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-        this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-        this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-        this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-        this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+      this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
+      this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
+      this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
+      this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
+      this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
+      this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
+      this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
+      this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
+      this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
+      this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
+      this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
     }
 
     var s = tr.data.robotState;
@@ -192,7 +192,7 @@ tr.gui.tr2 = {
     head.draw();
   },
 
-  clear: function () {
+  clear: function() {
     this.p5.clear();
     this.p5.remove();
   },

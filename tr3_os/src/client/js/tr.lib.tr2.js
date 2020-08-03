@@ -1,7 +1,7 @@
 if (!tr) tr = {};
 if (!tr.lib) tr.lib = {};
 
-tr.lib.link = function (config) {
+tr.lib.link = function(config) {
   this.id = config.id || "j0";
   this.meshId = config.meshId || this.id;
   this.offset = config.offset || 0;
@@ -28,7 +28,7 @@ tr.lib.link = function (config) {
   }
 }
 
-tr.lib.tr2 = function () {
+tr.lib.tr2 = function() {
   this.head = [];
   this.arm = [];
   this.base = [];
@@ -48,15 +48,23 @@ tr.lib.tr2 = function () {
   this.state.h0 = 0;
   this.state.h1 = 0;
 
-  this.setup = function () {
+  this.setup = function() {
     // HEAD
     this.head.push(new tr.lib.link({
       id: "h0",
       meshId: "h0",
       axis: "Z",
       flip: true,
-      rotate: {x: 0, y: 0, z: 1.5708},
-      translate: {x: 0, y: 357.9, z: 703.25},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 1.5708
+      },
+      translate: {
+        x: 0,
+        y: 357.9,
+        z: 703.25
+      },
     }));
 
     this.head.push(new tr.lib.link({
@@ -64,8 +72,16 @@ tr.lib.tr2 = function () {
       meshId: "h1",
       axis: "Z",
       flip: true,
-      rotate: {x: -1.5708, y: 3.1415, z: -1.5708},
-      translate: {x: -166.17, y: 67, z: 249.17},
+      rotate: {
+        x: -1.5708,
+        y: 3.1415,
+        z: -1.5708
+      },
+      translate: {
+        x: -166.17,
+        y: 67,
+        z: 249.17
+      },
     }));
 
     // ARM
@@ -73,8 +89,16 @@ tr.lib.tr2 = function () {
       id: "a0",
       meshId: "a0",
       axis: "Z",
-      rotate: {x: 0, y: 0, z: 0},
-      translate: {x: 101.6, y: 122.9, z: 459.937},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 101.6,
+        y: 122.9,
+        z: 459.937
+      },
       offset: 1.5708,
     }));
 
@@ -82,8 +106,16 @@ tr.lib.tr2 = function () {
       id: "a1",
       meshId: "a1",
       axis: "Z",
-      rotate: {x: -1.5708, y: 0, z: 0},
-      translate: {x: 0, y: 70, z: 76},
+      rotate: {
+        x: -1.5708,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 70,
+        z: 76
+      },
       offset: 0,
     }));
 
@@ -91,17 +123,37 @@ tr.lib.tr2 = function () {
       id: "a1_fixed",
       meshId: "a2",
       fixed: true,
-      rotate: {x: 0, y: 0, z: 0},
-      translate: {x: 0, y: 190, z: 0},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 190,
+        z: 0
+      },
     }));
 
     this.arm.push(new tr.lib.link({
       id: "a2",
       meshId: "a3",
       axis: "Z",
-      meshOffset: {x: 8, y: 300, z: 0},
-      rotate: {x: 3.1415, y: 0, z: 1.5708},
-      translate: {x: 0, y: 0, z: 0},
+      meshOffset: {
+        x: 8,
+        y: 300,
+        z: 0
+      },
+      rotate: {
+        x: 3.1415,
+        y: 0,
+        z: 1.5708
+      },
+      translate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
       offset: -0.698132,
     }));
 
@@ -110,8 +162,16 @@ tr.lib.tr2 = function () {
       meshId: "a4",
       axis: "Z",
       flip: true,
-      rotate: {x: 0, y: 3.1415, z: -1.5708},
-      translate: {x: 8, y: 300, z: 0},
+      rotate: {
+        x: 0,
+        y: 3.1415,
+        z: -1.5708
+      },
+      translate: {
+        x: 8,
+        y: 300,
+        z: 0
+      },
       offset: 0.698132,
     }));
 
@@ -120,8 +180,16 @@ tr.lib.tr2 = function () {
       meshId: "g0",
       axis: "Z",
       flip: true,
-      rotate: {x: 1.5708, y: 0, z: 0},
-      translate: {x: 0, y: 67, z: 67},
+      rotate: {
+        x: 1.5708,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 67,
+        z: 67
+      },
     }));
   }
 

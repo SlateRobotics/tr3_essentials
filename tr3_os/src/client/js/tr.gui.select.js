@@ -45,4 +45,8 @@ tr.gui.select = {
     this.element.show();
   },
 
+  clear: function() {
+    this.element.remove();
+  },
+
 }

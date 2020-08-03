@@ -2,7 +2,11 @@ tr.gui.chain = function(_p5) {
   this.p5 = _p5;
   if (!_p5) this.p5 = window;
 
-  this.eef = {x: 0, y: 0, z: 0}
+  this.eef = {
+    x: 0,
+    y: 0,
+    z: 0
+  }
   this.chain = [];
 
   this.draw = function() {
@@ -70,8 +74,16 @@ tr.gui.chain = function(_p5) {
         var a = animate();
       }
 
-      var r = {x: r_x, y: r_y, z: r_z};
-      var v = {x: x, y: y, z: z};
+      var r = {
+        x: r_x,
+        y: r_y,
+        z: r_z
+      };
+      var v = {
+        x: x,
+        y: y,
+        z: z
+      };
 
       if (a) {
         r.x += a.x;
@@ -96,7 +108,7 @@ tr.gui.chain = function(_p5) {
     this.p5.pop();
   }
 
-  this.addEef = function (r, v) {
+  this.addEef = function(r, v) {
     //convert degrees to radians
     r.x *= Math.PI / 180.0;
     r.y *= Math.PI / 180.0;
@@ -111,21 +123,21 @@ tr.gui.chain = function(_p5) {
     this.eef.z += v.z;
   }
 
-  this.rotateX = function (v, x) {
+  this.rotateX = function(v, x) {
     var v2 = Object.assign({}, v);
     v2.y = v.y * Math.cos(x) - v.z * Math.sin(x);
     v2.z = v.y * Math.sin(x) + v.z * Math.cos(x);
     return v2;
   }
 
-  this.rotateY = function (v, y) {
+  this.rotateY = function(v, y) {
     var v2 = Object.assign({}, v);
     v2.x = v.x * Math.cos(y) + v.z * Math.sin(y);
     v2.z = -v.x * Math.sin(y) + v.z * Math.cos(y);
     return v2;
   }
 
-  this.rotateZ = function (v, z) {
+  this.rotateZ = function(v, z) {
     var v2 = Object.assign({}, v);
     v2.x = v.x * Math.cos(z) - v.y * Math.sin(z);
     v2.y = v.x * Math.sin(z) + v.y * Math.cos(z);

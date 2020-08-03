@@ -24,12 +24,12 @@ tr.gui.tabControl = {
     this.children.push(container);
   },
 
-  createButtons: function () {
+  createButtons: function() {
     var c = [];
     var w = 1 / this.config.pages.length;
     for (var i = 0; i < this.config.pages.length; i++) {
       var b = this.componentConfig.createButton(this.config.labels[i], w);
-      b.onClick = function () {
+      b.onClick = function() {
         var i = this.index;
 
         var tc = this.parent.parent.parent;
@@ -59,7 +59,7 @@ tr.gui.tabControl = {
     };
   },
 
-  createButton: function (label, w) {
+  createButton: function(label, w) {
     return {
       type: "container",
       size: {
@@ -73,7 +73,10 @@ tr.gui.tabControl = {
           type: "text",
           text: label,
           textSize: 18,
-          size: {w: 1, h: 1},
+          size: {
+            w: 1,
+            h: 1
+          },
           padding: 4,
           align: {
             v: "TOP",

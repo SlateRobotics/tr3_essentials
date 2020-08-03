@@ -4,7 +4,7 @@ if (!tr.app.pnp) tr.app.pnp = {};
 //boop//
 tr.app.pnp.pages = [{
   id: "PNP01",
- 
+
   pos: {
     x: 0,
     y: 0
@@ -29,7 +29,7 @@ tr.app.pnp.pages = [{
     },
     background: "rgba(255, 255, 255, 0.2)",
     margin: 10,
-    padding: 5, 
+    padding: 5,
     children: [{
       id: "ProgramBar",
       type: "container",
@@ -70,10 +70,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-del0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-del0.png",
         }],
       }, {
         type: "container",
@@ -84,10 +85,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-new0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-new0.png",
           onClick: function() {
             console.log("New Program");
             var app = this.getApp();
@@ -103,10 +105,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-set0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-set0.png",
         }],
       }],
 
@@ -128,10 +131,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-bw0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-bw0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.getCurrentProgram().incrementWaypoint(-1);
@@ -162,10 +166,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-fw0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-fw0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.getCurrentProgram().incrementWaypoint(1);
@@ -180,10 +185,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-del1.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-del1.png",
           onClick: function() {
             var app = this.getApp();
             var prog = app.config.getCurrentProgram();
@@ -199,10 +205,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-add0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-add0.png",
           onClick: function() {
             var app = this.getApp();
             var prog = app.config.getCurrentProgram();
@@ -228,88 +235,89 @@ tr.app.pnp.pages = [{
         },
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-			h: 1/5},
-			children: [{
-				type: "text",
-				text: "Goal Position"
-			}],
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "X"
-			}],
-			}],
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "Y"
-			}],
-			}],
-			
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "Z"
-			}],
-			}],
-			
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-			
-			
-			
-			
-			
-			
-		}],
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "text",
+            text: "Goal Position"
+          }],
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "X"
+            }],
+          }],
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "Y"
+            }],
+          }],
+
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "Z"
+            }],
+          }],
+
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+
+
+
+
+
+
+        }],
       }, {
         type: "container",
         size: {
@@ -365,12 +373,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -398,13 +407,14 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-          },
-		  }],
+            size: {
+              w: 26,
+              h: 35
+            },
+          }],
 
         }, {
           type: "container",
@@ -416,29 +426,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control2.png",
-			size: {
-          w: 26,
-          h: 35
-          },
-		  }],
-        }, {
-          type: "container",
-          size: {
-            w: 1 / 5,
-            h: 1 / 5
-          },
-          children: [{
-            align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control0.png",
-			size: {
-          w: 26,
-          h: 35
-        },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -450,12 +444,31 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
+            url: "/img/pnp-control0.png",
+            size: {
+              w: 26,
+              h: 35
+            },
+          }],
+        }, {
+          type: "container",
+          size: {
+            w: 1 / 5,
+            h: 1 / 5
+          },
+          children: [{
+            align: {
+              v: "CENTER",
+              h: "CENTER"
+            },
+            type: "image",
             url: "/img/pnp-control1.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -494,15 +507,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -527,15 +541,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -585,15 +600,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -606,12 +622,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -623,15 +640,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -698,9 +716,9 @@ tr.app.pnp.pages = [{
             text: "Z",
 
           }],
-		  onClick: function(){
-			  console.log(this.size.w + 'y: ' +this.size.h)
-		  },
+          onClick: function() {
+            console.log(this.size.w + 'y: ' + this.size.h)
+          },
         }, {
           type: "container",
           border: false,
@@ -729,12 +747,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -748,12 +767,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -764,15 +784,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -823,15 +844,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -848,15 +870,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -939,12 +962,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -964,12 +988,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1026,10 +1051,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-play0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-play0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStartFrom();
@@ -1044,10 +1070,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-pause0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-pause0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStop();
@@ -1062,10 +1089,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-stop0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-stop0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStop();

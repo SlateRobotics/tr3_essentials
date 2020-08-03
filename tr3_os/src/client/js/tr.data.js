@@ -17,11 +17,7 @@ tr.data.setup = function() {
   });
 }
 
-tr.data.request = function(opts) {
-
-};
-
-tr.data.getState = function (aid) {
+tr.data.getState = function(aid) {
   for (var i = 0; i < tr.data.robotState.name.length; i++) {
     if (tr.data.robotState.name[i] == aid) {
       return {

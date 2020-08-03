@@ -265,8 +265,8 @@ tr.gui.component = function(componentConfig) {
     };
   }
 
-  this.clear = function () {
-    for(var i = 0; i < this.children.length; i++) {
+  this.clear = function() {
+    for (var i = 0; i < this.children.length; i++) {
       if (this.children[i].clear) {
         this.children[i].clear();
       }

@@ -659,7 +659,7 @@ var ccircles = function(nx, ny, ns) {
   };
 
 };
-function label (id) {
+function label(id) {
   return {
     type: "container",
     size: {
@@ -682,7 +682,7 @@ function label (id) {
   }
 }
 
-function label_state (id) {
+function label_state(id) {
   return {
     type: "container",
     size: {
@@ -711,79 +711,32 @@ function label_state (id) {
   }
 }
 
-function button_pos (id, label) {
-  var i = 0;
-  if (label == "--") {
-    i = -1.0;
-  } else if (label == "-") {
-    i = -0.1;
-  } else if (label == "+") {
-    i = 0.1;
-  } else if (label == "++") {
-    i = 1.0;
-  }
-
+function slider_label(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
       h: 25
     },
-    onClick: function() {
-      tr.data.socket.emit("/tr3/joints/" + id + "/control/position", tr.data.getState(id).position + i);
-    },
     children: [{
       type: "container",
       border: false,
       children: [{
+        id: id + "sliderl",
         type: "text",
-        text: label,
+        text: "0",
         textSize: 18,
         align: {
           v: "CENTER",
           h: "CENTER"
         },
+        onDraw: function() {}
       }],
     }]
   }
 }
 
-function button_mode (id, label) {
-  var i = 0;
-  if (label == "EFF") {
-    i = 0;
-  } else if (label == "BACK") {
-    i = 1;
-  } else if (label == "SRVO") {
-    i = 2;
-  }
-
-  return {
-    type: "container",
-    size: {
-      w: 0.111,
-      h: 25
-    },
-    onClick: function() {
-      tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
-    },
-    children: [{
-      type: "container",
-      border: false,
-      children: [{
-        type: "text",
-        text: label,
-        textSize: 18,
-        align: {
-          v: "CENTER",
-          h: "CENTER"
-        },
-      }],
-    }]
-  }
-}
-
-function button_big (text, rostopic, value, background) {
+function button_big(text, rostopic, value, background) {
   return {
     type: "container",
     size: {
@@ -811,6 +764,167 @@ function button_big (text, rostopic, value, background) {
   }
 }
 
+function map_range(val, low1, high1, low2, high2) {
+  return low2 + (high2 - low2) * (val - low1) / (high1 - low1);
+}
+
+function pos_Slider(id) {
+  return {
+    type: "container",
+    size: {
+      w: .334,
+      h: 25
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          var val = 0;
+          if (select.element.value() == "EFFORT") {
+            val = sliderVal * 100.0;
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
+          } else if (select.element.value() == "SERVO") {
+            val = sliderVal * Math.PI * 2.0;
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
+          }
+
+          var label = page.getChild(id + "sliderl");
+          label.text = val.toFixed(2);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          if (select.element.value() == "EFFORT") {
+            var val = 0;
+
+            var slider = page.getChild(id + "slider");
+            slider.element.value(val);
+
+            var label = page.getChild(id + "sliderl");
+            label.text = val.toFixed(2);
+          }
+        },
+
+        min: -1,
+        max: 1,
+        val: 0,
+        step: 0.01,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+function templabel(text, w, h) {
+  var ww = 0;
+  var hh = 0;
+  if (w == 0) {
+    ww = 1;
+  } else {
+    ww = w;
+  }
+  if (h == 0) {
+    hh = 25;
+  } else {
+    hh = h;
+  }
+  return {
+    type: "container",
+    size: {
+      w: ww,
+      h: hh
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: text,
+        textSize: 18,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+function select_mode(id) {
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 25
+    },
+
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "select",
+        id: "select-" + id,
+        options: ["EFFORT", "BACKDRIVE", "SERVO"],
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          if (page) {
+            var slider = page.getChild(id + "slider");
+
+            if (val == "EFFORT") {
+              slider.setval(0);
+            } else if (val == "BACKDRIVE") {
+              slider.setval(0);
+            } else if (val == "SERVO") {
+              var state = tr.data.getState(id).position;
+              console.log(state)
+              slider.setval(state / Math.PI / 2.0);
+            }
+
+          }
+
+
+          var i = 0;
+          if (val == "EFFORT") {
+            i = 0;
+          } else if (val == "BACKDRIVE") {
+            i = 1;
+          } else if (val == "SERVO") {
+            i = 2;
+          }
+
+          tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
+        },
+        Size: {
+          w: 1,
+          h: 25
+        },
+        textSize: 12,
+        padding: 0,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+
 app.drawing = new App({
   name: "Control Panel",
   iconUrl: "/img/icon-app-control",
@@ -824,7 +938,7 @@ app.drawing = new App({
       h: 1.0
     },
     header: {
-      text: "Control Panel",
+      text: "Control Panel V2",
     },
     children: [{
       type: "tabControl",
@@ -838,17 +952,31 @@ app.drawing = new App({
         padding: 10,
         background: "rgba(255, 255, 255, 0.2)",
         children: [
-          label("ID"), label("POS"), label(""), label(""), label(""), label(""), label("MODE"), label("MODE"), label("MODE"),
-          label("a0"), label_state("a0"), button_pos("a0", "--"), button_pos("a0", "-"), button_pos("a0", "+"), button_pos("a0", "++"), button_mode("a0", "EFF"), button_mode("a0", "BACK"), button_mode("a0", "SRVO"),
-          label("a1"), label_state("a1"), button_pos("a1", "--"), button_pos("a1", "-"), button_pos("a1", "+"), button_pos("a1", "++"), button_mode("a1", "EFF"), button_mode("a1", "BACK"), button_mode("a1", "SRVO"),
-          label("a2"), label_state("a2"), button_pos("a2", "--"), button_pos("a2", "-"), button_pos("a2", "+"), button_pos("a2", "++"), button_mode("a2", "EFF"), button_mode("a2", "BACK"), button_mode("a2", "SRVO"),
-          label("a3"), label_state("a3"), button_pos("a3", "--"), button_pos("a3", "-"), button_pos("a3", "+"), button_pos("a3", "++"), button_mode("a3", "EFF"), button_mode("a3", "BACK"), button_mode("a3", "SRVO"),
-          label("a4"), label_state("a4"), button_pos("a4", "--"), button_pos("a4", "-"), button_pos("a4", "+"), button_pos("a4", "++"), button_mode("a4", "EFF"), button_mode("a4", "BACK"), button_mode("a4", "SRVO"),
-          label("h0"), label_state("h0"), button_pos("h0", "--"), button_pos("h0", "-"), button_pos("h0", "+"), button_pos("h0", "++"), button_mode("h0", "EFF"), button_mode("h0", "BACK"), button_mode("h0", "SRVO"),
-          label("h1"), label_state("h1"), button_pos("h1", "--"), button_pos("h1", "-"), button_pos("h1", "+"), button_pos("h1", "++"), button_mode("h1", "EFF"), button_mode("h1", "BACK"), button_mode("h1", "SRVO"),
-          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          label("IDs"), label("Position"), templabel("Mode Select", .333, 25), label("Target"), templabel("Position Slider", .334, 25),
+          label("a0"), label_state("a0"), select_mode("a0"), slider_label("a0"), pos_Slider("a0"),
+          label("a1"), label_state("a1"), select_mode("a1"), slider_label("a1"), pos_Slider("a1"),
+          label("a2"), label_state("a2"), select_mode("a2"), slider_label("a2"), pos_Slider("a2"),
+          label("a3"), label_state("a3"), select_mode("a3"), slider_label("a3"), pos_Slider("a3"),
+          label("a4"), label_state("a4"), select_mode("a4"), slider_label("a4"), pos_Slider("a4"),
+          label("h0"), label_state("h0"), select_mode("h0"), slider_label("h0"), pos_Slider("h0"),
+          label("h1"), label_state("h1"), select_mode("h1"), slider_label("h1"), pos_Slider("h1"),
+          {
+            type: "container",
+            size: {
+              w: 1.0,
+              h: 10
+            },
+            border: false
+          },
           button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
-          { type: "container", size: { w: 1.0, h: 10 }, border: false },
+          {
+            type: "container",
+            size: {
+              w: 1.0,
+              h: 10
+            },
+            border: false
+          },
           button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
         ],
       }, {
@@ -869,9 +997,6 @@ app.drawing = new App({
         background: "rgba(255, 255, 255, 0.2)",
         children: [{
           type: "tr2",
-          onDraw: function() {
-            //this.tr2.state.a0 += 1;
-          }
         }],
       }],
     }],
@@ -1120,7 +1245,7 @@ app.pnp = new App({
   waypointStart: 0,
   programMode: 0, // 0 = edit, 1, playback
   robotState: [],
-	  
+
   setup: function() {
     var app = this._app;
     app.addPages(tr.app.pnp.pages);
@@ -1313,7 +1438,7 @@ if (!tr.app.pnp) tr.app.pnp = {};
 //boop//
 tr.app.pnp.pages = [{
   id: "PNP01",
- 
+
   pos: {
     x: 0,
     y: 0
@@ -1338,7 +1463,7 @@ tr.app.pnp.pages = [{
     },
     background: "rgba(255, 255, 255, 0.2)",
     margin: 10,
-    padding: 5, 
+    padding: 5,
     children: [{
       id: "ProgramBar",
       type: "container",
@@ -1379,10 +1504,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-del0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-del0.png",
         }],
       }, {
         type: "container",
@@ -1393,10 +1519,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-new0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-new0.png",
           onClick: function() {
             console.log("New Program");
             var app = this.getApp();
@@ -1412,10 +1539,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-set0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-set0.png",
         }],
       }],
 
@@ -1437,10 +1565,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-bw0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-bw0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.getCurrentProgram().incrementWaypoint(-1);
@@ -1471,10 +1600,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-fw0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-fw0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.getCurrentProgram().incrementWaypoint(1);
@@ -1489,10 +1619,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-del1.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-del1.png",
           onClick: function() {
             var app = this.getApp();
             var prog = app.config.getCurrentProgram();
@@ -1508,10 +1639,11 @@ tr.app.pnp.pages = [{
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-add0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-add0.png",
           onClick: function() {
             var app = this.getApp();
             var prog = app.config.getCurrentProgram();
@@ -1537,88 +1669,89 @@ tr.app.pnp.pages = [{
         },
         background: "rgba(255, 255, 255, 0.5)",
         children: [{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-			h: 1/5},
-			children: [{
-				type: "text",
-				text: "Goal Position"
-			}],
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "X"
-			}],
-			}],
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "Y"
-			}],
-			}],
-			
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-				children: [{
-					type: "container",
-			border: true,
-			size: {
-				w: 1/5,
-				h: 1
-			},
-			children: [{
-				type: "text",
-				text: "Z"
-			}],
-			}],
-			
-		},{
-			type: "container",
-			border: true,
-			size: {
-				w: 1,
-				h: 1/5
-			},
-			
-			
-			
-			
-			
-			
-		}],
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "text",
+            text: "Goal Position"
+          }],
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "X"
+            }],
+          }],
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "Y"
+            }],
+          }],
+
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+          children: [{
+            type: "container",
+            border: true,
+            size: {
+              w: 1 / 5,
+              h: 1
+            },
+            children: [{
+              type: "text",
+              text: "Z"
+            }],
+          }],
+
+        }, {
+          type: "container",
+          border: true,
+          size: {
+            w: 1,
+            h: 1 / 5
+          },
+
+
+
+
+
+
+        }],
       }, {
         type: "container",
         size: {
@@ -1674,12 +1807,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1707,13 +1841,14 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-          },
-		  }],
+            size: {
+              w: 26,
+              h: 35
+            },
+          }],
 
         }, {
           type: "container",
@@ -1725,29 +1860,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control2.png",
-			size: {
-          w: 26,
-          h: 35
-          },
-		  }],
-        }, {
-          type: "container",
-          size: {
-            w: 1 / 5,
-            h: 1 / 5
-          },
-          children: [{
-            align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control0.png",
-			size: {
-          w: 26,
-          h: 35
-        },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1759,12 +1878,31 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
+            url: "/img/pnp-control0.png",
+            size: {
+              w: 26,
+              h: 35
+            },
+          }],
+        }, {
+          type: "container",
+          size: {
+            w: 1 / 5,
+            h: 1 / 5
+          },
+          children: [{
+            align: {
+              v: "CENTER",
+              h: "CENTER"
+            },
+            type: "image",
             url: "/img/pnp-control1.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1803,15 +1941,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1836,15 +1975,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1894,15 +2034,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -1915,12 +2056,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -1932,15 +2074,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control5.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -2007,9 +2150,9 @@ tr.app.pnp.pages = [{
             text: "Z",
 
           }],
-		  onClick: function(){
-			  console.log(this.size.w + 'y: ' +this.size.h)
-		  },
+          onClick: function() {
+            console.log(this.size.w + 'y: ' + this.size.h)
+          },
         }, {
           type: "container",
           border: false,
@@ -2038,12 +2181,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -2057,12 +2201,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -2073,15 +2218,16 @@ tr.app.pnp.pages = [{
           },
 
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control6.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
 
           }],
         }, {
@@ -2132,15 +2278,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -2157,15 +2304,16 @@ tr.app.pnp.pages = [{
             h: 1 / 5
           },
           children: [{
-             align: {
+            align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control3.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -2248,12 +2396,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -2273,12 +2422,13 @@ tr.app.pnp.pages = [{
             align: {
               v: "CENTER",
               h: "CENTER"
-            },type: "image",
+            },
+            type: "image",
             url: "/img/pnp-control4.png",
-			size: {
-          w: 26,
-          h: 35
-		  },
+            size: {
+              w: 26,
+              h: 35
+            },
           }],
         }, {
           type: "container",
@@ -2335,10 +2485,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-play0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-play0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStartFrom();
@@ -2353,10 +2504,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-pause0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-pause0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStop();
@@ -2371,10 +2523,11 @@ tr.app.pnp.pages = [{
         },
         children: [{
           align: {
-              v: "CENTER",
-              h: "CENTER"
-            },type: "image",
-            url: "/img/pnp-control-stop0.png",
+            v: "CENTER",
+            h: "CENTER"
+          },
+          type: "image",
+          url: "/img/pnp-control-stop0.png",
           onClick: function() {
             var app = this.getApp();
             app.config.programStop();
@@ -2577,11 +2730,7 @@ tr.data.setup = function() {
   });
 }
 
-tr.data.request = function(opts) {
-
-};
-
-tr.data.getState = function (aid) {
+tr.data.getState = function(aid) {
   for (var i = 0; i < tr.data.robotState.name.length; i++) {
     if (tr.data.robotState.name[i] == aid) {
       return {
@@ -2861,8 +3010,8 @@ tr.gui.component = function(componentConfig) {
     };
   }
 
-  this.clear = function () {
-    for(var i = 0; i < this.children.length; i++) {
+  this.clear = function() {
+    for (var i = 0; i < this.children.length; i++) {
       if (this.children[i].clear) {
         this.children[i].clear();
       }
@@ -2946,7 +3095,11 @@ tr.gui.chain = function(_p5) {
   this.p5 = _p5;
   if (!_p5) this.p5 = window;
 
-  this.eef = {x: 0, y: 0, z: 0}
+  this.eef = {
+    x: 0,
+    y: 0,
+    z: 0
+  }
   this.chain = [];
 
   this.draw = function() {
@@ -3014,8 +3167,16 @@ tr.gui.chain = function(_p5) {
         var a = animate();
       }
 
-      var r = {x: r_x, y: r_y, z: r_z};
-      var v = {x: x, y: y, z: z};
+      var r = {
+        x: r_x,
+        y: r_y,
+        z: r_z
+      };
+      var v = {
+        x: x,
+        y: y,
+        z: z
+      };
 
       if (a) {
         r.x += a.x;
@@ -3040,7 +3201,7 @@ tr.gui.chain = function(_p5) {
     this.p5.pop();
   }
 
-  this.addEef = function (r, v) {
+  this.addEef = function(r, v) {
     //convert degrees to radians
     r.x *= Math.PI / 180.0;
     r.y *= Math.PI / 180.0;
@@ -3055,21 +3216,21 @@ tr.gui.chain = function(_p5) {
     this.eef.z += v.z;
   }
 
-  this.rotateX = function (v, x) {
+  this.rotateX = function(v, x) {
     var v2 = Object.assign({}, v);
     v2.y = v.y * Math.cos(x) - v.z * Math.sin(x);
     v2.z = v.y * Math.sin(x) + v.z * Math.cos(x);
     return v2;
   }
 
-  this.rotateY = function (v, y) {
+  this.rotateY = function(v, y) {
     var v2 = Object.assign({}, v);
     v2.x = v.x * Math.cos(y) + v.z * Math.sin(y);
     v2.z = -v.x * Math.sin(y) + v.z * Math.cos(y);
     return v2;
   }
 
-  this.rotateZ = function (v, z) {
+  this.rotateZ = function(v, z) {
     var v2 = Object.assign({}, v);
     v2.x = v.x * Math.cos(z) - v.y * Math.sin(z);
     v2.y = v.x * Math.sin(z) + v.y * Math.cos(z);
@@ -3666,6 +3827,59 @@ tr.gui.select = {
     this.element.show();
   },
 
+  clear: function() {
+    this.element.remove();
+  },
+
+}
+tr.gui.slider = {
+  defaults: function() {
+    this.border = false;
+    this.min = this.config.min;
+    this.max = this.config.max;
+    this.val = this.config.val;
+    this.step = this.config.step || 1;
+    this.element = createSlider(this.min, this.max, this.val, this.step);
+    this.onChange = this.config.onChange;
+    this.onInput = this.config.onInput;
+
+    this.inputed = function() {
+      var val = this.element.value();
+      if (this.onInput) {
+        this.onInput(val);
+      }
+    };
+
+    this.changed = function() {
+      var val = this.element.value();
+      if (this.onChange) {
+        this.onChange(val);
+      }
+    };
+
+    this.setval = function(val) {
+      this.element.value(val);
+      this.onInput(val);
+      this.onChange(val);
+    };
+  },
+
+  setup: function() {
+    this.element.hide();
+    this.element.input(this.inputed.bind(this));
+    this.element.changed(this.changed.bind(this));
+  },
+
+  draw: function() {
+    var pos = this.getAbsolutePosition();
+    this.element.position(pos.x, pos.y);
+    this.element.size(this.size.w - this.padding * 2 - 3, this.size.h - this.padding * 2);
+    this.element.show();
+  },
+
+  clear: function() {
+    this.element.remove();
+  },
 }
 tr.gui.tabControl = {
   defaults: function() {
@@ -3693,12 +3907,12 @@ tr.gui.tabControl = {
     this.children.push(container);
   },
 
-  createButtons: function () {
+  createButtons: function() {
     var c = [];
     var w = 1 / this.config.pages.length;
     for (var i = 0; i < this.config.pages.length; i++) {
       var b = this.componentConfig.createButton(this.config.labels[i], w);
-      b.onClick = function () {
+      b.onClick = function() {
         var i = this.index;
 
         var tc = this.parent.parent.parent;
@@ -3728,7 +3942,7 @@ tr.gui.tabControl = {
     };
   },
 
-  createButton: function (label, w) {
+  createButton: function(label, w) {
     return {
       type: "container",
       size: {
@@ -3742,7 +3956,10 @@ tr.gui.tabControl = {
           type: "text",
           text: label,
           textSize: 18,
-          size: {w: 1, h: 1},
+          size: {
+            w: 1,
+            h: 1
+          },
           padding: 4,
           align: {
             v: "TOP",
@@ -3946,37 +4163,37 @@ tr.gui.tr2 = {
 
   draw: function() {
     if (this.p5.height != this.parent.size.h) {
-        this.pos = this.parent.pos;
-        this.size = this.parent.size;
+      this.pos = this.parent.pos;
+      this.size = this.parent.size;
 
-        this.p5.remove();
-        this.container.remove();
+      this.p5.remove();
+      this.container.remove();
 
-        this.container = document.createElement('div');
-        this.container.id = "tr2-render-" + Math.floor(Math.random() * 1000000);
-        this.container.style.position = "absolute";
-        this.container.style.left = this.pos.x;
-        this.container.style.top = this.pos.y;
-        this.container.style.display = "none";
-        document.body.appendChild(this.container);
+      this.container = document.createElement('div');
+      this.container.id = "tr2-render-" + Math.floor(Math.random() * 1000000);
+      this.container.style.position = "absolute";
+      this.container.style.left = this.pos.x;
+      this.container.style.top = this.pos.y;
+      this.container.style.display = "none";
+      document.body.appendChild(this.container);
 
-        this.p5 = new p5(function(p) {}, this.container.id);
-        this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
+      this.p5 = new p5(function(p) {}, this.container.id);
+      this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
-        this.p5.angleMode(RADIANS);
-        this.p5.perspective();
+      this.p5.angleMode(RADIANS);
+      this.p5.perspective();
 
-        this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-        this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-        this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-        this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-        this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-        this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-        this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-        this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-        this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-        this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-        this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+      this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
+      this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
+      this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
+      this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
+      this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
+      this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
+      this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
+      this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
+      this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
+      this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
+      this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
     }
 
     var s = tr.data.robotState;
@@ -4059,7 +4276,7 @@ tr.gui.tr2 = {
     head.draw();
   },
 
-  clear: function () {
+  clear: function() {
     this.p5.clear();
     this.p5.remove();
   },
@@ -4097,7 +4314,7 @@ tr.gui.tr2 = {
 if (!tr) tr = {};
 if (!tr.lib) tr.lib = {};
 
-tr.lib.link = function (config) {
+tr.lib.link = function(config) {
   this.id = config.id || "j0";
   this.meshId = config.meshId || this.id;
   this.offset = config.offset || 0;
@@ -4124,7 +4341,7 @@ tr.lib.link = function (config) {
   }
 }
 
-tr.lib.tr2 = function () {
+tr.lib.tr2 = function() {
   this.head = [];
   this.arm = [];
   this.base = [];
@@ -4144,15 +4361,23 @@ tr.lib.tr2 = function () {
   this.state.h0 = 0;
   this.state.h1 = 0;
 
-  this.setup = function () {
+  this.setup = function() {
     // HEAD
     this.head.push(new tr.lib.link({
       id: "h0",
       meshId: "h0",
       axis: "Z",
       flip: true,
-      rotate: {x: 0, y: 0, z: 1.5708},
-      translate: {x: 0, y: 357.9, z: 703.25},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 1.5708
+      },
+      translate: {
+        x: 0,
+        y: 357.9,
+        z: 703.25
+      },
     }));
 
     this.head.push(new tr.lib.link({
@@ -4160,8 +4385,16 @@ tr.lib.tr2 = function () {
       meshId: "h1",
       axis: "Z",
       flip: true,
-      rotate: {x: -1.5708, y: 3.1415, z: -1.5708},
-      translate: {x: -166.17, y: 67, z: 249.17},
+      rotate: {
+        x: -1.5708,
+        y: 3.1415,
+        z: -1.5708
+      },
+      translate: {
+        x: -166.17,
+        y: 67,
+        z: 249.17
+      },
     }));
 
     // ARM
@@ -4169,8 +4402,16 @@ tr.lib.tr2 = function () {
       id: "a0",
       meshId: "a0",
       axis: "Z",
-      rotate: {x: 0, y: 0, z: 0},
-      translate: {x: 101.6, y: 122.9, z: 459.937},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 101.6,
+        y: 122.9,
+        z: 459.937
+      },
       offset: 1.5708,
     }));
 
@@ -4178,8 +4419,16 @@ tr.lib.tr2 = function () {
       id: "a1",
       meshId: "a1",
       axis: "Z",
-      rotate: {x: -1.5708, y: 0, z: 0},
-      translate: {x: 0, y: 70, z: 76},
+      rotate: {
+        x: -1.5708,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 70,
+        z: 76
+      },
       offset: 0,
     }));
 
@@ -4187,17 +4436,37 @@ tr.lib.tr2 = function () {
       id: "a1_fixed",
       meshId: "a2",
       fixed: true,
-      rotate: {x: 0, y: 0, z: 0},
-      translate: {x: 0, y: 190, z: 0},
+      rotate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 190,
+        z: 0
+      },
     }));
 
     this.arm.push(new tr.lib.link({
       id: "a2",
       meshId: "a3",
       axis: "Z",
-      meshOffset: {x: 8, y: 300, z: 0},
-      rotate: {x: 3.1415, y: 0, z: 1.5708},
-      translate: {x: 0, y: 0, z: 0},
+      meshOffset: {
+        x: 8,
+        y: 300,
+        z: 0
+      },
+      rotate: {
+        x: 3.1415,
+        y: 0,
+        z: 1.5708
+      },
+      translate: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
       offset: -0.698132,
     }));
 
@@ -4206,8 +4475,16 @@ tr.lib.tr2 = function () {
       meshId: "a4",
       axis: "Z",
       flip: true,
-      rotate: {x: 0, y: 3.1415, z: -1.5708},
-      translate: {x: 8, y: 300, z: 0},
+      rotate: {
+        x: 0,
+        y: 3.1415,
+        z: -1.5708
+      },
+      translate: {
+        x: 8,
+        y: 300,
+        z: 0
+      },
       offset: 0.698132,
     }));
 
@@ -4216,8 +4493,16 @@ tr.lib.tr2 = function () {
       meshId: "g0",
       axis: "Z",
       flip: true,
-      rotate: {x: 1.5708, y: 0, z: 0},
-      translate: {x: 0, y: 67, z: 67},
+      rotate: {
+        x: 1.5708,
+        y: 0,
+        z: 0
+      },
+      translate: {
+        x: 0,
+        y: 67,
+        z: 67
+      },
     }));
   }
 

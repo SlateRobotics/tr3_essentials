@@ -8,7 +8,7 @@ app.pnp = new App({
   waypointStart: 0,
   programMode: 0, // 0 = edit, 1, playback
   robotState: [],
-	  
+
   setup: function() {
     var app = this._app;
     app.addPages(tr.app.pnp.pages);
