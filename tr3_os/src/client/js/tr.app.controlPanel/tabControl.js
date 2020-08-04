@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.tabControl = function () {
+tr.app.controlPanel.tabControl = function() {
   var c = tr.app.controlPanel;
 
   var children = [];
@@ -14,10 +14,24 @@ tr.app.controlPanel.tabControl = function () {
   children.push.apply(children, c.controlRow("a4"));
   children.push.apply(children, c.controlRow("h0"));
   children.push.apply(children, c.controlRow("h1"));
-  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push({
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  });
   children.push(c.btnBig("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"));
   children.push(c.btnBig("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"));
-  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push({
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  });
   children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"));
   children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)"));
 

@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.selectMode = function (id) {
+tr.app.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
@@ -33,7 +33,6 @@ tr.app.controlPanel.selectMode = function (id) {
               }
             }
           }
-
 
           var i = 0;
           if (val == "EFFORT") {

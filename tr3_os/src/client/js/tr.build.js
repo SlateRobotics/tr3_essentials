@@ -663,7 +663,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.btnBig = function (text, rostopic, value, background) {
+tr.app.controlPanel.btnBig = function(text, rostopic, value, background) {
   return {
     type: "container",
     size: {
@@ -694,7 +694,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.controlHeader = function () {
+tr.app.controlPanel.controlHeader = function() {
   var c = tr.app.controlPanel;
   return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
 }
@@ -702,11 +702,11 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.controlRow = function (id) {
+tr.app.controlPanel.controlRow = function(id) {
   var c = tr.app.controlPanel;
   return [c.label(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
 }
-app.controlPanel = function () {
+app.controlPanel = function() {
   var c = tr.app.controlPanel;
 
   return new App({
@@ -727,26 +727,7 @@ app.controlPanel = function () {
       children: [{
         type: "tabControl",
         labels: ["Control", "Config", "3D Render"],
-        pages: [c.tabControl(), {
-          type: "container",
-          size: {
-            w: 1.0,
-            h: "fill"
-          },
-          padding: 10,
-          background: "rgba(255, 255, 255, 0.2)",
-        }, {
-          type: "container",
-          size: {
-            w: 1.0,
-            h: "fill"
-          },
-          padding: 10,
-          background: "rgba(255, 255, 255, 0.2)",
-          children: [{
-            type: "tr2",
-          }],
-        }],
+        pages: [c.tabControl(), c.tabConfig(), c.tabRender()],
       }],
     }],
   });
@@ -755,7 +736,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.label = function (id, w) {
+tr.app.controlPanel.label = function(id, w) {
   if (!w) w = 0.111;
   return {
     type: "container",
@@ -782,7 +763,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.selectMode = function (id) {
+tr.app.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
@@ -814,7 +795,6 @@ tr.app.controlPanel.selectMode = function (id) {
             }
           }
 
-
           var i = 0;
           if (val == "EFFORT") {
             i = 0;
@@ -844,7 +824,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.slider = function (id) {
+tr.app.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
@@ -858,7 +838,7 @@ tr.app.controlPanel.slider = function (id) {
         id: id + "slider",
         type: "slider",
 
-        onDraw: function () {
+        onDraw: function() {
           var app = this.getApp();
           var page = app.getCurrentPage();
           var select = page.getChild("select-" + id);
@@ -920,7 +900,24 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.tabControl = function () {
+tr.app.controlPanel.tabConfig = function() {
+  var c = tr.app.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.tabControl = function() {
   var c = tr.app.controlPanel;
 
   var children = [];
@@ -932,10 +929,24 @@ tr.app.controlPanel.tabControl = function () {
   children.push.apply(children, c.controlRow("a4"));
   children.push.apply(children, c.controlRow("h0"));
   children.push.apply(children, c.controlRow("h1"));
-  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push({
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  });
   children.push(c.btnBig("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"));
   children.push(c.btnBig("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"));
-  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push({
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  });
   children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"));
   children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)"));
 
@@ -954,7 +965,27 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.txtState = function (id) {
+tr.app.controlPanel.tabRender = function() {
+  var c = tr.app.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: [{
+      type: "tr2",
+    }],
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
@@ -986,7 +1017,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.txtTarget = function (id) {
+tr.app.controlPanel.txtTarget = function(id) {
   return {
     type: "container",
     size: {

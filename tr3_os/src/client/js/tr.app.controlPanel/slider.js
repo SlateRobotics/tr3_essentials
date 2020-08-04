@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.slider = function (id) {
+tr.app.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
@@ -16,7 +16,7 @@ tr.app.controlPanel.slider = function (id) {
         id: id + "slider",
         type: "slider",
 
-        onDraw: function () {
+        onDraw: function() {
           var app = this.getApp();
           var page = app.getCurrentPage();
           var select = page.getChild("select-" + id);

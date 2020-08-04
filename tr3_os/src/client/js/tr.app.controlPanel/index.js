@@ -1,4 +1,4 @@
-app.controlPanel = function () {
+app.controlPanel = function() {
   var c = tr.app.controlPanel;
 
   return new App({
@@ -19,26 +19,7 @@ app.controlPanel = function () {
       children: [{
         type: "tabControl",
         labels: ["Control", "Config", "3D Render"],
-        pages: [c.tabControl(), {
-          type: "container",
-          size: {
-            w: 1.0,
-            h: "fill"
-          },
-          padding: 10,
-          background: "rgba(255, 255, 255, 0.2)",
-        }, {
-          type: "container",
-          size: {
-            w: 1.0,
-            h: "fill"
-          },
-          padding: 10,
-          background: "rgba(255, 255, 255, 0.2)",
-          children: [{
-            type: "tr2",
-          }],
-        }],
+        pages: [c.tabControl(), c.tabConfig(), c.tabRender()],
       }],
     }],
   });

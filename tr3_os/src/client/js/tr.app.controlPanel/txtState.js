@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-tr.app.controlPanel.txtState = function (id) {
+tr.app.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
