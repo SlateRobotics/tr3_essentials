@@ -1,8 +1,9 @@
-function label(id) {
+function label(id, w) {
+  if (!w) w = 0.111;
   return {
     type: "container",
     size: {
-      w: 0.111,
+      w: w,
       h: 25
     },
     children: [{

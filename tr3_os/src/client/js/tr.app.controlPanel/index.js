@@ -25,7 +25,7 @@ app.drawing = new App({
         padding: 10,
         background: "rgba(255, 255, 255, 0.2)",
         children: [
-          label("IDs"), label("Position"), templabel("Mode Select", .333, 25), label("Target"), templabel("Position Slider", .334, 25),
+          label("IDs"), label("Position"), label("Mode Select", .333), label("Target"), label("Position Slider", .333),
           label("a0"), label_state("a0"), select_mode("a0"), slider_label("a0"), pos_Slider("a0"),
           label("a1"), label_state("a1"), select_mode("a1"), slider_label("a1"), pos_Slider("a1"),
           label("a2"), label_state("a2"), select_mode("a2"), slider_label("a2"), pos_Slider("a2"),

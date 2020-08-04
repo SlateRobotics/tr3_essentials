@@ -1,4 +1,4 @@
-function label_state(id) {
+function label_state (id) {
   return {
     type: "container",
     size: {
