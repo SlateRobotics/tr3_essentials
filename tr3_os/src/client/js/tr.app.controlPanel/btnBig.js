@@ -1,4 +1,8 @@
-function button_big(text, rostopic, value, background) {
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.btnBig = function (text, rostopic, value, background) {
   return {
     type: "container",
     size: {

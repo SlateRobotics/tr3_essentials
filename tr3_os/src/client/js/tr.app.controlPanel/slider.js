@@ -1,4 +1,8 @@
-function pos_Slider(id) {
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.slider = function (id) {
   return {
     type: "container",
     size: {
@@ -11,6 +15,17 @@ function pos_Slider(id) {
       children: [{
         id: id + "slider",
         type: "slider",
+
+        onDraw: function () {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          if (select.element.value() == "EFFORT" && abs(sliderVal) > 0.1) {
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", sliderVal);
+          }
+        },
 
         onInput: function(val) {
           var app = this.getApp();

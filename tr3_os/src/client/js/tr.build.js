@@ -659,7 +659,11 @@ var ccircles = function(nx, ny, ns) {
   };
 
 };
-function button_big(text, rostopic, value, background) {
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.btnBig = function (text, rostopic, value, background) {
   return {
     type: "container",
     size: {
@@ -686,84 +690,72 @@ function button_big(text, rostopic, value, background) {
     }]
   }
 }
-app.drawing = new App({
-  name: "Control Panel",
-  iconUrl: "/img/icon-app-control",
-  pages: [{
-    pos: {
-      x: 0,
-      y: 0
-    },
-    size: {
-      w: 1.0,
-      h: 1.0
-    },
-    header: {
-      text: "Control Panel V2",
-    },
-    children: [{
-      type: "tabControl",
-      labels: ["Control", "Config", "3D Render"],
-      pages: [{
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
-        },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-        children: [
-          label("IDs"), label("Position"), label("Mode Select", .333), label("Target"), label("Position Slider", .333),
-          label("a0"), label_state("a0"), select_mode("a0"), slider_label("a0"), pos_Slider("a0"),
-          label("a1"), label_state("a1"), select_mode("a1"), slider_label("a1"), pos_Slider("a1"),
-          label("a2"), label_state("a2"), select_mode("a2"), slider_label("a2"), pos_Slider("a2"),
-          label("a3"), label_state("a3"), select_mode("a3"), slider_label("a3"), pos_Slider("a3"),
-          label("a4"), label_state("a4"), select_mode("a4"), slider_label("a4"), pos_Slider("a4"),
-          label("h0"), label_state("h0"), select_mode("h0"), slider_label("h0"), pos_Slider("h0"),
-          label("h1"), label_state("h1"), select_mode("h1"), slider_label("h1"), pos_Slider("h1"),
-          {
-            type: "container",
-            size: {
-              w: 1.0,
-              h: 10
-            },
-            border: false
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.controlHeader = function () {
+  var c = tr.app.controlPanel;
+  return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.controlRow = function (id) {
+  var c = tr.app.controlPanel;
+  return [c.label(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
+}
+app.controlPanel = function () {
+  var c = tr.app.controlPanel;
+
+  return new App({
+    name: "Control Panel",
+    iconUrl: "/img/icon-app-control",
+    pages: [{
+      pos: {
+        x: 0,
+        y: 0
+      },
+      size: {
+        w: 1.0,
+        h: 1.0
+      },
+      header: {
+        text: "Control Panel V2",
+      },
+      children: [{
+        type: "tabControl",
+        labels: ["Control", "Config", "3D Render"],
+        pages: [c.tabControl(), {
+          type: "container",
+          size: {
+            w: 1.0,
+            h: "fill"
           },
-          button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
-          {
-            type: "container",
-            size: {
-              w: 1.0,
-              h: 10
-            },
-            border: false
+          padding: 10,
+          background: "rgba(255, 255, 255, 0.2)",
+        }, {
+          type: "container",
+          size: {
+            w: 1.0,
+            h: "fill"
           },
-          button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
-        ],
-      }, {
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
-        },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-      }, {
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
-        },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-        children: [{
-          type: "tr2",
+          padding: 10,
+          background: "rgba(255, 255, 255, 0.2)",
+          children: [{
+            type: "tr2",
+          }],
         }],
       }],
     }],
-  }],
-});
-function label(id, w) {
+  });
+};
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.label = function (id, w) {
   if (!w) w = 0.111;
   return {
     type: "container",
@@ -786,96 +778,11 @@ function label(id, w) {
     }]
   }
 }
-function label_state(id) {
-  return {
-    type: "container",
-    size: {
-      w: 0.111,
-      h: 25
-    },
-    children: [{
-      type: "container",
-      border: false,
-      children: [{
-        type: "text",
-        text: "",
-        textSize: 18,
-        align: {
-          v: "CENTER",
-          h: "CENTER"
-        },
-        onDraw: function() {
-          var p = tr.data.getState(id).position;
-          if (p) {
-            this.text = p.toFixed(2);
-          }
-        }
-      }],
-    }]
-  }
-}
-function pos_Slider(id) {
-  return {
-    type: "container",
-    size: {
-      w: .334,
-      h: 25
-    },
-    children: [{
-      type: "container",
-      border: false,
-      children: [{
-        id: id + "slider",
-        type: "slider",
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
 
-        onInput: function(val) {
-          var app = this.getApp();
-          var page = app.getCurrentPage();
-          var select = page.getChild("select-" + id);
-          var sliderVal = page.getChild(id + "slider").element.value();
-
-          var val = 0;
-          if (select.element.value() == "EFFORT") {
-            val = sliderVal;
-            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
-          } else if (select.element.value() == "SERVO") {
-            val = sliderVal * Math.PI * 2.0;
-            tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
-          }
-
-          var label = page.getChild(id + "sliderl");
-          label.text = val.toFixed(2);
-        },
-
-        onChange: function(val) {
-          var app = this.getApp();
-          var page = app.getCurrentPage();
-          var select = page.getChild("select-" + id);
-          if (select.element.value() == "EFFORT") {
-            var val = 0;
-
-            var slider = page.getChild(id + "slider");
-            slider.element.value(val);
-            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
-
-            var label = page.getChild(id + "sliderl");
-            label.text = val.toFixed(2);
-          }
-        },
-
-        min: -1,
-        max: 1,
-        val: 0,
-        step: 0.01,
-        align: {
-          v: "CENTER",
-          h: "CENTER"
-        },
-      }],
-    }]
-  }
-}
-function select_mode(id) {
+tr.app.controlPanel.selectMode = function (id) {
   return {
     type: "container",
     size: {
@@ -933,7 +840,153 @@ function select_mode(id) {
     }]
   }
 }
-function slider_label(id) {
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.slider = function (id) {
+  return {
+    type: "container",
+    size: {
+      w: .334,
+      h: 25
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider",
+        type: "slider",
+
+        onDraw: function () {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          if (select.element.value() == "EFFORT" && abs(sliderVal) > 0.1) {
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", sliderVal);
+          }
+        },
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          var val = 0;
+          if (select.element.value() == "EFFORT") {
+            val = sliderVal;
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
+          } else if (select.element.value() == "SERVO") {
+            val = sliderVal * Math.PI * 2.0;
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
+          }
+
+          var label = page.getChild(id + "sliderl");
+          label.text = val.toFixed(2);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          if (select.element.value() == "EFFORT") {
+            var val = 0;
+
+            var slider = page.getChild(id + "slider");
+            slider.element.value(val);
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
+
+            var label = page.getChild(id + "sliderl");
+            label.text = val.toFixed(2);
+          }
+        },
+
+        min: -1,
+        max: 1,
+        val: 0,
+        step: 0.01,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.tabControl = function () {
+  var c = tr.app.controlPanel;
+
+  var children = [];
+  children.push.apply(children, c.controlHeader());
+  children.push.apply(children, c.controlRow("a0"));
+  children.push.apply(children, c.controlRow("a1"));
+  children.push.apply(children, c.controlRow("a2"));
+  children.push.apply(children, c.controlRow("a3"));
+  children.push.apply(children, c.controlRow("a4"));
+  children.push.apply(children, c.controlRow("h0"));
+  children.push.apply(children, c.controlRow("h1"));
+  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push(c.btnBig("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"));
+  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"));
+  children.push({ type: "container", size: { w: 1.0, h: 10 }, border: false });
+  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"));
+  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)"));
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.txtState = function (id) {
+  return {
+    type: "container",
+    size: {
+      w: 0.111,
+      h: 25
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "",
+        textSize: 18,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+        onDraw: function() {
+          var p = tr.data.getState(id).position;
+          if (p) {
+            this.text = p.toFixed(2);
+          }
+        }
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.txtTarget = function (id) {
   return {
     type: "container",
     size: {
@@ -952,7 +1005,6 @@ function slider_label(id) {
           v: "CENTER",
           h: "CENTER"
         },
-        onDraw: function() {}
       }],
     }]
   }
@@ -4467,7 +4519,7 @@ var canvasWidth = 864;
 var canvasHeight = 480;
 
 var appSelected = -1;
-var apps = [app.butler, app.pnp, app.chess, app.drawing, app.settings];
+var apps = [app.butler, app.pnp, app.chess, app.controlPanel(), app.settings];
 
 var font = "";
 

@@ -2,7 +2,7 @@ var canvasWidth = 864;
 var canvasHeight = 480;
 
 var appSelected = -1;
-var apps = [app.butler, app.pnp, app.chess, app.drawing, app.settings];
+var apps = [app.butler, app.pnp, app.chess, app.controlPanel(), app.settings];
 
 var font = "";
 

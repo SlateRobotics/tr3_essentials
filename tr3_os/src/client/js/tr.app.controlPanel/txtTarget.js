@@ -1,4 +1,8 @@
-function slider_label(id) {
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+if (!tr.app.controlPanel) tr.app.controlPanel = {};
+
+tr.app.controlPanel.txtTarget = function (id) {
   return {
     type: "container",
     size: {
@@ -17,7 +21,6 @@ function slider_label(id) {
           v: "CENTER",
           h: "CENTER"
         },
-        onDraw: function() {}
       }],
     }]
   }
