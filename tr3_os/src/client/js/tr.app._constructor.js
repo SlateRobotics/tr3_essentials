@@ -1,8 +1,13 @@
-var app = {};
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
 
 function App(config) {
   this.id = config.id;
+  if (config.id == null) this.id = -1;
+
   this.name = config.name;
+  this.enabled = config.enabled;
+  if (config.enabled == null) this.enabled = true;
 
   this.iconImg = ""; // p5.js img
   this.iconImgMask = ""; //p5.js mask
@@ -21,11 +26,7 @@ function App(config) {
   this.pageCurrent = -1;
   this.pages = [];
 
-  this.setup = function(id) {
-    if (!this.id) {
-      this.id = id;
-    }
-
+  this.setup = function () {
     if (this._configIconUrl) {
       this.iconImg = loadImage(this._configIconUrl);
     }

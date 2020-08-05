@@ -1,9 +1,9 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.tabConfig = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.tabConfig = function() {
+  var c = tr.controls.controlPanel;
 
   return {
     type: "container",

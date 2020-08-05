@@ -1,4 +1,8 @@
-app.butler = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.butler = new App({
+  id: 0,
   name: "Butler",
   desc: "Schedule Domestic Services and Chores",
   iconUrl: "/img/icon-app-butler",

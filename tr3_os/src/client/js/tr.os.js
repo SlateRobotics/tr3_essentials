@@ -2,31 +2,46 @@ var canvasWidth = 864;
 var canvasHeight = 480;
 
 var appSelected = -1;
-var apps = [app.butler, app.pnp, app.chess, app.controlPanel(), app.settings];
 
-var font = "";
+tr.font = "";
+
+function preload() {
+  tr.font = loadFont('/ttf/roboto.ttf');
+}
 
 function setup() {
   tr.data.setup();
-  font = loadFont('/ttf/roboto.ttf');
-  textFont(font);
 
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
+  // for some stupid reason this is necessary to get certain font sizes to load correctly
+  textFont(tr.font);
+  textSize(2);
+  text(".", 0, 0, 1, 1);
+
   desktop.setup(-1);
-  desktop.apps = apps;
 
-  apps = apps.sort(function(a, b) {
-    return b.id - a.id;
-  });
-
+  desktop.apps = [];
+  var apps = Object.getOwnPropertyNames(tr.app);
   for (var i = 0; i < apps.length; i++) {
-    apps[i].setup(i);
+    var a = tr.app[apps[i]];
+    if (typeof a == "function") {
+      a = a();
+    }
+
+    a.setup();
+
+    if (a.enabled) {
+      desktop.apps.push(a);
+    }
   }
+
+  desktop.apps = desktop.apps.sort(function(a, b) {
+    return a.id - b.id;
+  });
 }
 
 function draw() {
-  textFont(font);
   translate(-canvasWidth / 2.0, -canvasHeight / 2.0);
   getSelectedApp().draw();
 }
@@ -52,9 +67,9 @@ function keyPressed() {
 }
 
 function getSelectedApp() {
-  if (appSelected < 0 || appSelected >= apps.length) {
+  if (appSelected < 0 || appSelected >= desktop.apps.length) {
     return desktop;
   } else {
-    return apps[appSelected];
+    return desktop.apps[appSelected];
   }
 }

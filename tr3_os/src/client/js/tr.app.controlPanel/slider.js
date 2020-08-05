@@ -1,13 +1,13 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.slider = function(id) {
+tr.controls.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
       w: .334,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",

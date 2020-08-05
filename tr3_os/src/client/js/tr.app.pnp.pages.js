@@ -1,8 +1,8 @@
 if (!tr) tr = {}
-if (!tr.app) tr.app = {}
-if (!tr.app.pnp) tr.app.pnp = {};
+if (!tr.controls) tr.controls = {}
+if (!tr.controls.pnp) tr.controls.pnp = {};
 //boop//
-tr.app.pnp.pages = [{
+tr.controls.pnp.pages = [{
   id: "PNP01",
 
   pos: {

@@ -1,7 +1,11 @@
-app.controlPanel = function() {
-  var c = tr.app.controlPanel;
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.controlPanel = function() {
+  var c = tr.controls.controlPanel;
 
   return new App({
+    id: 1,
     name: "Control Panel",
     iconUrl: "/img/icon-app-control",
     pages: [{

@@ -1,6 +1,10 @@
-app.chess = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.chess = new App({
   name: "Chess",
   iconUrl: "/img/icon-app-chess",
+  enabled: false,
   pages: [{
     id: "main",
     header: {

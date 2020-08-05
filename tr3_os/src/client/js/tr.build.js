@@ -1,8 +1,13 @@
-var app = {};
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
 
 function App(config) {
   this.id = config.id;
+  if (config.id == null) this.id = -1;
+
   this.name = config.name;
+  this.enabled = config.enabled;
+  if (config.enabled == null) this.enabled = true;
 
   this.iconImg = ""; // p5.js img
   this.iconImgMask = ""; //p5.js mask
@@ -21,11 +26,7 @@ function App(config) {
   this.pageCurrent = -1;
   this.pages = [];
 
-  this.setup = function(id) {
-    if (!this.id) {
-      this.id = id;
-    }
-
+  this.setup = function () {
     if (this._configIconUrl) {
       this.iconImg = loadImage(this._configIconUrl);
     }
@@ -154,7 +155,11 @@ function App(config) {
   };
 
 }
-app.butler = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.butler = new App({
+  id: 0,
   name: "Butler",
   desc: "Schedule Domestic Services and Chores",
   iconUrl: "/img/icon-app-butler",
@@ -435,9 +440,13 @@ app.butler = new App({
     }],
   }],
 });
-app.chess = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.chess = new App({
   name: "Chess",
   iconUrl: "/img/icon-app-chess",
+  enabled: false,
   pages: [{
     id: "main",
     header: {
@@ -660,14 +669,14 @@ var ccircles = function(nx, ny, ns) {
 
 };
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.btnBig = function(text, rostopic, value, background) {
+tr.controls.controlPanel.btnBig = function(text, rostopic, value, background) {
   return {
     type: "container",
     size: {
-      w: 0.5,
+      w: 0.25,
       h: 50
     },
     background: background,
@@ -691,25 +700,29 @@ tr.app.controlPanel.btnBig = function(text, rostopic, value, background) {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.controlHeader = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.controlHeader = function() {
+  var c = tr.controls.controlPanel;
   return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.controlRow = function(id) {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.controlRow = function(id) {
+  var c = tr.controls.controlPanel;
   return [c.label(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
 }
-app.controlPanel = function() {
-  var c = tr.app.controlPanel;
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.controlPanel = function() {
+  var c = tr.controls.controlPanel;
 
   return new App({
+    id: 1,
     name: "Control Panel",
     iconUrl: "/img/icon-app-control",
     pages: [{
@@ -733,16 +746,16 @@ app.controlPanel = function() {
   });
 };
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.label = function(id, w) {
+tr.controls.controlPanel.label = function(id, w) {
   if (!w) w = 0.111;
   return {
     type: "container",
     size: {
       w: w,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -750,7 +763,7 @@ tr.app.controlPanel.label = function(id, w) {
       children: [{
         type: "text",
         text: id,
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -760,15 +773,15 @@ tr.app.controlPanel.label = function(id, w) {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.selectMode = function(id) {
+tr.controls.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
       w: 0.333,
-      h: 25
+      h: 20
     },
 
     children: [{
@@ -808,7 +821,7 @@ tr.app.controlPanel.selectMode = function(id) {
         },
         Size: {
           w: 1,
-          h: 25
+          h: 20
         },
         textSize: 12,
         padding: 0,
@@ -821,15 +834,15 @@ tr.app.controlPanel.selectMode = function(id) {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.slider = function(id) {
+tr.controls.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
       w: .334,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -897,11 +910,27 @@ tr.app.controlPanel.slider = function(id) {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.tabConfig = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.spacer = function() {
+  var c = tr.controls.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabConfig = function() {
+  var c = tr.controls.controlPanel;
 
   return {
     type: "container",
@@ -914,11 +943,11 @@ tr.app.controlPanel.tabConfig = function() {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.tabControl = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.tabControl = function() {
+  var c = tr.controls.controlPanel;
 
   var children = [];
   children.push.apply(children, c.controlHeader());
@@ -927,28 +956,15 @@ tr.app.controlPanel.tabControl = function() {
   children.push.apply(children, c.controlRow("a2"));
   children.push.apply(children, c.controlRow("a3"));
   children.push.apply(children, c.controlRow("a4"));
+  children.push.apply(children, c.controlRow("g0"));
   children.push.apply(children, c.controlRow("h0"));
   children.push.apply(children, c.controlRow("h1"));
-  children.push({
-    type: "container",
-    size: {
-      w: 1.0,
-      h: 10
-    },
-    border: false
-  });
-  children.push(c.btnBig("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"));
-  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"));
-  children.push({
-    type: "container",
-    size: {
-      w: 1.0,
-      h: 10
-    },
-    border: false
-  });
-  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"));
-  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)"));
+
+  children.push(c.spacer());
+  children.push(c.btnBig("STOP", "/tr3/stop", true, "red"));
+  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "green"));
+  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "red"));
+  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "green"));
 
   return {
     type: "container",
@@ -962,11 +978,11 @@ tr.app.controlPanel.tabControl = function() {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.tabRender = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.tabRender = function() {
+  var c = tr.controls.controlPanel;
 
   return {
     type: "container",
@@ -982,15 +998,15 @@ tr.app.controlPanel.tabRender = function() {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.txtState = function(id) {
+tr.controls.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -998,7 +1014,7 @@ tr.app.controlPanel.txtState = function(id) {
       children: [{
         type: "text",
         text: "",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -1014,15 +1030,15 @@ tr.app.controlPanel.txtState = function(id) {
   }
 }
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.txtTarget = function(id) {
+tr.controls.controlPanel.txtTarget = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -1031,7 +1047,7 @@ tr.app.controlPanel.txtTarget = function(id) {
         id: id + "sliderl",
         type: "text",
         text: "0.00",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -1273,7 +1289,11 @@ var appFace = new App({
     rect(x, y, 50, 50);
   },
 });
-app.pnp = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.pnp = new App({
+  id: 2,
   name: "Pick N Place",
   desc: "Pick and Place",
   iconUrl: "/img/icon-app-pnp",
@@ -1286,7 +1306,7 @@ app.pnp = new App({
 
   setup: function() {
     var app = this._app;
-    app.addPages(tr.app.pnp.pages);
+    app.addPages(tr.controls.pnp.pages);
 
     var page = app.pages[app.pageCurrent];
     page.onDraw = function() {
@@ -1471,10 +1491,10 @@ app.pnp = new App({
   }
 });
 if (!tr) tr = {}
-if (!tr.app) tr.app = {}
-if (!tr.app.pnp) tr.app.pnp = {};
+if (!tr.controls) tr.controls = {}
+if (!tr.controls.pnp) tr.controls.pnp = {};
 //boop//
-tr.app.pnp.pages = [{
+tr.controls.pnp.pages = [{
   id: "PNP01",
 
   pos: {
@@ -2683,7 +2703,11 @@ tr.app.pnp.program = function(config) {
 
   this.setup();
 }
-app.settings = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.settings = new App({
+  id: 3,
   name: "Settings",
   iconUrl: "/img/icon-app-settings",
   pages: [{
@@ -2724,7 +2748,11 @@ app.settings = new App({
     }],
   }],
 });
-app.store = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.store = new App({
+  enabled: false,
 
   ////////////////////////////////////////
   // vvv CONFIG USED BY CONSTRUCTOR vvv //
@@ -4035,11 +4063,12 @@ tr.gui.text = {
   },
 
   draw: function() {
-    noStroke();
+    stroke(this.textColor);
     fill(this.textColor);
+    textFont(tr.font);
     textSize(this.textSize);
     textAlign(window[this.align.h], window[this.align.v]);
-    text(this.text, this.pos.x, this.pos.y, this.size.w, this.size.h);
+    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h);
   }
 };
 tr.gui.toolbar = {
@@ -4550,31 +4579,46 @@ var canvasWidth = 864;
 var canvasHeight = 480;
 
 var appSelected = -1;
-var apps = [app.butler, app.pnp, app.chess, app.controlPanel(), app.settings];
 
-var font = "";
+tr.font = "";
+
+function preload() {
+  tr.font = loadFont('/ttf/roboto.ttf');
+}
 
 function setup() {
   tr.data.setup();
-  font = loadFont('/ttf/roboto.ttf');
-  textFont(font);
 
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
+  // for some stupid reason this is necessary to get certain font sizes to load correctly
+  textFont(tr.font);
+  textSize(2);
+  text(".", 0, 0, 1, 1);
+
   desktop.setup(-1);
-  desktop.apps = apps;
 
-  apps = apps.sort(function(a, b) {
-    return b.id - a.id;
-  });
-
+  desktop.apps = [];
+  var apps = Object.getOwnPropertyNames(tr.app);
   for (var i = 0; i < apps.length; i++) {
-    apps[i].setup(i);
+    var a = tr.app[apps[i]];
+    if (typeof a == "function") {
+      a = a();
+    }
+
+    a.setup();
+
+    if (a.enabled) {
+      desktop.apps.push(a);
+    }
   }
+
+  desktop.apps = desktop.apps.sort(function(a, b) {
+    return a.id - b.id;
+  });
 }
 
 function draw() {
-  textFont(font);
   translate(-canvasWidth / 2.0, -canvasHeight / 2.0);
   getSelectedApp().draw();
 }
@@ -4600,9 +4644,9 @@ function keyPressed() {
 }
 
 function getSelectedApp() {
-  if (appSelected < 0 || appSelected >= apps.length) {
+  if (appSelected < 0 || appSelected >= desktop.apps.length) {
     return desktop;
   } else {
-    return apps[appSelected];
+    return desktop.apps[appSelected];
   }
 }

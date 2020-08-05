@@ -25,10 +25,11 @@ tr.gui.text = {
   },
 
   draw: function() {
-    noStroke();
+    stroke(this.textColor);
     fill(this.textColor);
+    textFont(tr.font);
     textSize(this.textSize);
     textAlign(window[this.align.h], window[this.align.v]);
-    text(this.text, this.pos.x, this.pos.y, this.size.w, this.size.h);
+    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h);
   }
 };

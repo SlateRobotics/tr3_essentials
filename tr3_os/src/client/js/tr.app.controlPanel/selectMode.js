@@ -1,13 +1,13 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.selectMode = function(id) {
+tr.controls.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
       w: 0.333,
-      h: 25
+      h: 20
     },
 
     children: [{
@@ -47,7 +47,7 @@ tr.app.controlPanel.selectMode = function(id) {
         },
         Size: {
           w: 1,
-          h: 25
+          h: 20
         },
         textSize: 12,
         padding: 0,

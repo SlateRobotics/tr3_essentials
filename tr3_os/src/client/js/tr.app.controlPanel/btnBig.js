@@ -1,12 +1,12 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.btnBig = function(text, rostopic, value, background) {
+tr.controls.controlPanel.btnBig = function(text, rostopic, value, background) {
   return {
     type: "container",
     size: {
-      w: 0.5,
+      w: 0.25,
       h: 50
     },
     background: background,

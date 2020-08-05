@@ -1,13 +1,13 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.txtState = function(id) {
+tr.controls.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -15,7 +15,7 @@ tr.app.controlPanel.txtState = function(id) {
       children: [{
         type: "text",
         text: "",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"

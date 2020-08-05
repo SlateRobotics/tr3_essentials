@@ -1,13 +1,13 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.txtTarget = function(id) {
+tr.controls.controlPanel.txtTarget = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -16,7 +16,7 @@ tr.app.controlPanel.txtTarget = function(id) {
         id: id + "sliderl",
         type: "text",
         text: "0.00",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"

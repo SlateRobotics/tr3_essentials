@@ -1,8 +1,8 @@
 if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-if (!tr.app.controlPanel) tr.app.controlPanel = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.app.controlPanel.controlHeader = function() {
-  var c = tr.app.controlPanel;
+tr.controls.controlPanel.controlHeader = function() {
+  var c = tr.controls.controlPanel;
   return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
 }
