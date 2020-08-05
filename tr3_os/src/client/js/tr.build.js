@@ -703,6 +703,149 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
+tr.controls.controlPanel.btnCalibrate = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 0.111,
+      h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/calibrate", true);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Calibrate",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnMotorDir = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 0.111,
+      h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/flip", true);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Flip",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnPID = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    onClick: function () {
+      var app = this.getApp();
+      var page = app.getCurrentPage();
+
+      var p = page.getChild(id + "slider-p").element.value();
+      var i = page.getChild(id + "slider-i").element.value();
+      var d = page.getChild(id + "slider-d").element.value();
+
+      tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "->",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnResetPos = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 0.111,
+      h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/reset", true);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Reset",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.configHeader = function() {
+  var c = tr.controls.controlPanel;
+  return [c.label("IDs"), c.label("Motor Dir"), c.label("Reset Pos"), c.label("Calibrate"), c.label("PID Tuning", 5/9)];
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.configRow = function(id) {
+  var c = tr.controls.controlPanel;
+  return [c.labelID(id), c.btnMotorDir(id), c.btnResetPos(id), c.btnCalibrate(id), c.txtP(id),c.sliderP(id),c.txtI(id),c.sliderI(id),c.txtD(id),c.sliderD(id), c.btnPID(id)];
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
 tr.controls.controlPanel.controlHeader = function() {
   var c = tr.controls.controlPanel;
   return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
@@ -713,7 +856,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.controlRow = function(id) {
   var c = tr.controls.controlPanel;
-  return [c.label(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
+  return [c.labelID(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
 }
 if (!tr) tr = {};
 if (!tr.app) tr.app = {};
@@ -750,7 +893,34 @@ if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.label = function(id, w) {
-  if (!w) w = 0.111;
+  if (!w) w = 1.0 / 9.0;
+  return {
+    type: "container",
+    size: {
+      w: w,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: id,
+        textSize: 16,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.labelID = function(id, w) {
+  if (!w) w = 1.0 / 9.0;
   return {
     type: "container",
     size: {
@@ -913,6 +1083,162 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
+tr.controls.controlPanel.sliderD = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider-d",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-d").element.value();
+
+          var label = page.getChild("txt-" + id + "-d");
+          label.text = val.toFixed(1);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+
+          var slider = page.getChild(id + "slider-d");
+          var val = slider.element.value();
+
+          var label = page.getChild("txt-" + id + "-d");
+          label.text = val.toFixed(1);
+        },
+
+        min: 0,
+        max: 2,
+        val: 0.2,
+        step: 0.1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.sliderI = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider-i",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-i").element.value();
+
+          var label = page.getChild("txt-" + id + "-i");
+          label.text = val.toFixed(1);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+
+          var slider = page.getChild(id + "slider-i");
+          var val = slider.element.value();
+
+          var label = page.getChild("txt-" + id + "-i");
+          label.text = val.toFixed(1);
+        },
+
+        min: 0,
+        max: 20,
+        val: 5,
+        step: 0.1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.sliderP = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider-p",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-p").element.value();
+
+          var label = page.getChild("txt-" + id + "-p");
+          label.text = val.toFixed(1);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+
+          var slider = page.getChild(id + "slider-p");
+          var val = slider.element.value();
+
+          var label = page.getChild("txt-" + id + "-p");
+          label.text = val.toFixed(1);
+        },
+
+        min: 0,
+        max: 20,
+        val: 9,
+        step: 0.1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
 tr.controls.controlPanel.spacer = function() {
   var c = tr.controls.controlPanel;
 
@@ -932,6 +1258,19 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 tr.controls.controlPanel.tabConfig = function() {
   var c = tr.controls.controlPanel;
 
+  var children = [];
+  children.push.apply(children, c.configHeader());
+  children.push.apply(children, c.configRow("a0"));
+  children.push.apply(children, c.configRow("a1"));
+  children.push.apply(children, c.configRow("a2"));
+  children.push.apply(children, c.configRow("a3"));
+  children.push.apply(children, c.configRow("a4"));
+  children.push.apply(children, c.configRow("g0"));
+  children.push.apply(children, c.configRow("h0"));
+  children.push.apply(children, c.configRow("h1"));
+  children.push.apply(children, c.configRow("b0"));
+  children.push.apply(children, c.configRow("b1"));
+
   return {
     type: "container",
     size: {
@@ -940,6 +1279,7 @@ tr.controls.controlPanel.tabConfig = function() {
     },
     padding: 10,
     background: "rgba(255, 255, 255, 0.2)",
+    children: children,
   }
 }
 if (!tr) tr = {};
@@ -995,6 +1335,87 @@ tr.controls.controlPanel.tabRender = function() {
     children: [{
       type: "tr2",
     }],
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtD = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-d",
+        type: "text",
+        text: "0.2",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtI = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-i",
+        type: "text",
+        text: "5.0",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtP = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-p",
+        type: "text",
+        text: "9.0",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
   }
 }
 if (!tr) tr = {};

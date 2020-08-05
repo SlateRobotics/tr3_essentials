@@ -2,21 +2,24 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.label = function(id, w) {
-  if (!w) w = 1.0 / 9.0;
+tr.controls.controlPanel.btnMotorDir = function(id) {
   return {
     type: "container",
+    background: "rgb(150, 150, 150)",
     size: {
-      w: w,
+      w: 0.111,
       h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/flip", true);
     },
     children: [{
       type: "container",
       border: false,
       children: [{
         type: "text",
-        text: id,
-        textSize: 16,
+        text: "Flip",
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"

@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.label = function(id, w) {
+tr.controls.controlPanel.labelID = function(id, w) {
   if (!w) w = 1.0 / 9.0;
   return {
     type: "container",
@@ -16,7 +16,7 @@ tr.controls.controlPanel.label = function(id, w) {
       children: [{
         type: "text",
         text: id,
-        textSize: 16,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"

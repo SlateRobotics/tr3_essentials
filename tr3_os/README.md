@@ -10,6 +10,4 @@ This is a logical progression of the mission of the company. We eventually want 
 # To Do
  - Control Panel
 	 - Tab Module
-		 - Control: Position control and effort control, set joint modes, record/playback (record positions, send to joints)
-		 - Config: Motor flip, PID tuning, reset position, calibrate
 		 - 3D Model Rendering
