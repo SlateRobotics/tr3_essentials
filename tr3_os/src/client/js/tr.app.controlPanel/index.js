@@ -22,8 +22,8 @@ tr.app.controlPanel = function() {
       },
       children: [{
         type: "tabControl",
-        labels: ["Control", "Config", "3D Render"],
-        pages: [c.tabControl(), c.tabConfig(), c.tabRender()],
+        labels: ["Control", "Config", "Camera", "3D Render"],
+        pages: [c.tabControl(), c.tabConfig(), c.tabCamera(), c.tabRender()],
       }],
     }],
   });

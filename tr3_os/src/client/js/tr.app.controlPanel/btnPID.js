@@ -17,7 +17,7 @@ tr.controls.controlPanel.btnPID = function(id) {
       var p = page.getChild(id + "slider-p").element.value();
       var i = page.getChild(id + "slider-i").element.value();
       var d = page.getChild(id + "slider-d").element.value();
-
+      
       tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
     },
     children: [{

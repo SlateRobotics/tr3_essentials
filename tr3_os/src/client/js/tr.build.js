@@ -778,7 +778,7 @@ tr.controls.controlPanel.btnPID = function(id) {
       var p = page.getChild(id + "slider-p").element.value();
       var i = page.getChild(id + "slider-i").element.value();
       var d = page.getChild(id + "slider-d").element.value();
-
+      
       tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
     },
     children: [{
@@ -882,8 +882,8 @@ tr.app.controlPanel = function() {
       },
       children: [{
         type: "tabControl",
-        labels: ["Control", "Config", "3D Render"],
-        pages: [c.tabControl(), c.tabConfig(), c.tabRender()],
+        labels: ["Control", "Config", "Camera", "3D Render"],
+        pages: [c.tabControl(), c.tabConfig(), c.tabCamera(), c.tabRender()],
       }],
     }],
   });
@@ -1249,6 +1249,25 @@ tr.controls.controlPanel.spacer = function() {
       h: 10
     },
     border: false
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabCamera = function() {
+  var c = tr.controls.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    children: [{
+      type: "camera"
+    }],
   }
 }
 if (!tr) tr = {};
@@ -3212,8 +3231,13 @@ tr.data.robotState = {
 
 tr.data.setup = function() {
   tr.data.socket = io('http://localhost:8080/');
-  tr.data.socket.on('/tr3/state', function(data) {
+
+  tr.data.socket.on('/tr3/state', function (data) {
     tr.data.robotState = data;
+  });
+
+  tr.data.socket.on('/camera/rgb/image_raw', function (data) {
+    tr.data.cameraImage = data;
   });
 }
 
@@ -3578,6 +3602,35 @@ tr.gui.component = function(componentConfig) {
     }
   }
 }
+tr.gui.camera = {
+  defaults: function() {
+    this.border = false;
+    this.image = '';
+  },
+
+  draw: function() {
+    this.size = this.parent.size;
+    if (!tr.data.cameraImage) return;
+
+    this.image = createImage(tr.data.cameraImage.width, tr.data.cameraImage.height);
+    this.image.loadPixels();
+
+    var pxls = new Uint8Array(tr.data.cameraImage.data);
+    for (var i = 0; i < this.image.height; i++) {
+      for (var j = 0; j < this.image.width; j++) {
+        var idx = (i * this.image.width + j) * 3;
+        var r = pxls[idx];
+        var g = pxls[idx + 1];
+        var b = pxls[idx + 2];
+        this.image.set(j, i, [r, g, b, 255]);
+      }
+    }
+
+    this.image.updatePixels();
+    this.image.resize(this.parent.size.w, this.parent.size.h);
+    image(this.image, this.pos.x, this.pos.y);
+  },
+};
 tr.gui.chain = function(_p5) {
   this.p5 = _p5;
   if (!_p5) this.p5 = window;
