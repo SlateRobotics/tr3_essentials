@@ -16,10 +16,6 @@ tr.data.setup = function() {
   tr.data.socket.on('/tr3/state', function(data) {
     tr.data.robotState = data;
   });
-
-  tr.data.socket.on('/camera/rgb/image_raw', function(data) {
-    tr.data.cameraImage = data;
-  });
 }
 
 tr.data.getState = function(aid) {

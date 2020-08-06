@@ -88,16 +88,6 @@ io.on('connection', function (socket) {
       socket.emit('/tr3/state', msg);
     });
 
-    var fps = 1;
-    var lastEmit = new Date();
-    nh.subscribe('/camera/rgb/image_raw', 'sensor_msgs/Image', function (msg) {
-      var diff = new Date() - lastEmit;
-      if (diff / 1000.0 > 1.0 / fps) {
-        socket.emit('/camera/rgb/image_raw', msg);
-        lastEmit = new Date();
-      }
-    });
-
     for (var i = 0; i < rostopics.length; i++) {
       const rt = nh.advertise(rostopics[i].name, rostopics[i].type);
       socket.on(rostopics[i].name, function (data) {
