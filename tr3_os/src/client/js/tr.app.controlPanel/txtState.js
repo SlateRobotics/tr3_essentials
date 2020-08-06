@@ -1,9 +1,13 @@
-function label_state (id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -11,7 +15,7 @@ function label_state (id) {
       children: [{
         type: "text",
         text: "",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"

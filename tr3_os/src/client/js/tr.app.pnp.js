@@ -1,4 +1,8 @@
-app.pnp = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.pnp = new App({
+  id: 2,
   name: "Pick N Place",
   desc: "Pick and Place",
   iconUrl: "/img/icon-app-pnp",
@@ -11,7 +15,7 @@ app.pnp = new App({
 
   setup: function() {
     var app = this._app;
-    app.addPages(tr.app.pnp.pages);
+    app.addPages(tr.controls.pnp.pages);
 
     var page = app.pages[app.pageCurrent];
     page.onDraw = function() {

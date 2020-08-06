@@ -1,4 +1,8 @@
-app.store = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.store = new App({
+  enabled: false,
 
   ////////////////////////////////////////
   // vvv CONFIG USED BY CONSTRUCTOR vvv //

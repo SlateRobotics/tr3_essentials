@@ -1,9 +1,13 @@
-function select_mode(id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
       w: 0.333,
-      h: 25
+      h: 20
     },
 
     children: [{
@@ -30,7 +34,6 @@ function select_mode(id) {
             }
           }
 
-
           var i = 0;
           if (val == "EFFORT") {
             i = 0;
@@ -44,7 +47,7 @@ function select_mode(id) {
         },
         Size: {
           w: 1,
-          h: 25
+          h: 20
         },
         textSize: 12,
         padding: 0,

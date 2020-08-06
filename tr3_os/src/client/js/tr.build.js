@@ -1,8 +1,13 @@
-var app = {};
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
 
 function App(config) {
   this.id = config.id;
+  if (config.id == null) this.id = -1;
+
   this.name = config.name;
+  this.enabled = config.enabled;
+  if (config.enabled == null) this.enabled = true;
 
   this.iconImg = ""; // p5.js img
   this.iconImgMask = ""; //p5.js mask
@@ -21,11 +26,7 @@ function App(config) {
   this.pageCurrent = -1;
   this.pages = [];
 
-  this.setup = function(id) {
-    if (!this.id) {
-      this.id = id;
-    }
-
+  this.setup = function () {
     if (this._configIconUrl) {
       this.iconImg = loadImage(this._configIconUrl);
     }
@@ -154,7 +155,11 @@ function App(config) {
   };
 
 }
-app.butler = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.butler = new App({
+  id: 0,
   name: "Butler",
   desc: "Schedule Domestic Services and Chores",
   iconUrl: "/img/icon-app-butler",
@@ -435,9 +440,13 @@ app.butler = new App({
     }],
   }],
 });
-app.chess = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.chess = new App({
   name: "Chess",
   iconUrl: "/img/icon-app-chess",
+  enabled: false,
   pages: [{
     id: "main",
     header: {
@@ -659,11 +668,15 @@ var ccircles = function(nx, ny, ns) {
   };
 
 };
-function button_big(text, rostopic, value, background) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnBig = function(text, rostopic, value, background) {
   return {
     type: "container",
     size: {
-      w: 0.5,
+      w: 0.25,
       h: 50
     },
     background: background,
@@ -686,90 +699,206 @@ function button_big(text, rostopic, value, background) {
     }]
   }
 }
-app.drawing = new App({
-  name: "Control Panel",
-  iconUrl: "/img/icon-app-control",
-  pages: [{
-    pos: {
-      x: 0,
-      y: 0
-    },
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnCalibrate = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
     size: {
-      w: 1.0,
-      h: 1.0
+      w: 0.111,
+      h: 20
     },
-    header: {
-      text: "Control Panel V2",
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/calibrate", true);
     },
     children: [{
-      type: "tabControl",
-      labels: ["Control", "Config", "3D Render"],
-      pages: [{
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Calibrate",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
         },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-        children: [
-          label("IDs"), label("Position"), label("Mode Select", .333), label("Target"), label("Position Slider", .333),
-          label("a0"), label_state("a0"), select_mode("a0"), slider_label("a0"), pos_Slider("a0"),
-          label("a1"), label_state("a1"), select_mode("a1"), slider_label("a1"), pos_Slider("a1"),
-          label("a2"), label_state("a2"), select_mode("a2"), slider_label("a2"), pos_Slider("a2"),
-          label("a3"), label_state("a3"), select_mode("a3"), slider_label("a3"), pos_Slider("a3"),
-          label("a4"), label_state("a4"), select_mode("a4"), slider_label("a4"), pos_Slider("a4"),
-          label("h0"), label_state("h0"), select_mode("h0"), slider_label("h0"), pos_Slider("h0"),
-          label("h1"), label_state("h1"), select_mode("h1"), slider_label("h1"), pos_Slider("h1"),
-          {
-            type: "container",
-            size: {
-              w: 1.0,
-              h: 10
-            },
-            border: false
-          },
-          button_big("STOP", "/tr3/stop", true, "rgba(212, 40, 40, 1)"), button_big("RELEASE", "/tr3/stop", false, "rgba(43, 212, 40, 1)"),
-          {
-            type: "container",
-            size: {
-              w: 1.0,
-              h: 10
-            },
-            border: false
-          },
-          button_big("SHUTDOWN", "/tr3/shutdown", true, "rgba(212, 40, 40, 1)"), button_big("POWER UP", "/tr3/powerup", true, "rgba(43, 212, 40, 1)")
-        ],
-      }, {
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnMotorDir = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 0.111,
+      h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/flip", true);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Flip",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
         },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-      }, {
-        type: "container",
-        size: {
-          w: 1.0,
-          h: "fill"
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnPID = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    onClick: function () {
+      var app = this.getApp();
+      var page = app.getCurrentPage();
+
+      var p = page.getChild(id + "slider-p").element.value();
+      var i = page.getChild(id + "slider-i").element.value();
+      var d = page.getChild(id + "slider-d").element.value();
+      
+      tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "->",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
         },
-        padding: 10,
-        background: "rgba(255, 255, 255, 0.2)",
-        children: [{
-          type: "tr2",
-        }],
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnResetPos = function(id) {
+  return {
+    type: "container",
+    background: "rgb(150, 150, 150)",
+    size: {
+      w: 0.111,
+      h: 20
+    },
+    onClick: function () {
+      tr.data.socket.emit("/tr3/joints/" + id + "/reset", true);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Reset",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.configHeader = function() {
+  var c = tr.controls.controlPanel;
+  return [c.label("IDs"), c.label("Motor Dir"), c.label("Reset Pos"), c.label("Calibrate"), c.label("PID Tuning", 5/9)];
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.configRow = function(id) {
+  var c = tr.controls.controlPanel;
+  return [c.labelID(id), c.btnMotorDir(id), c.btnResetPos(id), c.btnCalibrate(id), c.txtP(id),c.sliderP(id),c.txtI(id),c.sliderI(id),c.txtD(id),c.sliderD(id), c.btnPID(id)];
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.controlHeader = function() {
+  var c = tr.controls.controlPanel;
+  return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.controlRow = function(id) {
+  var c = tr.controls.controlPanel;
+  return [c.labelID(id), c.txtState(id), c.selectMode(id), c.txtTarget(id), c.slider(id)];
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.controlPanel = function() {
+  var c = tr.controls.controlPanel;
+
+  return new App({
+    id: 1,
+    name: "Control Panel",
+    iconUrl: "/img/icon-app-control",
+    pages: [{
+      pos: {
+        x: 0,
+        y: 0
+      },
+      size: {
+        w: 1.0,
+        h: 1.0
+      },
+      header: {
+        text: "Control Panel V2",
+      },
+      children: [{
+        type: "tabControl",
+        labels: ["Control", "Config", "Camera", "3D Render"],
+        pages: [c.tabControl(), c.tabConfig(), c.tabCamera(), c.tabRender()],
       }],
     }],
-  }],
-});
-function label(id, w) {
-  if (!w) w = 0.111;
+  });
+};
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.label = function(id, w) {
+  if (!w) w = 1.0 / 9.0;
   return {
     type: "container",
     size: {
       w: w,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -777,7 +906,7 @@ function label(id, w) {
       children: [{
         type: "text",
         text: id,
-        textSize: 18,
+        textSize: 16,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -786,40 +915,104 @@ function label(id, w) {
     }]
   }
 }
-function label_state(id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.labelID = function(id, w) {
+  if (!w) w = 1.0 / 9.0;
   return {
     type: "container",
     size: {
-      w: 0.111,
-      h: 25
+      w: w,
+      h: 20
     },
     children: [{
       type: "container",
       border: false,
       children: [{
         type: "text",
-        text: "",
-        textSize: 18,
+        text: id,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"
         },
-        onDraw: function() {
-          var p = tr.data.getState(id).position;
-          if (p) {
-            this.text = p.toFixed(2);
-          }
-        }
       }],
     }]
   }
 }
-function pos_Slider(id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.selectMode = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 20
+    },
+
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "select",
+        id: "select-" + id,
+        options: ["EFFORT", "BACKDRIVE", "SERVO"],
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          if (page) {
+            var slider = page.getChild(id + "slider");
+            if (slider) {
+              if (val == "EFFORT") {
+                slider.setval(0);
+              } else if (val == "BACKDRIVE") {
+                slider.setval(0);
+              } else if (val == "SERVO") {
+                var state = tr.data.getState(id).position;
+                slider.setval(state / Math.PI / 2.0);
+              }
+            }
+          }
+
+          var i = 0;
+          if (val == "EFFORT") {
+            i = 0;
+          } else if (val == "BACKDRIVE") {
+            i = 1;
+          } else if (val == "SERVO") {
+            i = 2;
+          }
+
+          tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
+        },
+        Size: {
+          w: 1,
+          h: 20
+        },
+        textSize: 12,
+        padding: 0,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
       w: .334,
-      h: 25
+      h: 20
     },
     children: [{
       type: "container",
@@ -827,6 +1020,17 @@ function pos_Slider(id) {
       children: [{
         id: id + "slider",
         type: "slider",
+
+        onDraw: function() {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          if (select.element.value() == "EFFORT" && abs(sliderVal) > 0.1) {
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", sliderVal);
+          }
+        },
 
         onInput: function(val) {
           var app = this.getApp();
@@ -875,56 +1079,50 @@ function pos_Slider(id) {
     }]
   }
 }
-function select_mode(id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.sliderD = function(id) {
   return {
     type: "container",
     size: {
-      w: 0.333,
-      h: 25
+      w: 1/9,
+      h: 20
     },
-
     children: [{
       type: "container",
       border: false,
       children: [{
-        type: "select",
-        id: "select-" + id,
-        options: ["EFFORT", "BACKDRIVE", "SERVO"],
+        id: id + "slider-d",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-d").element.value();
+
+          var label = page.getChild("txt-" + id + "-d");
+          label.text = val.toFixed(1);
+        },
+
         onChange: function(val) {
           var app = this.getApp();
           var page = app.getCurrentPage();
-          if (page) {
-            var slider = page.getChild(id + "slider");
-            if (slider) {
-              if (val == "EFFORT") {
-                slider.setval(0);
-              } else if (val == "BACKDRIVE") {
-                slider.setval(0);
-              } else if (val == "SERVO") {
-                var state = tr.data.getState(id).position;
-                slider.setval(state / Math.PI / 2.0);
-              }
-            }
-          }
+          var select = page.getChild("select-" + id);
 
+          var slider = page.getChild(id + "slider-d");
+          var val = slider.element.value();
 
-          var i = 0;
-          if (val == "EFFORT") {
-            i = 0;
-          } else if (val == "BACKDRIVE") {
-            i = 1;
-          } else if (val == "SERVO") {
-            i = 2;
-          }
-
-          tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
+          var label = page.getChild("txt-" + id + "-d");
+          label.text = val.toFixed(1);
         },
-        Size: {
-          w: 1,
-          h: 25
-        },
-        textSize: 12,
-        padding: 0,
+
+        min: 0,
+        max: 2,
+        val: 0.2,
+        step: 0.1,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -933,12 +1131,354 @@ function select_mode(id) {
     }]
   }
 }
-function slider_label(id) {
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.sliderI = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider-i",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-i").element.value();
+
+          var label = page.getChild("txt-" + id + "-i");
+          label.text = val.toFixed(1);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+
+          var slider = page.getChild(id + "slider-i");
+          var val = slider.element.value();
+
+          var label = page.getChild("txt-" + id + "-i");
+          label.text = val.toFixed(1);
+        },
+
+        min: 0,
+        max: 20,
+        val: 5,
+        step: 0.1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.sliderP = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider-p",
+        type: "slider",
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+          var sliderVal = page.getChild(id + "slider-p").element.value();
+
+          var label = page.getChild("txt-" + id + "-p");
+          label.text = val.toFixed(1);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var select = page.getChild("select-" + id);
+
+          var slider = page.getChild(id + "slider-p");
+          var val = slider.element.value();
+
+          var label = page.getChild("txt-" + id + "-p");
+          label.text = val.toFixed(1);
+        },
+
+        min: 0,
+        max: 20,
+        val: 9,
+        step: 0.1,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.spacer = function() {
+  var c = tr.controls.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: 10
+    },
+    border: false
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabCamera = function() {
+  var c = tr.controls.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    children: [{
+      type: "camera"
+    }],
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabConfig = function() {
+  var c = tr.controls.controlPanel;
+
+  var children = [];
+  children.push.apply(children, c.configHeader());
+  children.push.apply(children, c.configRow("a0"));
+  children.push.apply(children, c.configRow("a1"));
+  children.push.apply(children, c.configRow("a2"));
+  children.push.apply(children, c.configRow("a3"));
+  children.push.apply(children, c.configRow("a4"));
+  children.push.apply(children, c.configRow("g0"));
+  children.push.apply(children, c.configRow("h0"));
+  children.push.apply(children, c.configRow("h1"));
+  children.push.apply(children, c.configRow("b0"));
+  children.push.apply(children, c.configRow("b1"));
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabControl = function() {
+  var c = tr.controls.controlPanel;
+
+  var children = [];
+  children.push.apply(children, c.controlHeader());
+  children.push.apply(children, c.controlRow("a0"));
+  children.push.apply(children, c.controlRow("a1"));
+  children.push.apply(children, c.controlRow("a2"));
+  children.push.apply(children, c.controlRow("a3"));
+  children.push.apply(children, c.controlRow("a4"));
+  children.push.apply(children, c.controlRow("g0"));
+  children.push.apply(children, c.controlRow("h0"));
+  children.push.apply(children, c.controlRow("h1"));
+
+  children.push(c.spacer());
+  children.push(c.btnBig("STOP", "/tr3/stop", true, "red"));
+  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "green"));
+  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "red"));
+  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "green"));
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.tabRender = function() {
+  var c = tr.controls.controlPanel;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: [{
+      type: "tr2",
+    }],
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtD = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-d",
+        type: "text",
+        text: "0.2",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtI = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-i",
+        type: "text",
+        text: "5.0",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtP = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1/18,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "txt-" + id + "-p",
+        type: "text",
+        text: "9.0",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtState = function(id) {
   return {
     type: "container",
     size: {
       w: 0.111,
-      h: 25
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+        onDraw: function() {
+          var p = tr.data.getState(id).position;
+          if (p) {
+            this.text = p.toFixed(2);
+          }
+        }
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.txtTarget = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 0.111,
+      h: 20
     },
     children: [{
       type: "container",
@@ -947,12 +1487,11 @@ function slider_label(id) {
         id: id + "sliderl",
         type: "text",
         text: "0.00",
-        textSize: 18,
+        textSize: 14,
         align: {
           v: "CENTER",
           h: "CENTER"
         },
-        onDraw: function() {}
       }],
     }]
   }
@@ -1190,7 +1729,11 @@ var appFace = new App({
     rect(x, y, 50, 50);
   },
 });
-app.pnp = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.pnp = new App({
+  id: 2,
   name: "Pick N Place",
   desc: "Pick and Place",
   iconUrl: "/img/icon-app-pnp",
@@ -1203,7 +1746,7 @@ app.pnp = new App({
 
   setup: function() {
     var app = this._app;
-    app.addPages(tr.app.pnp.pages);
+    app.addPages(tr.controls.pnp.pages);
 
     var page = app.pages[app.pageCurrent];
     page.onDraw = function() {
@@ -1388,10 +1931,10 @@ app.pnp = new App({
   }
 });
 if (!tr) tr = {}
-if (!tr.app) tr.app = {}
-if (!tr.app.pnp) tr.app.pnp = {};
+if (!tr.controls) tr.controls = {}
+if (!tr.controls.pnp) tr.controls.pnp = {};
 //boop//
-tr.app.pnp.pages = [{
+tr.controls.pnp.pages = [{
   id: "PNP01",
 
   pos: {
@@ -2600,7 +3143,11 @@ tr.app.pnp.program = function(config) {
 
   this.setup();
 }
-app.settings = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.settings = new App({
+  id: 3,
   name: "Settings",
   iconUrl: "/img/icon-app-settings",
   pages: [{
@@ -2641,7 +3188,11 @@ app.settings = new App({
     }],
   }],
 });
-app.store = new App({
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.store = new App({
+  enabled: false,
 
   ////////////////////////////////////////
   // vvv CONFIG USED BY CONSTRUCTOR vvv //
@@ -2680,8 +3231,13 @@ tr.data.robotState = {
 
 tr.data.setup = function() {
   tr.data.socket = io('http://localhost:8080/');
-  tr.data.socket.on('/tr3/state', function(data) {
+
+  tr.data.socket.on('/tr3/state', function (data) {
     tr.data.robotState = data;
+  });
+
+  tr.data.socket.on('/camera/rgb/image_raw', function (data) {
+    tr.data.cameraImage = data;
   });
 }
 
@@ -3046,6 +3602,35 @@ tr.gui.component = function(componentConfig) {
     }
   }
 }
+tr.gui.camera = {
+  defaults: function() {
+    this.border = false;
+    this.image = '';
+  },
+
+  draw: function() {
+    this.size = this.parent.size;
+    if (!tr.data.cameraImage) return;
+
+    this.image = createImage(tr.data.cameraImage.width, tr.data.cameraImage.height);
+    this.image.loadPixels();
+
+    var pxls = new Uint8Array(tr.data.cameraImage.data);
+    for (var i = 0; i < this.image.height; i++) {
+      for (var j = 0; j < this.image.width; j++) {
+        var idx = (i * this.image.width + j) * 3;
+        var r = pxls[idx];
+        var g = pxls[idx + 1];
+        var b = pxls[idx + 2];
+        this.image.set(j, i, [r, g, b, 255]);
+      }
+    }
+
+    this.image.updatePixels();
+    this.image.resize(this.parent.size.w, this.parent.size.h);
+    image(this.image, this.pos.x, this.pos.y);
+  },
+};
 tr.gui.chain = function(_p5) {
   this.p5 = _p5;
   if (!_p5) this.p5 = window;
@@ -3952,11 +4537,12 @@ tr.gui.text = {
   },
 
   draw: function() {
-    noStroke();
+    stroke(this.textColor);
     fill(this.textColor);
+    textFont(tr.font);
     textSize(this.textSize);
     textAlign(window[this.align.h], window[this.align.v]);
-    text(this.text, this.pos.x, this.pos.y, this.size.w, this.size.h);
+    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h);
   }
 };
 tr.gui.toolbar = {
@@ -4467,31 +5053,46 @@ var canvasWidth = 864;
 var canvasHeight = 480;
 
 var appSelected = -1;
-var apps = [app.butler, app.pnp, app.chess, app.drawing, app.settings];
 
-var font = "";
+tr.font = "";
+
+function preload() {
+  tr.font = loadFont('/ttf/roboto.ttf');
+}
 
 function setup() {
   tr.data.setup();
-  font = loadFont('/ttf/roboto.ttf');
-  textFont(font);
 
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
+  // for some stupid reason this is necessary to get certain font sizes to load correctly
+  textFont(tr.font);
+  textSize(2);
+  text(".", 0, 0, 1, 1);
+
   desktop.setup(-1);
-  desktop.apps = apps;
 
-  apps = apps.sort(function(a, b) {
-    return b.id - a.id;
-  });
-
+  desktop.apps = [];
+  var apps = Object.getOwnPropertyNames(tr.app);
   for (var i = 0; i < apps.length; i++) {
-    apps[i].setup(i);
+    var a = tr.app[apps[i]];
+    if (typeof a == "function") {
+      a = a();
+    }
+
+    a.setup();
+
+    if (a.enabled) {
+      desktop.apps.push(a);
+    }
   }
+
+  desktop.apps = desktop.apps.sort(function(a, b) {
+    return a.id - b.id;
+  });
 }
 
 function draw() {
-  textFont(font);
   translate(-canvasWidth / 2.0, -canvasHeight / 2.0);
   getSelectedApp().draw();
 }
@@ -4517,9 +5118,9 @@ function keyPressed() {
 }
 
 function getSelectedApp() {
-  if (appSelected < 0 || appSelected >= apps.length) {
+  if (appSelected < 0 || appSelected >= desktop.apps.length) {
     return desktop;
   } else {
-    return apps[appSelected];
+    return desktop.apps[appSelected];
   }
 }
