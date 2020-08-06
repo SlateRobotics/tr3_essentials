@@ -848,7 +848,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.controlHeader = function() {
   var c = tr.controls.controlPanel;
-  return [c.label("IDs"), c.label("Position"), c.label("Mode Select", .333), c.label("Target"), c.label("Position Slider", .333)];
+  return [c.label("IDs"), c.label("Position"), c.label("Mode"), c.label("Target"), c.label("Position Slider", 5/9)];
 }
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -950,7 +950,7 @@ tr.controls.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
-      w: 0.333,
+      w: 1/9,
       h: 20
     },
 
@@ -1011,7 +1011,7 @@ tr.controls.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
-      w: .334,
+      w: 5/9,
       h: 20
     },
     children: [{
