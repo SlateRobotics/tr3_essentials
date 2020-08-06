@@ -26,7 +26,7 @@ function App(config) {
   this.pageCurrent = -1;
   this.pages = [];
 
-  this.setup = function () {
+  this.setup = function() {
     if (this._configIconUrl) {
       this.iconImg = loadImage(this._configIconUrl);
     }

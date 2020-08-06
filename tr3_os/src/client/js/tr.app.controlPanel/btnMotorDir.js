@@ -10,7 +10,7 @@ tr.controls.controlPanel.btnMotorDir = function(id) {
       w: 0.111,
       h: 20
     },
-    onClick: function () {
+    onClick: function() {
       tr.data.socket.emit("/tr3/joints/" + id + "/flip", true);
     },
     children: [{
