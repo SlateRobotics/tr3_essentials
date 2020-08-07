@@ -17,10 +17,9 @@ tr.controls.controlPanel.tabControl = function() {
   children.push.apply(children, c.controlRow("h1"));
 
   children.push(c.spacer());
-  children.push(c.btnBig("STOP", "/tr3/stop", true, "red"));
-  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "green"));
-  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "red"));
-  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "green"));
+  children.push(c.btnToglStop());
+  children.push(c.playbackBlock());
+  children.push(c.playbackDisplay());
 
   return {
     type: "container",
