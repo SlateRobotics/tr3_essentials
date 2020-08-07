@@ -800,6 +800,36 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
+tr.controls.controlPanel.btnPlaybackImg = function(url, rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "image",
+        url: url,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
 tr.controls.controlPanel.btnResetPos = function(id) {
   return {
     type: "container",
@@ -818,6 +848,54 @@ tr.controls.controlPanel.btnResetPos = function(id) {
         type: "text",
         text: "Reset",
         textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnToglStop = function() {
+  var currentmode = "STOPPED"
+  return {
+    type: "container",
+    size: {
+      w: 3 / 9,
+      h: 120
+    },
+    background: "red",
+    onClick: function() {
+      if (currentmode == "STOPPED") {
+        currentmode = "RELEASED"
+        this.background = "green"
+        var app = this.getApp();
+        var page = app.getCurrentPage();
+        page.getChild("ToglStop").text = "RELEASE";
+        tr.data.socket.emit("/tr3/stop", true, );
+      } else if (currentmode == "RELEASED") {
+        currentmode = "STOPPED"
+        this.background = "red"
+        var app = this.getApp();
+        var page = app.getCurrentPage();
+        page.getChild("ToglStop").text = "STOP";
+        tr.data.socket.emit("/tr3/stop", false, );
+      }
+
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "ToglStop",
+        type: "text",
+        text: "STOP",
+        textSize: 52,
+        padding: 12,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -938,6 +1016,156 @@ tr.controls.controlPanel.labelID = function(id, w) {
           v: "CENTER",
           h: "CENTER"
         },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.labelProgram = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "program-label",
+        type: "text",
+        text: "P#",
+        textSize: 28,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.playbackBlock = function() {
+  var c = tr.controls.controlPanel;
+
+  var children = [];
+  children.push(c.btnPlaybackImg("/img/pnp-control-fw0.png"));
+  children.push(c.btnPlaybackImg("/img/pnp-control-pause0.png"));
+  children.push(c.btnPlaybackImg("/img/pnp-control-new0.png"));
+  children.push(c.btnPlaybackImg("/img/pnp-control-stop0.png"));
+  children.push(c.btnPlaybackImg("/img/pnp-control2.png"));
+  children.push(c.labelProgram());
+  children.push(c.btnPlaybackImg("/img/pnp-control1.png"));
+  children.push(c.btnPlaybackImg("/img/pnp-control0.png"));
+
+  return {
+    type: "container",
+    size: {
+      w: 3 / 9,
+      h: 120,
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.playbackDisplay = function() {
+  var c = tr.controls.controlPanel;
+
+  var children = [];
+  children.push(c.playbackLabel("a0"));
+  children.push(c.playbackValue("a0"));
+  children.push(c.playbackLabel("a4"));
+  children.push(c.playbackValue("a4"));
+  children.push(c.playbackLabel("a1"));
+  children.push(c.playbackValue("a1"));
+  children.push(c.playbackLabel("g0"));
+  children.push(c.playbackValue("g0"));
+  children.push(c.playbackLabel("a2"));
+  children.push(c.playbackValue("a2"));
+  children.push(c.playbackLabel("h0"));
+  children.push(c.playbackValue("h0"));
+  children.push(c.playbackLabel("a3"));
+  children.push(c.playbackValue("a3"));
+  children.push(c.playbackLabel("h1"));
+  children.push(c.playbackValue("h1"));
+
+  return {
+    type: "container",
+    size: {
+      w: 3 / 9,
+      h: 120,
+    },
+    padding: 10,
+    background: "rgba(255, 255, 255, 0.2)",
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.playbackLabel = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 1 / 4
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: id,
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.playbackValue = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 1 / 4
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "0.00",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+        onDraw: function() {
+          // Replace with Waypoint Controll Stuff
+          var p = tr.data.getState(id).position;
+          if (p) {
+            this.text = p.toFixed(2);
+          }
+        }
       }],
     }]
   }
@@ -1320,10 +1548,9 @@ tr.controls.controlPanel.tabControl = function() {
   children.push.apply(children, c.controlRow("h1"));
 
   children.push(c.spacer());
-  children.push(c.btnBig("STOP", "/tr3/stop", true, "red"));
-  children.push(c.btnBig("RELEASE", "/tr3/stop", false, "green"));
-  children.push(c.btnBig("SHUTDOWN", "/tr3/shutdown", true, "red"));
-  children.push(c.btnBig("POWER UP", "/tr3/powerup", true, "green"));
+  children.push(c.btnToglStop());
+  children.push(c.playbackBlock());
+  children.push(c.playbackDisplay());
 
   return {
     type: "container",
@@ -3606,9 +3833,9 @@ tr.gui.camera = {
     this.loadingImage = false;
   },
 
-  setup: function () {
+  setup: function() {
     this.loadingImage = true;
-    loadImage(this.cameraImageUrl, function (img) {
+    loadImage(this.cameraImageUrl, function(img) {
       this.image = img;
       this.loadingImage = false;
     }.bind(this));
@@ -3623,14 +3850,14 @@ tr.gui.camera = {
 
     if (!this.loadingImage) {
       this.loadingImage = true;
-      loadImage(this.cameraImageUrl, function (img) {
+      loadImage(this.cameraImageUrl, function(img) {
         this.image = img;
         this.loadingImage = false;
       }.bind(this));
     }
   },
 
-  drawPixels: function () {
+  drawPixels: function() {
     this.image = createImage(tr.data.cameraImage.width, tr.data.cameraImage.height);
     this.image.loadPixels();
 
