@@ -26,7 +26,7 @@ function App(config) {
   this.pageCurrent = -1;
   this.pages = [];
 
-  this.setup = function () {
+  this.setup = function() {
     if (this._configIconUrl) {
       this.iconImg = loadImage(this._configIconUrl);
     }
@@ -711,7 +711,7 @@ tr.controls.controlPanel.btnCalibrate = function(id) {
       w: 0.111,
       h: 20
     },
-    onClick: function () {
+    onClick: function() {
       tr.data.socket.emit("/tr3/joints/" + id + "/calibrate", true);
     },
     children: [{
@@ -741,7 +741,7 @@ tr.controls.controlPanel.btnMotorDir = function(id) {
       w: 0.111,
       h: 20
     },
-    onClick: function () {
+    onClick: function() {
       tr.data.socket.emit("/tr3/joints/" + id + "/flip", true);
     },
     children: [{
@@ -768,17 +768,17 @@ tr.controls.controlPanel.btnPID = function(id) {
     type: "container",
     background: "rgb(150, 150, 150)",
     size: {
-      w: 1/18,
+      w: 1 / 18,
       h: 20
     },
-    onClick: function () {
+    onClick: function() {
       var app = this.getApp();
       var page = app.getCurrentPage();
 
       var p = page.getChild(id + "slider-p").element.value();
       var i = page.getChild(id + "slider-i").element.value();
       var d = page.getChild(id + "slider-d").element.value();
-      
+
       tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
     },
     children: [{
@@ -808,7 +808,7 @@ tr.controls.controlPanel.btnResetPos = function(id) {
       w: 0.111,
       h: 20
     },
-    onClick: function () {
+    onClick: function() {
       tr.data.socket.emit("/tr3/joints/" + id + "/reset", true);
     },
     children: [{
@@ -832,7 +832,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.configHeader = function() {
   var c = tr.controls.controlPanel;
-  return [c.label("IDs"), c.label("Motor Dir"), c.label("Reset Pos"), c.label("Calibrate"), c.label("PID Tuning", 5/9)];
+  return [c.label("IDs"), c.label("Motor Dir"), c.label("Reset Pos"), c.label("Calibrate"), c.label("PID Tuning", 5 / 9)];
 }
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -840,7 +840,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.configRow = function(id) {
   var c = tr.controls.controlPanel;
-  return [c.labelID(id), c.btnMotorDir(id), c.btnResetPos(id), c.btnCalibrate(id), c.txtP(id),c.sliderP(id),c.txtI(id),c.sliderI(id),c.txtD(id),c.sliderD(id), c.btnPID(id)];
+  return [c.labelID(id), c.btnMotorDir(id), c.btnResetPos(id), c.btnCalibrate(id), c.txtP(id), c.sliderP(id), c.txtI(id), c.sliderI(id), c.txtD(id), c.sliderD(id), c.btnPID(id)];
 }
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -848,7 +848,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.controlHeader = function() {
   var c = tr.controls.controlPanel;
-  return [c.label("IDs"), c.label("Position"), c.label("Mode"), c.label("Target"), c.label("Position Slider", 5/9)];
+  return [c.label("IDs"), c.label("Position"), c.label("Mode"), c.label("Target"), c.label("Position Slider", 5 / 9)];
 }
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -950,7 +950,7 @@ tr.controls.controlPanel.selectMode = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/9,
+      w: 1 / 9,
       h: 20
     },
 
@@ -1011,7 +1011,7 @@ tr.controls.controlPanel.slider = function(id) {
   return {
     type: "container",
     size: {
-      w: 5/9,
+      w: 5 / 9,
       h: 20
     },
     children: [{
@@ -1087,7 +1087,7 @@ tr.controls.controlPanel.sliderD = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/9,
+      w: 1 / 9,
       h: 20
     },
     children: [{
@@ -1139,7 +1139,7 @@ tr.controls.controlPanel.sliderI = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/9,
+      w: 1 / 9,
       h: 20
     },
     children: [{
@@ -1191,7 +1191,7 @@ tr.controls.controlPanel.sliderP = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/9,
+      w: 1 / 9,
       h: 20
     },
     children: [{
@@ -1364,7 +1364,7 @@ tr.controls.controlPanel.txtD = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/18,
+      w: 1 / 18,
       h: 20
     },
     children: [{
@@ -1391,7 +1391,7 @@ tr.controls.controlPanel.txtI = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/18,
+      w: 1 / 18,
       h: 20
     },
     children: [{
@@ -1418,7 +1418,7 @@ tr.controls.controlPanel.txtP = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/18,
+      w: 1 / 18,
       h: 20
     },
     children: [{
@@ -3232,12 +3232,8 @@ tr.data.robotState = {
 tr.data.setup = function() {
   tr.data.socket = io('http://localhost:8080/');
 
-  tr.data.socket.on('/tr3/state', function (data) {
+  tr.data.socket.on('/tr3/state', function(data) {
     tr.data.robotState = data;
-  });
-
-  tr.data.socket.on('/camera/rgb/image_raw', function (data) {
-    tr.data.cameraImage = data;
   });
 }
 
@@ -3605,13 +3601,36 @@ tr.gui.component = function(componentConfig) {
 tr.gui.camera = {
   defaults: function() {
     this.border = false;
+    this.cameraImageUrl = 'http://' + location.hostname + ':8081/snapshot?topic=/camera/rgb/image_raw&type=ros_compressed';
     this.image = '';
+    this.loadingImage = false;
+  },
+
+  setup: function () {
+    this.loadingImage = true;
+    loadImage(this.cameraImageUrl, function (img) {
+      this.image = img;
+      this.loadingImage = false;
+    }.bind(this));
   },
 
   draw: function() {
     this.size = this.parent.size;
-    if (!tr.data.cameraImage) return;
 
+    if (!this.image) return;
+    this.image.resize(this.size.w, this.size.h);
+    image(this.image, 0, 0, this.image.width, this.image.height);
+
+    if (!this.loadingImage) {
+      this.loadingImage = true;
+      loadImage(this.cameraImageUrl, function (img) {
+        this.image = img;
+        this.loadingImage = false;
+      }.bind(this));
+    }
+  },
+
+  drawPixels: function () {
     this.image = createImage(tr.data.cameraImage.width, tr.data.cameraImage.height);
     this.image.loadPixels();
 

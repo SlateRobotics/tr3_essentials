@@ -6,7 +6,7 @@ tr.controls.controlPanel.txtD = function(id) {
   return {
     type: "container",
     size: {
-      w: 1/18,
+      w: 1 / 18,
       h: 20
     },
     children: [{
