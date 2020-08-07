@@ -6,9 +6,9 @@ tr.gui.camera = {
     this.loadingImage = false;
   },
 
-  setup: function () {
+  setup: function() {
     this.loadingImage = true;
-    loadImage(this.cameraImageUrl, function (img) {
+    loadImage(this.cameraImageUrl, function(img) {
       this.image = img;
       this.loadingImage = false;
     }.bind(this));
@@ -23,14 +23,14 @@ tr.gui.camera = {
 
     if (!this.loadingImage) {
       this.loadingImage = true;
-      loadImage(this.cameraImageUrl, function (img) {
+      loadImage(this.cameraImageUrl, function(img) {
         this.image = img;
         this.loadingImage = false;
       }.bind(this));
     }
   },
 
-  drawPixels: function () {
+  drawPixels: function() {
     this.image = createImage(tr.data.cameraImage.width, tr.data.cameraImage.height);
     this.image.loadPixels();
 
