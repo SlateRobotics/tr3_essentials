@@ -18,7 +18,7 @@ tr.app.controlPanel = function() {
         h: 1.0
       },
       header: {
-        text: "Control Panel V2",
+        text: "Control Panel",
       },
       children: [{
         type: "tabControl",

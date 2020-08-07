@@ -3,10 +3,11 @@ var canvasHeight = 480;
 
 var appSelected = -1;
 
-tr.font = "";
+tr.fonts = {};
 
 function preload() {
-  tr.font = loadFont('/ttf/roboto.ttf');
+  tr.fonts.noto = loadFont('/ttf/noto.otf');
+  tr.fonts.roboto = loadFont('/ttf/roboto.ttf');
 }
 
 function setup() {
@@ -15,7 +16,7 @@ function setup() {
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
   // for some stupid reason this is necessary to get certain font sizes to load correctly
-  textFont(tr.font);
+  textFont(tr.fonts.roboto);
   textSize(2);
   text(".", 0, 0, 1, 1);
 

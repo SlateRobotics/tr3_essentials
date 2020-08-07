@@ -16,7 +16,7 @@ tr.controls.controlPanel.labelProgram = function() {
         id: "program-label",
         type: "text",
         text: "P#",
-        textSize: 28,
+        textSize: 16,
         align: {
           v: "CENTER",
           h: "CENTER"

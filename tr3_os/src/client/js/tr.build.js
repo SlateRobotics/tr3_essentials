@@ -672,6 +672,38 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
+tr.controls.controlPanel.btnAdd = function(rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "text",
+        text: "+", // ▶ ◀
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
 tr.controls.controlPanel.btnBig = function(text, rostopic, value, background) {
   return {
     type: "container",
@@ -800,7 +832,7 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.btnPlaybackImg = function(url, rostopic, value) {
+tr.controls.controlPanel.btnPause = function(rostopic, value) {
   return {
     type: "container",
     size: {
@@ -816,8 +848,74 @@ tr.controls.controlPanel.btnPlaybackImg = function(url, rostopic, value) {
         }
       },
       children: [{
-        type: "image",
-        url: url,
+        type: "text",
+        text: "II", // ▶ ◀
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnPlay = function(rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "text",
+        text: "▶", // ▶ ◀
+        textSize: 16,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnRemove = function(rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "text",
+        text: "−",
+        textSize: 24,
+        textFont: "noto",
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -895,7 +993,70 @@ tr.controls.controlPanel.btnToglStop = function() {
         type: "text",
         text: "STOP",
         textSize: 52,
-        padding: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnWaypointLeft = function(rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "text",
+        text: "〈 ", // ▶ ◀
+        textSize: 16,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.controlPanel.btnWaypointRight = function(rostopic, value) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        if (rostopic && value) {
+          tr.data.socket.emit(rostopic, value);
+        }
+      },
+      children: [{
+        type: "text",
+        text: " 〉", // ▶ ◀
+        textSize: 16,
+        textFont: "noto",
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -956,7 +1117,7 @@ tr.app.controlPanel = function() {
         h: 1.0
       },
       header: {
-        text: "Control Panel V2",
+        text: "Control Panel",
       },
       children: [{
         type: "tabControl",
@@ -1038,7 +1199,7 @@ tr.controls.controlPanel.labelProgram = function() {
         id: "program-label",
         type: "text",
         text: "P#",
-        textSize: 28,
+        textSize: 16,
         align: {
           v: "CENTER",
           h: "CENTER"
@@ -1055,14 +1216,14 @@ tr.controls.controlPanel.playbackBlock = function() {
   var c = tr.controls.controlPanel;
 
   var children = [];
-  children.push(c.btnPlaybackImg("/img/pnp-control-fw0.png"));
-  children.push(c.btnPlaybackImg("/img/pnp-control-pause0.png"));
-  children.push(c.btnPlaybackImg("/img/pnp-control-new0.png"));
-  children.push(c.btnPlaybackImg("/img/pnp-control-stop0.png"));
-  children.push(c.btnPlaybackImg("/img/pnp-control2.png"));
+  children.push(c.btnPlay());
+  children.push(c.btnPause());
+  children.push(c.btnAdd());
+  children.push(c.btnRemove());
+  children.push(c.btnWaypointLeft());
   children.push(c.labelProgram());
-  children.push(c.btnPlaybackImg("/img/pnp-control1.png"));
-  children.push(c.btnPlaybackImg("/img/pnp-control0.png"));
+  children.push(c.btnWaypointRight());
+  //children.push(c.btnPlaybackImg("/img/pnp-control0.png"));
 
   return {
     type: "container",
@@ -4796,6 +4957,7 @@ tr.gui.text = {
   defaults: function() {
     this.border = false;
     this.softAlign = false;
+    this.textFont = tr.fonts.roboto;
 
     if (!this.config.align) {
       this.config.align = {};
@@ -4814,17 +4976,23 @@ tr.gui.text = {
       this.size.w = 1;
     }
     if (!this.config.size.h) {
-      this.size.h = this.textSize + this.margin * 2
+      this.size.h = 1;
+    }
+  },
+
+  setup: function () {
+    if (this.config.textFont) {
+      this.textFont = tr.fonts[this.config.textFont];
     }
   },
 
   draw: function() {
     stroke(this.textColor);
     fill(this.textColor);
-    textFont(tr.font);
+    textFont(this.textFont);
     textSize(this.textSize);
     textAlign(window[this.align.h], window[this.align.v]);
-    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h);
+    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h - this.padding * 2);
   }
 };
 tr.gui.toolbar = {
@@ -5336,10 +5504,11 @@ var canvasHeight = 480;
 
 var appSelected = -1;
 
-tr.font = "";
+tr.fonts = {};
 
 function preload() {
-  tr.font = loadFont('/ttf/roboto.ttf');
+  tr.fonts.noto = loadFont('/ttf/noto.otf');
+  tr.fonts.roboto = loadFont('/ttf/roboto.ttf');
 }
 
 function setup() {
@@ -5348,7 +5517,7 @@ function setup() {
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
   // for some stupid reason this is necessary to get certain font sizes to load correctly
-  textFont(tr.font);
+  textFont(tr.fonts.roboto);
   textSize(2);
   text(".", 0, 0, 1, 1);
 

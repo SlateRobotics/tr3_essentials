@@ -2,6 +2,7 @@ tr.gui.text = {
   defaults: function() {
     this.border = false;
     this.softAlign = false;
+    this.textFont = tr.fonts.roboto;
 
     if (!this.config.align) {
       this.config.align = {};
@@ -20,16 +21,22 @@ tr.gui.text = {
       this.size.w = 1;
     }
     if (!this.config.size.h) {
-      this.size.h = this.textSize + this.margin * 2
+      this.size.h = 1;
+    }
+  },
+
+  setup: function () {
+    if (this.config.textFont) {
+      this.textFont = tr.fonts[this.config.textFont];
     }
   },
 
   draw: function() {
     stroke(this.textColor);
     fill(this.textColor);
-    textFont(tr.font);
+    textFont(this.textFont);
     textSize(this.textSize);
     textAlign(window[this.align.h], window[this.align.v]);
-    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h);
+    text(this.text, this.pos.x, this.pos.y, this.size.w - this.padding * 2, this.size.h - this.padding * 2);
   }
 };

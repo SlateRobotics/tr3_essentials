@@ -37,7 +37,6 @@ tr.controls.controlPanel.btnToglStop = function() {
         type: "text",
         text: "STOP",
         textSize: 52,
-        padding: 12,
         align: {
           v: "CENTER",
           h: "CENTER"
