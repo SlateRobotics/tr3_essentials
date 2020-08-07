@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 
 tr.app.settings = new App({
-  id: 3,
+  id: 4,
   name: "Settings",
   iconUrl: "/img/icon-app-settings",
   pages: [{
