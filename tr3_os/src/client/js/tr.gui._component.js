@@ -45,6 +45,8 @@ tr.gui.component = function(componentConfig) {
 
     this.onChange = config.onChange;
     this.onClick = config.onClick;
+    this.onMousePress = config.onMousePress;
+    this.onMouseRelease = config.onMouseRelease;
     this.onDraw = config.onDraw;
 
     if (this.componentConfig.defaults) {
@@ -312,6 +314,12 @@ tr.gui.component = function(componentConfig) {
         if (this.onClick) {
           this.onClick();
         }
+
+        if (this.onMousePress) {
+          this.onMousePress();
+          this._mousePressed = true;
+        }
+
         if (this.componentConfig.mousePressed) {
           this.componentConfig.mousePressed.bind(this)();
         }
@@ -327,6 +335,11 @@ tr.gui.component = function(componentConfig) {
       if (this.children[i].mouseReleased()) {
         return;
       }
+    }
+
+    if (this.onMouseRelease && this._mousePressed) {
+      this._mousePressed = false;
+      this.onMouseRelease();
     }
 
     if (this.componentConfig.mouseReleased) {

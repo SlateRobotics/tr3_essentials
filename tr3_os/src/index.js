@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var rosnodejs = require('rosnodejs');
 var stdMsgs = rosnodejs.require('std_msgs');
+var geometryMsgs = rosnodejs.require('geometry_msgs');
 
 var app = express();
 
@@ -24,6 +25,7 @@ var rostopics = [
   { name: "/tr3/stop", type: "std_msgs/Bool"},
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
+  { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
   { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a2/control/position", type: "std_msgs/Float64"},
@@ -93,6 +95,9 @@ io.on('connection', function (socket) {
       socket.on(rostopics[i].name, function (data) {
         if (rt._type == "std_msgs/Float32MultiArray") {
           var d = new stdMsgs.msg.Float32MultiArray({ data: data });
+          rt.publish(d)
+        } else if (rt._type == "geometry_msgs/Twist") {
+          var d = new geometryMsgs.msg.Twist(data);
           rt.publish(d)
         } else {
           rt.publish({ data: data });

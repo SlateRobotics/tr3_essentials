@@ -19,7 +19,7 @@ tr.controls.controlPanel.btnAdd = function(rostopic, value) {
       },
       children: [{
         type: "text",
-        text: "+", // ▶ ◀
+        text: "+",
         textSize: 24,
         textFont: "noto",
         align: {

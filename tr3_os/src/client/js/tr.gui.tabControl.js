@@ -13,8 +13,8 @@ tr.gui.tabControl = {
       type: "container",
       border: false,
       parent: this,
-      margin: 5,
-      padding: 10,
+      margin: this.margin,
+      padding: this.padding,
       size: {
         w: 1,
         h: 1
@@ -24,11 +24,23 @@ tr.gui.tabControl = {
     this.children.push(container);
   },
 
+  draw: function () {
+    for (var i = 0; i < this.children[0].children[0].children.length; i++) {
+      var b = this.children[0].children[0].children[i];
+      if (i == this.config.currentPage) {
+        b.background = "rgb(50, 50, 50)";
+      } else {
+        b.background = "rgb(100, 100, 100)";
+      }
+    }
+  },
+
   createButtons: function() {
     var c = [];
     var w = 1 / this.config.pages.length;
     for (var i = 0; i < this.config.pages.length; i++) {
       var b = this.componentConfig.createButton(this.config.labels[i], w);
+
       b.onClick = function() {
         var i = this.index;
 
@@ -43,14 +55,12 @@ tr.gui.tabControl = {
 
         tc.children[0].children[1].clear();
         tc.children[0].children[1] = t;
-
-        //tc.componentConfig.setup();
       }
       c.push(b);
     }
     return {
       type: "container",
-      background: "rgba(255, 255, 255, 0.1)",
+      background: "rgb(80, 80, 80)",
       size: {
         w: 1.0,
         h: 30

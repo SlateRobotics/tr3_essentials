@@ -1,6 +1,3 @@
-if (!tr) tr = {};
-if (!tr.app) tr.app = {};
-
 tr.app.frv = function() {
   var c = tr.controls.frv;
 
@@ -23,13 +20,46 @@ tr.app.frv = function() {
       children: [{
         type: "container",
         size: {
-          w: 1.0,
+          w: 0.75,
           h: 1.0,
         },
         background: "rgba(255, 255, 255, 0.2)",
         children: [{
           type: "camera"
         }],
+      }, {
+        type: "container",
+        size: {
+          w: 0.25,
+          h: 1.0,
+        },
+        padding: 0,
+        margin: 0,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [{
+          type: "container",
+          size: {
+            w: 1.0,
+            h: 0.4,
+          },
+          background: "rgba(255, 255, 255, 0.2)",
+        }, {
+          type: "container",
+          size: {
+            w: 1.0,
+            h: 0.6,
+          },
+          padding: 0,
+          margin: 0,
+          background: "rgba(255, 255, 255, 0.2)",
+          children: [{
+            type: "tabControl",
+            padding: 0,
+            margin: 0,
+            labels: ["Base", "Arm", "Head"],
+            pages: [c.tabBase(), c.tabArm(), c.tabHead()],
+          }]
+        }]
       }],
     }],
   });

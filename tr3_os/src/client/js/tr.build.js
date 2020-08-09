@@ -689,7 +689,7 @@ tr.controls.controlPanel.btnAdd = function(rostopic, value) {
       },
       children: [{
         type: "text",
-        text: "+", // ▶ ◀
+        text: "+",
         textSize: 24,
         textFont: "noto",
         align: {
@@ -2119,7 +2119,133 @@ var appFace = new App({
 });
 if (!tr) tr = {};
 if (!tr.app) tr.app = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.frv) tr.controls.frv = {};
+tr.controls.frv.btnArm = function() {
+  var c = tr.controls.frv;
 
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 50,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    children: [{
+      type: "text",
+      text: "x",
+      align: { v: "CENTER", h: "CENTER" },
+      size: { w: 1, h: 1 },
+    }]
+  }
+}
+tr.controls.frv.btnBase = function(lbl) {
+  var c = tr.controls.frv;
+
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 50,
+    },
+    background: "rgb(80, 80, 80)",
+    onMousePress: function () {
+      var msg = { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0 }}
+      if (lbl == "▲") {
+        msg.linear.x = 10;
+      } else if (lbl == "▼") {
+        msg.linear.x = -10;
+      } else if (lbl == "▶") {
+        msg.angular.z = 10;
+      } else if (lbl == "◀") {
+        msg.angular.z = -10;
+      } else if (lbl == "◤") {
+        msg.linear.x = 10;
+        msg.angular.z = -10;
+      } else if (lbl == "◥") {
+        msg.linear.x = 10;
+        msg.angular.z = 10;
+      } else if (lbl == "◣") {
+        msg.linear.x = -10;
+        msg.angular.z = -10;
+      } else if (lbl == "◢") {
+        msg.linear.x = -10;
+        msg.angular.z = 10;
+      }
+      tr.data.socket.emit("/tr3/base/diff/cmd_vel", msg);
+    },
+    onMouseRelease: function () {
+      var msg = { linear: { x: 0, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0 }}
+      tr.data.socket.emit("/tr3/base/diff/cmd_vel", msg);
+    },
+    onClick: function () {
+      if (lbl == "▲") {
+
+      } else if (lbl == "▼") {
+
+      } else if (lbl == "▶") {
+
+      } else if (lbl == "◀") {
+
+      }
+    },
+    children: [{
+      type: "text",
+      textFont: "noto",
+      text: lbl,
+      align: { v: "CENTER", h: "CENTER" },
+      size: { w: 1, h: 1 },
+    }]
+  }
+}
+tr.controls.frv.btnHead = function(lbl) {
+  var c = tr.controls.frv;
+
+  return {
+    type: "container",
+    size: {
+      w: 0.333,
+      h: 50,
+    },
+    background: "rgb(80, 80, 80)",
+    onClick: function () {
+      var h0 = tr.data.getState("h0").position;
+      var h1 = tr.data.getState("h1").position;
+
+      if (lbl == "▲") {
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+      } else if (lbl == "▼") {
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+      } else if (lbl == "▶") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
+      } else if (lbl == "◀") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
+      } else if (lbl == "◤") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+      } else if (lbl == "◥") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+      } else if (lbl == "◣") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+      } else if (lbl == "◢") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+      } else if (lbl = "●") {
+        tr.data.socket.emit("/tr3/joints/h0/control/position", 0);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", 0);
+      }
+    },
+    children: [{
+      type: "text",
+      textFont: "noto",
+      text: lbl,
+      align: { v: "CENTER", h: "CENTER" },
+      size: { w: 1, h: 1 },
+    }]
+  }
+}
 tr.app.frv = function() {
   var c = tr.controls.frv;
 
@@ -2142,17 +2268,104 @@ tr.app.frv = function() {
       children: [{
         type: "container",
         size: {
-          w: 1.0,
+          w: 0.75,
           h: 1.0,
         },
         background: "rgba(255, 255, 255, 0.2)",
         children: [{
           type: "camera"
         }],
+      }, {
+        type: "container",
+        size: {
+          w: 0.25,
+          h: 1.0,
+        },
+        padding: 0,
+        margin: 0,
+        background: "rgba(255, 255, 255, 0.2)",
+        children: [{
+          type: "container",
+          size: {
+            w: 1.0,
+            h: 0.4,
+          },
+          background: "rgba(255, 255, 255, 0.2)",
+        }, {
+          type: "container",
+          size: {
+            w: 1.0,
+            h: 0.6,
+          },
+          padding: 0,
+          margin: 0,
+          background: "rgba(255, 255, 255, 0.2)",
+          children: [{
+            type: "tabControl",
+            padding: 0,
+            margin: 0,
+            labels: ["Base", "Arm", "Head"],
+            pages: [c.tabBase(), c.tabArm(), c.tabHead()],
+          }]
+        }]
       }],
     }],
   });
 };
+tr.controls.frv.tabArm = function() {
+  var c = tr.controls.frv;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    background: "rgb(80, 80, 80)",
+    children: [{
+      type: "container",
+      size: {
+        w: 1.0,
+        h: "fill",
+      },
+      children: []
+    }],
+  }
+}
+tr.controls.frv.tabBase = function() {
+  var c = tr.controls.frv;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    background: "rgb(80, 80, 80)",
+    children: [
+      c.btnBase("◤"),c.btnBase("▲"),c.btnBase("◥"),
+      c.btnBase("◀"),c.btnBase("●"),c.btnBase("▶"),
+      c.btnBase("◣"),c.btnBase("▼"),c.btnBase("◢"),
+    ],
+  }
+}
+tr.controls.frv.tabHead = function() {
+  var c = tr.controls.frv;
+
+  return {
+    type: "container",
+    size: {
+      w: 1.0,
+      h: "fill"
+    },
+    background: "rgb(50, 50, 50)",
+    children: [
+      c.btnHead("◤"),c.btnHead("▲"),c.btnHead("◥"),
+      c.btnHead("◀"),c.btnHead("●"),c.btnHead("▶"),
+      c.btnHead("◣"),c.btnHead("▼"),c.btnHead("◢"),
+    ],
+  }
+}
 if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 
@@ -3721,6 +3934,8 @@ tr.gui.component = function(componentConfig) {
 
     this.onChange = config.onChange;
     this.onClick = config.onClick;
+    this.onMousePress = config.onMousePress;
+    this.onMouseRelease = config.onMouseRelease;
     this.onDraw = config.onDraw;
 
     if (this.componentConfig.defaults) {
@@ -3988,6 +4203,12 @@ tr.gui.component = function(componentConfig) {
         if (this.onClick) {
           this.onClick();
         }
+
+        if (this.onMousePress) {
+          this.onMousePress();
+          this._mousePressed = true;
+        }
+
         if (this.componentConfig.mousePressed) {
           this.componentConfig.mousePressed.bind(this)();
         }
@@ -4003,6 +4224,11 @@ tr.gui.component = function(componentConfig) {
       if (this.children[i].mouseReleased()) {
         return;
       }
+    }
+
+    if (this.onMouseRelease && this._mousePressed) {
+      this._mousePressed = false;
+      this.onMouseRelease();
     }
 
     if (this.componentConfig.mouseReleased) {
@@ -4025,33 +4251,31 @@ tr.gui.component = function(componentConfig) {
 tr.gui.camera = {
   defaults: function() {
     this.border = false;
-    this.cameraImageUrl = 'http://' + location.hostname + ':8081/snapshot?topic=/camera/rgb/image_raw&type=ros_compressed';
+    this.cameraImageUrl = 'http://' + location.hostname + ':8081/stream?topic=/camera/rgb/image_raw&type=ros_compressed';
     this.image = '';
     this.loadingImage = false;
+    this.element = '';
   },
 
   setup: function() {
     this.loadingImage = true;
-    loadImage(this.cameraImageUrl, function(img) {
-      this.image = img;
-      this.loadingImage = false;
-    }.bind(this));
+    this.element = createElement("img","");
+    this.element.attribute("src", this.cameraImageUrl);
+    this.element.style("user-select", "none");
+    this.element.hide();
   },
 
   draw: function() {
     this.size = this.parent.size;
 
-    if (!this.image) return;
-    this.image.resize(this.size.w, this.size.h);
-    image(this.image, 0, 0, this.image.width, this.image.height);
+    var pos = this.getAbsolutePosition();
+    this.element.position(pos.x, pos.y);
+    this.element.size(this.size.w, this.size.h);
+    this.element.show();
+  },
 
-    if (!this.loadingImage) {
-      this.loadingImage = true;
-      loadImage(this.cameraImageUrl, function(img) {
-        this.image = img;
-        this.loadingImage = false;
-      }.bind(this));
-    }
+  clear: function () {
+    this.element.remove();
   },
 
   drawPixels: function() {
@@ -4879,8 +5103,8 @@ tr.gui.tabControl = {
       type: "container",
       border: false,
       parent: this,
-      margin: 5,
-      padding: 10,
+      margin: this.margin,
+      padding: this.padding,
       size: {
         w: 1,
         h: 1
@@ -4890,11 +5114,23 @@ tr.gui.tabControl = {
     this.children.push(container);
   },
 
+  draw: function () {
+    for (var i = 0; i < this.children[0].children[0].children.length; i++) {
+      var b = this.children[0].children[0].children[i];
+      if (i == this.config.currentPage) {
+        b.background = "rgb(50, 50, 50)";
+      } else {
+        b.background = "rgb(100, 100, 100)";
+      }
+    }
+  },
+
   createButtons: function() {
     var c = [];
     var w = 1 / this.config.pages.length;
     for (var i = 0; i < this.config.pages.length; i++) {
       var b = this.componentConfig.createButton(this.config.labels[i], w);
+
       b.onClick = function() {
         var i = this.index;
 
@@ -4909,14 +5145,12 @@ tr.gui.tabControl = {
 
         tc.children[0].children[1].clear();
         tc.children[0].children[1] = t;
-
-        //tc.componentConfig.setup();
       }
       c.push(b);
     }
     return {
       type: "container",
-      background: "rgba(255, 255, 255, 0.1)",
+      background: "rgb(80, 80, 80)",
       size: {
         w: 1.0,
         h: 30

@@ -1,33 +1,31 @@
 tr.gui.camera = {
   defaults: function() {
     this.border = false;
-    this.cameraImageUrl = 'http://' + location.hostname + ':8081/snapshot?topic=/camera/rgb/image_raw&type=ros_compressed';
+    this.cameraImageUrl = 'http://' + location.hostname + ':8081/stream?topic=/camera/rgb/image_raw&type=ros_compressed';
     this.image = '';
     this.loadingImage = false;
+    this.element = '';
   },
 
   setup: function() {
     this.loadingImage = true;
-    loadImage(this.cameraImageUrl, function(img) {
-      this.image = img;
-      this.loadingImage = false;
-    }.bind(this));
+    this.element = createElement("img","");
+    this.element.attribute("src", this.cameraImageUrl);
+    this.element.style("user-select", "none");
+    this.element.hide();
   },
 
   draw: function() {
     this.size = this.parent.size;
 
-    if (!this.image) return;
-    this.image.resize(this.size.w, this.size.h);
-    image(this.image, 0, 0, this.image.width, this.image.height);
+    var pos = this.getAbsolutePosition();
+    this.element.position(pos.x, pos.y);
+    this.element.size(this.size.w, this.size.h);
+    this.element.show();
+  },
 
-    if (!this.loadingImage) {
-      this.loadingImage = true;
-      loadImage(this.cameraImageUrl, function(img) {
-        this.image = img;
-        this.loadingImage = false;
-      }.bind(this));
-    }
+  clear: function () {
+    this.element.remove();
   },
 
   drawPixels: function() {
