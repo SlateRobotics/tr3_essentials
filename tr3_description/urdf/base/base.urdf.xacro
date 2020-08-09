@@ -61,6 +61,16 @@
 		</visual>
 	</link>
 
+  <joint name="rplidar_joint" type="fixed">
+    <axis xyz="0 0 1" />
+    <origin xyz="0 0.11 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="laser" />
+  </joint>
+
+  <link name="laser">
+  </link>
+
 	<xacro:tr3_wheel name="b0">
     <axis xyz="0 -1 0"/>
 		<origin rpy="0 0 -1.5708" xyz="0.3281 0 0"/>

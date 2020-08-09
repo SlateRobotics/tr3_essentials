@@ -23,7 +23,7 @@ tr.app.frv = function() {
           w: 0.75,
           h: 1.0,
         },
-        background: "rgba(255, 255, 255, 0.2)",
+        background: "rgb(34, 34, 34)",
         children: [{
           type: "camera"
         }],
@@ -35,14 +35,21 @@ tr.app.frv = function() {
         },
         padding: 0,
         margin: 0,
-        background: "rgba(255, 255, 255, 0.2)",
+        background: "rgb(34, 34, 34)",
         children: [{
           type: "container",
           size: {
             w: 1.0,
             h: 0.4,
           },
-          background: "rgba(255, 255, 255, 0.2)",
+          background: "rgb(34, 34, 34)",
+          children: [{
+            type: "minimap",
+            size: {
+              w: 1,
+              h: 1
+            }
+          }]
         }, {
           type: "container",
           size: {
@@ -51,7 +58,7 @@ tr.app.frv = function() {
           },
           padding: 0,
           margin: 0,
-          background: "rgba(255, 255, 255, 0.2)",
+          background: "rgb(34, 34, 34)",
           children: [{
             type: "tabControl",
             padding: 0,

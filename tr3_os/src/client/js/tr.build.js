@@ -2271,7 +2271,7 @@ tr.app.frv = function() {
           w: 0.75,
           h: 1.0,
         },
-        background: "rgba(255, 255, 255, 0.2)",
+        background: "rgb(34, 34, 34)",
         children: [{
           type: "camera"
         }],
@@ -2283,14 +2283,21 @@ tr.app.frv = function() {
         },
         padding: 0,
         margin: 0,
-        background: "rgba(255, 255, 255, 0.2)",
+        background: "rgb(34, 34, 34)",
         children: [{
           type: "container",
           size: {
             w: 1.0,
             h: 0.4,
           },
-          background: "rgba(255, 255, 255, 0.2)",
+          background: "rgb(34, 34, 34)",
+          children: [{
+            type: "minimap",
+            size: {
+              w: 1,
+              h: 1
+            }
+          }]
         }, {
           type: "container",
           size: {
@@ -2299,7 +2306,7 @@ tr.app.frv = function() {
           },
           padding: 0,
           margin: 0,
-          background: "rgba(255, 255, 255, 0.2)",
+          background: "rgb(34, 34, 34)",
           children: [{
             type: "tabControl",
             padding: 0,
@@ -3866,11 +3873,20 @@ tr.data.robotState = {
   effort: []
 };
 
+tr.data.lidar = {
+  angle_increment: 0,
+  ranges: [],
+}
+
 tr.data.setup = function() {
   tr.data.socket = io('http://localhost:8080/');
 
   tr.data.socket.on('/tr3/state', function(data) {
     tr.data.robotState = data;
+  });
+
+  tr.data.socket.on('/tr3/lidar', function(data) {
+    tr.data.lidar = data;
   });
 }
 
@@ -4784,6 +4800,61 @@ tr.gui.input = function(config) {
 
   this.setup();
 }
+tr.gui.minimap = {
+  defaults: function() {
+    this.border = false;
+    this.padding = 5;
+    this.scale = 10;
+  },
+
+  draw: function() {
+    this.componentConfig.drawBackground.bind(this)();
+    this.componentConfig.drawObjects.bind(this)();
+  },
+
+  drawObjects: function () {
+    var l = tr.data.lidar;
+    if (!l.ranges) return;
+    for (var i = 0; i < l.ranges.length; i++) {
+      var m = l.ranges[i];
+      if (m) {
+        var a = l.angle_min + i * l.angle_increment + 1.5708;
+        var x = sin(a) * m * this.scale;
+        var y = cos(a) * m * this.scale;
+
+        var d = sqrt((x * x) + (y * y));
+        if (d < this.radius - 1) {
+          stroke("red");
+          fill("red");
+          circle(this.center.x + x, this.center.y + y, 1);
+        }
+      }
+    }
+  },
+
+  drawBackground: function () {
+    var x = this.pos.x + this.size.w / 2.0 - this.padding;
+    var y = this.pos.y + this.size.h / 2.0 - this.padding;
+
+    this.center = { x: x, y: y };
+
+    var d = this.size.w - this.padding * 2.0 - this.margin * 2.0;
+    if (this.size.h < this.size.w) {
+      d = this.size.h - this.padding * 2.0 - this.margin * 2.0;
+    }
+
+    this.radius = d / 2.0;
+
+    stroke("rgb(50, 50, 50)");
+    fill("rgb(100, 100, 100)");
+    circle(x, y, d);
+
+    var w = Math.floor(.725 * this.scale);
+    stroke("white");
+    fill("white");
+    rect(x - w / 2, y - w / 2, w, w);
+  },
+};
 if (!tr) var tr = {};
 if (!tr.gui) tr.gui = {};
 

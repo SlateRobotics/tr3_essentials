@@ -90,6 +90,15 @@ io.on('connection', function (socket) {
       socket.emit('/tr3/state', msg);
     });
 
+    nh.subscribe('/tr3/lidar', 'sensor_msgs/LaserScan', function (msg) {
+      socket.emit('/tr3/lidar', {
+        angle_increment: msg.angle_increment,
+        angle_min: msg.angle_min,
+        angle_max: msg.angle_max,
+        ranges: msg.ranges
+      });
+    });
+
     for (var i = 0; i < rostopics.length; i++) {
       const rt = nh.advertise(rostopics[i].name, rostopics[i].type);
       socket.on(rostopics[i].name, function (data) {
