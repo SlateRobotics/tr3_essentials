@@ -178,16 +178,16 @@ tr.lib.tr2 = function() {
     this.arm.push(new tr.lib.link({
       id: "a4",
       meshId: "g0",
-      axis: "Z",
+      axis: "Y",
       flip: true,
       rotate: {
-        x: 1.5708,
+        x: 0,
         y: 0,
         z: 0
       },
       translate: {
         x: 0,
-        y: 67,
+        y: 67+120,
         z: 67
       },
     }));
