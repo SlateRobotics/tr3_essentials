@@ -8,6 +8,22 @@ Eventually, we will have a type of "App Store" so that users can find applicatio
 This is a logical progression of the mission of the company. We eventually want users who know nothing about ROS or software development, and they need to be able to do stuff on the robot without the learning curve. This is the solution for that problem.
 
 # To Do
- - Control Panel
-	 - Tab Module
-		 - 3D Model Rendering
+  - FRV
+    - Mini Map
+      - SLAM, Odom, etc.
+      - Navigation
+    - 3D Render
+      - Point cloud addition
+    - Arm control
+      - Goal position coordinate frame: robot vs. world
+      - Gripper control
+    - Console
+  - Control Panel
+    - Waypoint record and playback
+  - Gazebo
+    - Controller tuning
+    - Simulated rear casters
+  - Other
+    - Inverse Kinematics
+  - Hardware
+    - Actuator acceleration limits
