@@ -13,9 +13,10 @@ tr.gui.chain = function(_p5) {
     this.p5.push();
     this.p5.scale(0.2);
 
-    this.p5.directionalLight(250, 250, 250, 500, -1250, -500);
     this.p5.noStroke();
-    this.p5.ambientMaterial(100);
+    this.p5.directionalLight(255, 255, 255, 500, -1250, -1250);
+    this.p5.ambientLight(125);
+    this.p5.ambientMaterial(40);
 
     this.eef.x = 0;
     this.eef.y = 0;

@@ -12,9 +12,18 @@ tr.controls.controlPanel.tabRender = function() {
       h: "fill"
     },
     padding: 10,
-    background: "rgba(255, 255, 255, 0.2)",
+    background: "rgb(100, 100, 100)",
     children: [{
-      type: "tr2",
+      type: "container",
+      border: false,
+      size: {
+        w: 1.0,
+        h: "fill"
+      },
+      padding: 0,
+      children: [{
+        type: "tr2",
+      }]
     }],
   }
 }

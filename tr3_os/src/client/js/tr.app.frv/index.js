@@ -23,9 +23,39 @@ tr.app.frv = function() {
           w: 0.75,
           h: 1.0,
         },
+        padding: 0,
+        margin: 0,
         background: "rgb(34, 34, 34)",
         children: [{
-          type: "camera"
+          type: "tabControl",
+          padding: 0,
+          margin: 0,
+          size: {
+            w: 1.0,
+            h: "fill",
+          },
+          labels: ["First-Person", "Third-Person"],
+          pages: [{
+            type: "container",
+            size: {
+              w: 1.0,
+              h: "fill",
+            },
+            background: "rgb(34, 34, 34)",
+            children: [{
+              type: "camera"
+            }]
+          }, {
+            type: "container",
+            size: {
+              w: 1.0,
+              h: "fill",
+            },
+            background: "rgb(100, 100, 100)",
+            children: [{
+              type: "tr2"
+            }]
+          }],
         }],
       }, {
         type: "container",

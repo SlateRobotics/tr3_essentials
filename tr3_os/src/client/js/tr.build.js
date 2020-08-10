@@ -1738,9 +1738,18 @@ tr.controls.controlPanel.tabRender = function() {
       h: "fill"
     },
     padding: 10,
-    background: "rgba(255, 255, 255, 0.2)",
+    background: "rgb(100, 100, 100)",
     children: [{
-      type: "tr2",
+      type: "container",
+      border: false,
+      size: {
+        w: 1.0,
+        h: "fill"
+      },
+      padding: 0,
+      children: [{
+        type: "tr2",
+      }]
     }],
   }
 }
@@ -2271,9 +2280,39 @@ tr.app.frv = function() {
           w: 0.75,
           h: 1.0,
         },
+        padding: 0,
+        margin: 0,
         background: "rgb(34, 34, 34)",
         children: [{
-          type: "camera"
+          type: "tabControl",
+          padding: 0,
+          margin: 0,
+          size: {
+            w: 1.0,
+            h: "fill",
+          },
+          labels: ["First-Person", "Third-Person"],
+          pages: [{
+            type: "container",
+            size: {
+              w: 1.0,
+              h: "fill",
+            },
+            background: "rgb(34, 34, 34)",
+            children: [{
+              type: "camera"
+            }]
+          }, {
+            type: "container",
+            size: {
+              w: 1.0,
+              h: "fill",
+            },
+            background: "rgb(100, 100, 100)",
+            children: [{
+              type: "tr2"
+            }]
+          }],
         }],
       }, {
         type: "container",
@@ -4329,9 +4368,10 @@ tr.gui.chain = function(_p5) {
     this.p5.push();
     this.p5.scale(0.2);
 
-    this.p5.directionalLight(250, 250, 250, 500, -1250, -500);
     this.p5.noStroke();
-    this.p5.ambientMaterial(100);
+    this.p5.directionalLight(255, 255, 255, 500, -1250, -1250);
+    this.p5.ambientLight(125);
+    this.p5.ambientMaterial(40);
 
     this.eef.x = 0;
     this.eef.y = 0;
@@ -4572,9 +4612,7 @@ tr.gui.drawLink = function(link, r_x, r_y, r_z, x, y, z, animate, _p5) {
   _p5.push();
   _p5.scale(0.2);
 
-  _p5.directionalLight(250, 250, 250, 500, -1250, -500);
   _p5.noStroke();
-  _p5.ambientMaterial(100);
 
   _p5.translate(x, y, z);
   _p5.rotateX(r_x);
@@ -4585,8 +4623,9 @@ tr.gui.drawLink = function(link, r_x, r_y, r_z, x, y, z, animate, _p5) {
     animate();
   }
 
-  _p5.ambientLight(100);
-  _p5.ambientMaterial(40, 40, 40);
+  _p5.directionalLight(255, 255, 255, 500, -1250, -1250);
+  _p5.ambientLight(125);
+  _p5.ambientMaterial(40);
   _p5.model(link);
 
   _p5.pop();
