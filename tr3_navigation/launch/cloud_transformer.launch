@@ -1,0 +1,3 @@
+<launch>
+ <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
+</launch>

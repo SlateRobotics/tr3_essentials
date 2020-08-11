@@ -2260,7 +2260,7 @@ tr.app.frv = function() {
 
   return new App({
     id: 3,
-    name: "FRV",
+    name: "Teleop",
     iconUrl: "/img/icon-app-frv",
     pages: [{
       pos: {
@@ -2272,7 +2272,7 @@ tr.app.frv = function() {
         h: 1.0
       },
       header: {
-        text: "First-Robot View",
+        text: "Teleoperation",
       },
       children: [{
         type: "container",
@@ -3912,6 +3912,8 @@ tr.data.robotState = {
   effort: []
 };
 
+tr.data.depth = [];
+
 tr.data.lidar = {
   angle_increment: 0,
   ranges: [],
@@ -3926,6 +3928,10 @@ tr.data.setup = function() {
 
   tr.data.socket.on('/tr3/lidar', function(data) {
     tr.data.lidar = data;
+  });
+
+  tr.data.socket.on('/tr3/depth', function(data) {
+    tr.data.depth = data;
   });
 }
 
@@ -4848,12 +4854,17 @@ tr.gui.minimap = {
 
   draw: function() {
     this.componentConfig.drawBackground.bind(this)();
-    this.componentConfig.drawObjects.bind(this)();
+    this.componentConfig.drawLidar.bind(this)();
+    this.componentConfig.drawDepth.bind(this)();
   },
 
-  drawObjects: function () {
+  drawLidar: function () {
     var l = tr.data.lidar;
     if (!l.ranges) return;
+
+    stroke("red");
+    fill("red");
+
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
       if (m) {
@@ -4863,9 +4874,26 @@ tr.gui.minimap = {
 
         var d = sqrt((x * x) + (y * y));
         if (d < this.radius - 1) {
-          stroke("red");
-          fill("red");
           circle(this.center.x + x, this.center.y + y, 1);
+        }
+      }
+    }
+  },
+
+  drawDepth: function () {
+    if (!tr.data.depth) return;
+
+    stroke("white");
+    fill("white");
+
+    for (var i = 0; i < tr.data.depth.length; i++) {
+      var d = tr.data.depth[i];
+      if (d.z > 0) {
+        var x = d.x * this.scale;
+        var y = d.y * this.scale;
+        var dist = sqrt((d.x * d.x) + (d.y * d.y));
+        if (dist < this.radius - 1) {
+          circle(this.center.x + x, this.center.y - y, 1);
         }
       }
     }
@@ -5609,6 +5637,26 @@ tr.gui.tr2 = {
       });
     }
     head.draw();
+
+    this.p5.rotateZ(3.1415);
+
+    /*this.p5.strokeWeight(2);
+    this.p5.stroke('red');
+    this.p5.line(0, 0, 0, -1000, 0, 0);
+
+    this.p5.stroke('green');
+    this.p5.line(0, 0, 0, 0, 1000, 0);
+
+    this.p5.stroke('blue');
+    this.p5.line(0, 0, 0, 0, 0, 1000);*/
+
+    this.p5.stroke("white");
+    for (var i = 0; i < tr.data.depth.length; i++) {
+      var d = tr.data.depth[i];
+      this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
+      this.p5.sphere(4);
+      this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);
+    }
   },
 
   clear: function() {

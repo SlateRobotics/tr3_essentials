@@ -3,7 +3,7 @@ tr.app.frv = function() {
 
   return new App({
     id: 3,
-    name: "FRV",
+    name: "Teleop",
     iconUrl: "/img/icon-app-frv",
     pages: [{
       pos: {
@@ -15,7 +15,7 @@ tr.app.frv = function() {
         h: 1.0
       },
       header: {
-        text: "First-Robot View",
+        text: "Teleoperation",
       },
       children: [{
         type: "container",

@@ -10,6 +10,8 @@ tr.data.robotState = {
   effort: []
 };
 
+tr.data.depth = [];
+
 tr.data.lidar = {
   angle_increment: 0,
   ranges: [],
@@ -24,6 +26,10 @@ tr.data.setup = function() {
 
   tr.data.socket.on('/tr3/lidar', function(data) {
     tr.data.lidar = data;
+  });
+
+  tr.data.socket.on('/tr3/depth', function(data) {
+    tr.data.depth = data;
   });
 }
 

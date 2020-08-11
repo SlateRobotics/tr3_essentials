@@ -90,6 +90,24 @@ io.on('connection', function (socket) {
       socket.emit('/tr3/state', msg);
     });
 
+    nh.subscribe('/tr3/depth/scaled', 'std_msgs/Int32MultiArray', function (msg) {
+      var result = [];
+      for (var i = 0; i < msg.data.length; i += 4) {
+        var n = msg.data[i+0];
+        var x = msg.data[i+1] / 1000000.0;
+        var y = msg.data[i+2] / 1000000.0;
+        var z = msg.data[i+3] / 1000000.0;
+
+        if (n == 1) {
+          result.push({ x: NaN, y: NaN, z: NaN });
+        } else {
+          result.push({ x: x, y: y, z: z });
+        }
+      }
+
+      socket.emit('/tr3/depth', result);
+    });
+
     nh.subscribe('/tr3/lidar', 'sensor_msgs/LaserScan', function (msg) {
       socket.emit('/tr3/lidar', {
         angle_increment: msg.angle_increment,

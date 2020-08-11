@@ -190,6 +190,26 @@ tr.gui.tr2 = {
       });
     }
     head.draw();
+
+    this.p5.rotateZ(3.1415);
+
+    /*this.p5.strokeWeight(2);
+    this.p5.stroke('red');
+    this.p5.line(0, 0, 0, -1000, 0, 0);
+
+    this.p5.stroke('green');
+    this.p5.line(0, 0, 0, 0, 1000, 0);
+
+    this.p5.stroke('blue');
+    this.p5.line(0, 0, 0, 0, 0, 1000);*/
+
+    this.p5.stroke("white");
+    for (var i = 0; i < tr.data.depth.length; i++) {
+      var d = tr.data.depth[i];
+      this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
+      this.p5.sphere(4);
+      this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);
+    }
   },
 
   clear: function() {

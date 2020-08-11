@@ -7,12 +7,17 @@ tr.gui.minimap = {
 
   draw: function() {
     this.componentConfig.drawBackground.bind(this)();
-    this.componentConfig.drawObjects.bind(this)();
+    this.componentConfig.drawLidar.bind(this)();
+    this.componentConfig.drawDepth.bind(this)();
   },
 
-  drawObjects: function () {
+  drawLidar: function () {
     var l = tr.data.lidar;
     if (!l.ranges) return;
+
+    stroke("red");
+    fill("red");
+
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
       if (m) {
@@ -22,9 +27,26 @@ tr.gui.minimap = {
 
         var d = sqrt((x * x) + (y * y));
         if (d < this.radius - 1) {
-          stroke("red");
-          fill("red");
           circle(this.center.x + x, this.center.y + y, 1);
+        }
+      }
+    }
+  },
+
+  drawDepth: function () {
+    if (!tr.data.depth) return;
+
+    stroke("white");
+    fill("white");
+
+    for (var i = 0; i < tr.data.depth.length; i++) {
+      var d = tr.data.depth[i];
+      if (d.z > 0) {
+        var x = d.x * this.scale;
+        var y = d.y * this.scale;
+        var dist = sqrt((d.x * d.x) + (d.y * d.y));
+        if (dist < this.radius - 1) {
+          circle(this.center.x + x, this.center.y - y, 1);
         }
       }
     }
