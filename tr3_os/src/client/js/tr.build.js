@@ -6157,6 +6157,7 @@ tr.gui.tr2 = {
       h: "CENTER"
     };
     this.border = false;
+    this.useLiveState = true;
 
     this.links = {};
 
@@ -6260,9 +6261,13 @@ tr.gui.tr2 = {
       this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
     }
 
-    var s = tr.data.robotState;
-    for (var i = 0; i < s.name.length; i++) {
-      this.state[s.name[i]] = s.position[i];
+    console.log(this);
+
+    if (this.useLiveState) {
+      var s = tr.data.robotState;
+      for (var i = 0; i < s.name.length; i++) {
+        this.state[s.name[i]] = s.position[i];
+      }
     }
 
     var absPos = this.getAbsolutePosition();
