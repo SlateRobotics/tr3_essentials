@@ -113,8 +113,6 @@ tr.gui.tr2 = {
       this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
     }
 
-    console.log(this);
-
     if (this.useLiveState) {
       var s = tr.data.robotState;
       for (var i = 0; i < s.name.length; i++) {
