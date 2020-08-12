@@ -89,4 +89,12 @@
 		<material>Gazebo/DarkGrey</material>
 	</gazebo>
 
+	<gazebo reference="link_b4">
+		<material>Gazebo/DarkGrey</material>
+	</gazebo>
+
+	<gazebo reference="link_b5">
+		<material>Gazebo/DarkGrey</material>
+	</gazebo>
+
 </robot>

@@ -9,6 +9,7 @@ tr.gui.minimap = {
     this.componentConfig.drawBackground.bind(this)();
     this.componentConfig.drawLidar.bind(this)();
     this.componentConfig.drawDepth.bind(this)();
+    this.componentConfig.drawMap.bind(this)();
   },
 
   drawLidar: function () {
@@ -36,8 +37,8 @@ tr.gui.minimap = {
   drawDepth: function () {
     if (!tr.data.depth) return;
 
-    stroke("white");
-    fill("white");
+    stroke("orange");
+    fill("orange");
 
     for (var i = 0; i < tr.data.depth.length; i++) {
       var d = tr.data.depth[i];
@@ -50,6 +51,32 @@ tr.gui.minimap = {
         }
       }
     }
+  },
+
+  drawMap: function () {
+    if (!tr.data.map) return;
+    if (!tr.data.odom) return;
+
+    var p = tr.data.odom.position;
+
+    translate(this.center.x, this.center.y);
+    rotateZ(tr.data.odom.orientation.z);
+
+    stroke("white");
+    fill("white");
+
+    for (var i = 0; i < tr.data.map.length; i++) {
+      var d = tr.data.map[i];
+      var x = (d.x - p.x) * this.scale;
+      var y = (d.y - p.y) * this.scale;
+      var dist = sqrt((x * x) + (y * y));
+      if (dist < this.radius - 1) {
+        circle(x, -y, 1);
+      }
+    }
+
+    rotateZ(-tr.data.odom.orientation.z);
+    translate(-this.center.x, -this.center.y);
   },
 
   drawBackground: function () {
