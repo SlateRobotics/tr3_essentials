@@ -17,12 +17,16 @@ sudo -E apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6
 
 sudo apt-get update
 sudo apt-get install ros-melodic-desktop-full -y
+
+sudo apt-get install python-pip -y
+sudo pip install -U rosdep
 sudo rosdep init
 rosdep update
+
 echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential -y
-sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server -y
+sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs -y
 
 echo "Installing TR3 Packages"
 mkdir ~/ros_ws
