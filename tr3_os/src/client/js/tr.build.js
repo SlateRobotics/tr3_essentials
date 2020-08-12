@@ -2413,6 +2413,707 @@ tr.controls.frv.tabHead = function() {
   }
 }
 if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.columnLeft = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+
+  children.push(c.programHeader());
+  children.push(c.tabControl());
+
+  return {
+    type: "container",
+    size: {
+      w: 0.5,
+      h: 1,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 10,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+}]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.columnRight = function() {
+    var c = tr.controls.pnp2;
+
+    var children = [];
+    children.push(c.render());
+    children.push(c.programBtn_Play());
+    children.push(c.programBtn_Pause());
+    children.push(c.programBtn_Stop());
+
+  return {
+    type: "container",
+    size: {
+      w: 0.5,
+      h: 1,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 10,
+    padding: 5,
+    children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.app) tr.app = {};
+
+tr.app.pnp2 = function() {
+  var c = tr.controls.pnp2;
+
+var columns = [];
+columns.push(c.columnLeft());
+columns.push(c.columnRight());
+
+  return new App({
+    id: 4,
+    name: "P.N.P. V2",
+    iconUrl: "/img/icon-app-pnp",
+    pages: [{
+      pos: {
+        x: 0,
+        y: 0
+      },
+      header: {
+        text: "P.N.P v2",
+      },
+      children: columns,
+  }],
+  });
+};
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Add = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program Add
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "+", // Add symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Delete = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program Delete
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "♲", //recycle symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Pause = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 3,
+      h: 40
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program play
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "II", // Right symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Play = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 3,
+      h: 40
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program play
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▶", // Right symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Settings = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program Settings
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "S", // ⚙ Gear symbol Not Working
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programBtn_Stop = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 3,
+      h: 40
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program play
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "■", // Right symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programHeader = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+
+  children.push(c.programSelect());
+  children.push(c.programBtn_Delete());
+  children.push(c.programBtn_Add());
+  children.push(c.programBtn_Settings());
+
+  children.push(c.waypointBtn_Previous());
+  children.push(c.waypointDisplay());
+  children.push(c.waypointBtn_Next());
+  children.push(c.waypointBtn_Delete());
+  children.push(c.waypointBtn_Add());
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 100,
+    },
+    children: children,
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.programSelect = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do program Settings
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        id: "progselect",
+        type: "select",
+        size: {
+          w: 1,
+          h: 40
+        },
+        padding: 5,
+        options: ["Did Not Load", ],
+        textSize: 22,
+        onChange: function(val) {
+          var app = this.getApp();
+        //  app.config.changeProgram(val);
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.render = function() {
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 0.9,
+    },
+    children: [{
+    type: "tr2",
+      }],
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.slider = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 5 / 9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "slider",
+        type: "slider",
+
+        onDraw: function() {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var sliderVal = page.getChild(id + "slider").element.value();
+        },
+
+        onInput: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+          var sliderVal = page.getChild(id + "slider").element.value();
+
+          var val = 0;
+          val = sliderVal * Math.PI * 2.0;
+          //tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
+          var label = page.getChild(id + "sliderl");
+          label.text = val.toFixed(2);
+        },
+
+        onChange: function(val) {
+          var app = this.getApp();
+          var page = app.getCurrentPage();
+        },
+
+        min: -1,
+        max: 1,
+        val: 0,
+        step: 0.01,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.sliderID_Label = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 2 / 9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: id,
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.sliderRow = function(id) {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+
+  children.push(c.sliderID_Label(id));
+  children.push(c.sliderValue_Label(id));
+  children.push(c.slider(id));
+
+  return {
+    type: "container",
+    border: false,
+    size: {
+      w: 1,
+      h: 20,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 10,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+}]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.sliderValue_Label = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 2 / 9,
+      h: 20
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "sliderl",
+        type: "text",
+        text: "0.00",
+        textSize: 14,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.tabRealtime = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+
+
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 1,
+    },
+    children: children,
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.tabSimulated = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+
+    children.push(c.sliderRow("a0"));
+    children.push(c.sliderRow("a1"));
+    children.push(c.sliderRow("a2"));
+    children.push(c.sliderRow("a3"));
+    children.push(c.sliderRow("a4"));
+
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 120,
+    },
+    children: children,
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.tabControl = function() {
+  var c = tr.controls.pnp2;
+
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 1,
+    },
+    children: [{
+      type: "tabControl",
+      labels: ["Simulated", "Realtime"],
+      pages: [c.tabSimulated(), c.tabRealtime()],
+    }]
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypointBtn_Add = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint Add
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "+", // Add symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypointBtn_Delete = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint Delete
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "♲", //recycle symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypointBtn_Next = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint previous
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▶", // Right symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypointBtn_Previous = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint previous
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "◀", // Left symbol
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypointDisplay = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 50
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "dwaypoint",
+        type: "text",
+        text: "0", // Current Waypoint ID
+        textSize: 24,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
 if (!tr.app) tr.app = {};
 
 tr.app.pnp = new App({
