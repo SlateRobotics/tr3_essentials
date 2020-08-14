@@ -3,12 +3,12 @@ tr.gui.minimap = {
     this.border = false;
     this.padding = 5;
     this.scale = 10;
+
+    this.goal = '';
   },
 
   setup: function () {
     this.onClick = function () {
-      var r = tr.data.odom.position;
-
       var p = this.absolutePosition;
       p.x += this.center.x;
       p.y += this.center.y;
@@ -18,8 +18,23 @@ tr.gui.minimap = {
         y: -(mouseY - p.y) / this.scale
       }
 
-      d.x += r.x;
-      d.y += r.y;
+      var a = tr.data.odom.orientation.z;
+      var x = d.x * cos(a) - d.y * sin(a);
+      var y = d.x * sin(a) + d.y * cos(a);
+
+      this.goal = {
+        position: {
+          x: x + tr.data.odom.position.x,
+          y: y + tr.data.odom.position.y,
+          z: 0
+        },
+        orientation: {
+          x: 0,
+          y: 0,
+          z: 0,
+          w: 1
+        }
+      };
 
       tr.data.socket.emit('/move_base_simple/goal', {
         header: {
@@ -30,19 +45,7 @@ tr.gui.minimap = {
           },
           frame_id: 'map',
         },
-        pose: {
-          position: {
-            x: d.x,
-            y: d.y,
-            z: 0
-          },
-          orientation: {
-            x: 0,
-            y: 0,
-            z: 0,
-            w: 1
-          }
-        }
+        pose: this.goal,
       });
     }
   },
@@ -53,6 +56,39 @@ tr.gui.minimap = {
     this.componentConfig.drawLidar.bind(this)();
     this.componentConfig.drawDepth.bind(this)();
     this.componentConfig.drawMap.bind(this)();
+    this.componentConfig.drawGoal.bind(this)();
+    this.componentConfig.drawButtons.bind(this)();
+  },
+
+  drawGoal: function () {
+    if (!this.goal || tr.data.nav.complete) return;
+
+    var p = tr.data.odom.position;
+
+    translate(this.center.x, this.center.y);
+
+    var d = this.goal.position;
+
+    var a = -tr.data.odom.orientation.z;
+    var x = (d.x - p.x) * cos(a) - (d.y - p.y) * sin(a);
+    var y = (d.x - p.x) * sin(a) + (d.y - p.y) * cos(a);
+
+    x *= this.scale;
+    y *= this.scale;
+
+    var dist = sqrt((x * x) + (y * y));
+    if (dist < this.radius - 1) {
+      stroke("red");
+      fill("red");
+      strokeWeight(2);
+      line(x, -y, x, -y - 25);
+      triangle(x, -y - 25, x, -y - 15, x + 10, -y - 20);
+    }
+
+    translate(-this.center.x, -this.center.y);
+  },
+
+  drawButtons: function () {
   },
 
   drawLidar: function () {

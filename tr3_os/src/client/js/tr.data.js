@@ -10,6 +10,8 @@ tr.data.robotState = {
   effort: []
 };
 
+tr.data.nav = {};
+
 tr.data.depth = [];
 
 tr.data.lidar = {
@@ -34,6 +36,16 @@ tr.data.setup = function() {
 
   tr.data.socket.on('/tr3/depth', function(data) {
     tr.data.depth = data;
+  });
+
+  tr.data.socket.on('/move_base/status', function(data) {
+    var complete = true;
+    for (var i = 0; i < data.status_list.length; i++) {
+      if (data.status_list[i].status != 3) {
+        complete = false;
+      }
+    }
+    tr.data.nav.complete = complete;
   });
 
   tr.data.socket.on('/map', function(data) {

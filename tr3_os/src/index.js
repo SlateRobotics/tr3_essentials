@@ -119,6 +119,10 @@ io.on('connection', function (socket) {
       });
     });
 
+    nh.subscribe('/move_base/status' ,'actionlib_msgs/GoalStatusArray', function (msg) {
+      socket.emit('/move_base/status', msg);
+    });
+
     nh.subscribe('/tr3/base/odom' ,'nav_msgs/Odometry', function (msg) {
       var q = msg.pose.pose.orientation;
       var euler = qte([q.w, q.x, q.y, q.z]);
