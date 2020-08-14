@@ -41,10 +41,12 @@ tr.data.setup = function() {
   tr.data.socket.on('/move_base/status', function(data) {
     var complete = true;
     for (var i = 0; i < data.status_list.length; i++) {
-      if (data.status_list[i].status != 3) {
+      var s = data.status_list[i].status;
+      if (s == 0 || s == 1) {
         complete = false;
       }
     }
+    tr.data.nav.status = data;
     tr.data.nav.complete = complete;
   });
 

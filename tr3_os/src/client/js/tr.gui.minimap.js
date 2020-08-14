@@ -4,20 +4,82 @@ tr.gui.minimap = {
     this.padding = 5;
     this.scale = 10;
 
+    this.buttonRadius = 36;
+    this.btnCancel = {};
+
     this.goal = '';
   },
 
   setup: function () {
     this.onClick = function () {
-      var p = this.absolutePosition;
-      p.x += this.center.x;
-      p.y += this.center.y;
+      this.componentConfig.handleClick_Goal.bind(this)();
+      this.componentConfig.handleClick_Button(this.btnCancel, function () {
+        var l = tr.data.nav.status.status_list;
+        for (var i = 0; i < l.length; i++) {
+          if (l[i].status == 1) {
+            tr.data.socket.emit('/move_base/cancel', l[i].goal_id);
+          }
+        }
+      }.bind(this)).bind(this)();
+      this.componentConfig.handleClick_Button(this.btnZoomIn, function () {
+        this.scale += 1;
+      }.bind(this)).bind(this)();
+      this.componentConfig.handleClick_Button(this.btnZoomOut, function () {
+        this.scale -= 1;
+      }.bind(this)).bind(this)();
+    }
+  },
 
-      var d = {
-        x: (mouseX - p.x) / this.scale,
-        y: -(mouseY - p.y) / this.scale
+  draw: function() {
+    this.btnCancel = { x: 17, y: this.size.h - 25, r: 18 };
+    this.btnZoomIn = { x: this.size.w - 27, y: this.size.h - 65, r: 18 };
+    this.btnZoomOut = { x: this.size.w - 27, y: this.size.h - 25, r: 18 }
+
+    this.absolutePosition = this.getAbsolutePosition();
+    this.componentConfig.drawBackground.bind(this)();
+    this.componentConfig.drawLidar.bind(this)();
+    this.componentConfig.drawDepth.bind(this)();
+    this.componentConfig.drawMap.bind(this)();
+    this.componentConfig.drawGoal.bind(this)();
+    this.componentConfig.drawButtons.bind(this)();
+  },
+
+  handleClick_Button: function (btn, callback) {
+    return function () {
+      var p = {
+        x: this.absolutePosition.x + btn.x,
+        y: this.absolutePosition.y + btn.y
       }
 
+      var d = {
+        x: (mouseX - p.x),
+        y: (mouseY - p.y)
+      }
+
+      var dist = sqrt((d.x * d.x) + (d.y * d.y));
+
+      if (dist < btn.r - 1) {
+        callback();
+      }
+    }
+  },
+
+  handleClick_Goal: function () {
+    var p = {
+      x: this.absolutePosition.x + this.center.x,
+      y: this.absolutePosition.y + this.center.y
+    }
+
+    var d = {
+      x: (mouseX - p.x) / this.scale,
+      y: -(mouseY - p.y) / this.scale
+    }
+
+    var _x = d.x * this.scale;
+    var _y = d.y * this.scale;
+    var dist = sqrt((_x * _x) + (_y * _y));
+    if (dist < this.radius - 1) {
+      if (!tr.data.odom) return;
       var a = tr.data.odom.orientation.z;
       var x = d.x * cos(a) - d.y * sin(a);
       var y = d.x * sin(a) + d.y * cos(a);
@@ -50,18 +112,9 @@ tr.gui.minimap = {
     }
   },
 
-  draw: function() {
-    this.absolutePosition = this.getAbsolutePosition();
-    this.componentConfig.drawBackground.bind(this)();
-    this.componentConfig.drawLidar.bind(this)();
-    this.componentConfig.drawDepth.bind(this)();
-    this.componentConfig.drawMap.bind(this)();
-    this.componentConfig.drawGoal.bind(this)();
-    this.componentConfig.drawButtons.bind(this)();
-  },
-
   drawGoal: function () {
     if (!this.goal || tr.data.nav.complete) return;
+    if (!tr.data.odom) return;
 
     var p = tr.data.odom.position;
 
@@ -88,7 +141,24 @@ tr.gui.minimap = {
     translate(-this.center.x, -this.center.y);
   },
 
+  drawButton: function (btn, backColor, txt) {
+    fill(backColor);
+    stroke("rgb(50, 50, 50)");
+    circle(btn.x, btn.y, btn.r*2);
+
+    stroke("white");
+    fill("white");
+    text(" " + txt, btn.x-btn.r, btn.y-btn.r, btn.r*2, btn.r*2);
+  },
+
   drawButtons: function () {
+    textFont(tr.fonts.noto);
+    textSize(22);
+    textAlign(CENTER, TOP);
+
+    this.componentConfig.drawButton(this.btnZoomOut, "rgb(95, 95, 95)", "-");
+    this.componentConfig.drawButton(this.btnZoomIn, "rgb(95, 95, 95)", "+");
+    this.componentConfig.drawButton(this.btnCancel, "red", "x");
   },
 
   drawLidar: function () {

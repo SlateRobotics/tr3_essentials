@@ -6,6 +6,7 @@ var express = require('express');
 var rosnodejs = require('rosnodejs');
 var stdMsgs = rosnodejs.require('std_msgs');
 var geometryMsgs = rosnodejs.require('geometry_msgs');
+var actionlibMsgs = rosnodejs.require('actionlib_msgs');
 var qte = require('quaternion-to-euler');
 
 var app = express();
@@ -27,6 +28,7 @@ var rostopics = [
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
+  { name: "/move_base/cancel", type: "actionlib_msgs/GoalID"},
   { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"},
   { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
@@ -164,6 +166,9 @@ io.on('connection', function (socket) {
           rt.publish(d)
         } else if (rt._type == "geometry_msgs/PoseStamped") {
           var d = new geometryMsgs.msg.PoseStamped(data);
+          rt.publish(d)
+        } else if (rt._type == "actionlib_msgs/GoalID") {
+          var d = new actionlibMsgs.msg.GoalID(data);
           rt.publish(d)
         } else {
           rt.publish({ data: data });
