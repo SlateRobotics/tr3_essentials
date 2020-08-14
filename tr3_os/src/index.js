@@ -27,6 +27,7 @@ var rostopics = [
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
+  { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"},
   { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a2/control/position", type: "std_msgs/Float64"},
@@ -156,6 +157,9 @@ io.on('connection', function (socket) {
           rt.publish(d)
         } else if (rt._type == "geometry_msgs/Twist") {
           var d = new geometryMsgs.msg.Twist(data);
+          rt.publish(d)
+        } else if (rt._type == "geometry_msgs/PoseStamped") {
+          var d = new geometryMsgs.msg.PoseStamped(data);
           rt.publish(d)
         } else {
           rt.publish({ data: data });

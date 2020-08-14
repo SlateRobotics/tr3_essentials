@@ -5,7 +5,50 @@ tr.gui.minimap = {
     this.scale = 10;
   },
 
+  setup: function () {
+    this.onClick = function () {
+      var r = tr.data.odom.position;
+
+      var p = this.absolutePosition;
+      p.x += this.center.x;
+      p.y += this.center.y;
+
+      var d = {
+        x: (mouseX - p.x) / this.scale,
+        y: -(mouseY - p.y) / this.scale
+      }
+
+      d.x += r.x;
+      d.y += r.y;
+
+      tr.data.socket.emit('/move_base_simple/goal', {
+        header: {
+          seq: 0,
+          stamp: {
+            secs: 0,
+            nsecs: 0
+          },
+          frame_id: 'map',
+        },
+        pose: {
+          position: {
+            x: d.x,
+            y: d.y,
+            z: 0
+          },
+          orientation: {
+            x: 0,
+            y: 0,
+            z: 0,
+            w: 1
+          }
+        }
+      });
+    }
+  },
+
   draw: function() {
+    this.absolutePosition = this.getAbsolutePosition();
     this.componentConfig.drawBackground.bind(this)();
     this.componentConfig.drawLidar.bind(this)();
     this.componentConfig.drawDepth.bind(this)();
