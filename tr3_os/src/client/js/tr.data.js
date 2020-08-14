@@ -28,8 +28,16 @@ tr.data.setup = function() {
     tr.data.lidar = data;
   });
 
+  tr.data.socket.on('/tr3/base/odom', function(data) {
+    tr.data.odom = data;
+  });
+
   tr.data.socket.on('/tr3/depth', function(data) {
     tr.data.depth = data;
+  });
+
+  tr.data.socket.on('/map', function(data) {
+    tr.data.map = data;
   });
 }
 

@@ -25,7 +25,7 @@ rosdep update
 echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential xboxdrv -y
-sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs -y
+sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs ros-melodic-slam-gmapping -y
 
 echo "Installing TR3 Packages"
 mkdir ~/ros_ws

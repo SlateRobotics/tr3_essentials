@@ -6,6 +6,7 @@ var express = require('express');
 var rosnodejs = require('rosnodejs');
 var stdMsgs = rosnodejs.require('std_msgs');
 var geometryMsgs = rosnodejs.require('geometry_msgs');
+var qte = require('quaternion-to-euler');
 
 var app = express();
 
@@ -115,6 +116,36 @@ io.on('connection', function (socket) {
         angle_max: msg.angle_max,
         ranges: msg.ranges
       });
+    });
+
+    nh.subscribe('/tr3/base/odom' ,'nav_msgs/Odometry', function (msg) {
+      var q = msg.pose.pose.orientation;
+      var euler = qte([q.w, q.x, q.y, q.z]);
+      socket.emit('/tr3/base/odom', {
+        position: msg.pose.pose.position,
+        orientation: {
+          x: euler[0],
+          y: euler[1],
+          z: euler[2],
+        }
+      });
+    });
+
+    nh.subscribe('/map', 'nav_msgs/OccupancyGrid', function (msg) {
+      var r = [];
+      for (var w = 0; w < msg.info.width; w++) {
+        for (var h = 0; h < msg.info.height; h++) {
+          var d = msg.data[h*msg.info.width + w];
+          if (d > 0) {
+            r.push({
+              x: w * msg.info.resolution + msg.info.resolution / 2.0 + msg.info.origin.position.x,
+              y: h * msg.info.resolution + msg.info.resolution / 2.0 + msg.info.origin.position.y
+            });
+          }
+        }
+      }
+
+      socket.emit('/map', r);
     });
 
     for (var i = 0; i < rostopics.length; i++) {
