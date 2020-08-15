@@ -8,8 +8,10 @@ tr.controls.pnp2.columnLeft = function() {
   var children = [];
 
   children.push(c.programHeader());
+  children.push(c.btnSimulated());
+  children.push(c.btnRealtime());
+  //children.push(c.joystick()); //For Testing - Position values arnt as expected, manualy tuned for this spot.
   children.push(c.tabControl());
-
   return {
     type: "container",
     size: {

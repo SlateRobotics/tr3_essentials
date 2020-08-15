@@ -2416,14 +2416,78 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
+tr.controls.pnp2.btnRealtime = function() {
+  return {
+    type: "container",
+    size: {
+      w: 0.5,
+      h: 30
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    onClick: function() {
+      //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Realtime",
+        textSize: 18,
+        padding: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.btnSimulated = function() {
+  return {
+    type: "container",
+    size: {
+      w: 0.5,
+      h: 30
+    },
+    background: "rgba(255, 255, 255, 0.1)",
+    onClick: function() {
+      //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: "Simulated",
+        textSize: 18,
+        padding: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
 tr.controls.pnp2.columnLeft = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
 
   children.push(c.programHeader());
+  children.push(c.btnSimulated());
+  children.push(c.btnRealtime());
+  //children.push(c.joystick()); //For Testing - Position values arnt as expected, manualy tuned for this spot.
   children.push(c.tabControl());
-
   return {
     type: "container",
     size: {
@@ -2491,6 +2555,395 @@ columns.push(c.columnRight());
   }],
   });
 };
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_Blnk = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint Add
+          //tr.data.socket.emit(rostopic, value);
+      }
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_moveDown = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▼", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_moveLeft = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "◀", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_moveRight = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▶", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_moveUp = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▲", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_tiltL = function(xyz) {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+
+        if(xyz == x){
+
+        }
+        if(xyz == y){
+
+        }
+        if(xyz == z){
+
+        }
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "◣", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_tiltR = function(xyz) {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+
+        if(xyz == x){
+
+        }
+        if(xyz == y){
+
+        }
+        if(xyz == z){
+
+        }
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "◥", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_zDown = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▼", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_zUp = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▲", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseColL = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+  children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveUp());   children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zUp());
+  children.push(c.inverseBtn_moveLeft()); children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveRight()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveDown()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zDown());
+  return {
+    type: "container",
+    size: {
+      w: 1/3,
+      h: 0.3
+      ,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 2,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+}]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseColM = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+  children.push(c.inverseBtn_tiltR("x"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltR("y"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltR("z"));
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_tiltL("x"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltL("y"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltL("z"));
+  return {
+    type: "container",
+    size: {
+      w: 1/3,
+      h: 0.3
+      ,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 2,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+}]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseColR = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  return {
+    type: "container",
+    size: {
+      w: 1/3,
+      h: 0.3
+      ,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 2,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+}]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.joystick = function() {
+  return {
+    type: "container",
+    size: {
+      w: 100,
+      h: 100
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "joystick",
+        size: {
+          w: 100,
+          h: 100
+        }
+      }],
+    }]
+  }
+}
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
@@ -2899,27 +3352,7 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
-tr.controls.pnp2.tabRealtime = function() {
-  var c = tr.controls.pnp2;
-
-  var children = [];
-
-
-  return {
-    type: "container",
-    border:false,
-    size:{
-      w: 1,
-      h: 1,
-    },
-    children: children,
-    }
-  }
-if (!tr) tr = {};
-if (!tr.controls) tr.controls = {};
-if (!tr.controls.pnp2) tr.controls.pnp2 = {};
-
-tr.controls.pnp2.tabSimulated = function() {
+tr.controls.pnp2.tabForward = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
@@ -2944,6 +3377,28 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
+tr.controls.pnp2.tabInverse = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+  children.push(c.inverseColL())
+  children.push(c.inverseColM())
+  children.push(c.inverseColR())
+
+  return {
+    type: "container",
+    border:false,
+    size:{
+      w: 1,
+      h: 1,
+    },
+    children: children,
+    }
+  }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
 tr.controls.pnp2.tabControl = function() {
   var c = tr.controls.pnp2;
 
@@ -2956,8 +3411,8 @@ tr.controls.pnp2.tabControl = function() {
     },
     children: [{
       type: "tabControl",
-      labels: ["Simulated", "Realtime"],
-      pages: [c.tabSimulated(), c.tabRealtime()],
+      labels: ["Forward", "Inverse"],
+      pages: [c.tabForward(), c.tabInverse()],
     }]
     }
   }
@@ -5554,6 +6009,118 @@ tr.gui.input = function(config) {
 
   this.setup();
 }
+tr.gui.joystick = {
+  defaults: function() {
+    this.joystick;
+    this.border = false;
+    this.exists = false;
+    this.offset = this.config.offset || {
+      x: -7,
+      y: -157
+    };
+    if (!this.config.radius){
+      this.radius = 95;
+    }
+    if (!this.config.size.w) {
+      this.size.w = 1;
+    }
+    if (!this.config.size.h) {
+      this.size.h = 1;
+    }
+
+  },
+  setup: function () {
+  },
+
+  mouseDragged: function (){
+    if(this.exists == true){
+      console.log(this.joystick.getY(1)," | ",this.joystick.getX(1))
+      console.log(mouseX,mouseY)
+    this.joystick.activateJoystick(true);
+  }
+},
+  mouseReleased: function() {
+    if(this.exists == true){
+      console.log("FALSE")
+   this.joystick.activateJoystick(false);
+ }
+ },
+  draw: function() {
+
+  this.translate(this.padding, this.padding);
+  this.translate(this.offset.x, this.offset.y);
+    var pos = this.getAbsolutePosition();
+    pos.x += 50
+    pos.y += 150
+    if (this.exists == false){
+    this.joystick = tr.gui.joystick._joystick(pos.x,pos.y,this.radius);
+    this.exists = true;
+  }
+  this.joystick.render();
+  this.joystick.update();
+     this.translate(-this.padding, -this.padding);
+     this.translate(-this.offset.x, -this.offset.y);
+
+  },
+
+  _joystick: function(x,y,r){
+    this.pos = createVector(x, y);
+     this.stickPos =createVector(x,y + 50);
+     this.r = r;
+     this.controls = false;
+     this.finger;
+     this.value = createVector(0,0);
+     this.render = function() {
+        stroke(255,255,255,50);
+       strokeWeight(this.r / 20);
+       fill(255,255,255,20);
+       ellipse(this.pos.x,this.pos.y, this.r);
+          stroke(255,255,255);
+       strokeWeight(this.r/5);
+       line(this.pos.x, this.pos.y,this.stickPos.x, this.stickPos.y);
+     }
+     this.position = function(x,y){
+       this.pos = createVector(x, y);
+        this.stickPos =createVector(x,y);
+     }
+     this.activateJoystick = function(activate) {
+        this.finger = createVector(mouseX, mouseY);
+        var distance = dist(this.finger.x,this.finger.y, this.pos.x,this.pos.y);
+       if (distance < this.r / 2 && activate)  {
+        this.controls = true;
+        } else{
+          this.stickPos.x= this.pos.x;
+          this.stickPos.y= this.pos.y;
+          this.controls = false;
+        }
+      }
+
+      this.update = function(){
+       if (this.controls){
+          this.finger = createVector(mouseX, mouseY);
+          this.stickPos = p5.Vector.sub(this.finger, this.pos);
+          this.stickPos.limit(this.r/2);
+          this.value.x = this.stickPos.x;
+          this.value.y = this.stickPos.y;
+          this.stickPos = p5.Vector.add(this.pos,this.stickPos);
+        }
+      }
+      this.getValue = function(v){
+        this.value = this.value.mult(v);
+
+      }
+    this.getX = function(){
+        this.getValue(1);
+        return this.value.x;
+    }
+    this.getY = function(){
+        this.getValue(1);
+        return this.value.y;
+    }
+    return this;
+  }
+
+};
 tr.gui.minimap = {
   defaults: function() {
     this.border = false;
