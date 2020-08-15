@@ -1,16 +1,59 @@
 <launch>
- <!-- Run the map server --> 
- <node name="map_server" pkg="map_server" type="map_server" args="$(find tr3_navigation)/maps/testmap.yaml" output="screen"/>
+  <arg name="odom_frame_id"   default="odom"/>
+  <arg name="base_frame_id"   default="base_link"/>
+  <arg name="global_frame_id" default="map"/>
+  <arg name="odom_topic" default="/tr3/base/odom" />
+  <arg name="laser_topic" default="/tr3/lidar" />
+  <arg name="base_topic" default="/cmd_vel" />
 
- <!--- Run AMCL --> 
- <include file="$(find amcl)/examples/amcl_diff.launch" />
+  <remap from="odom" to="$(arg odom_topic)"/>
+  <remap from="scan" to="$(arg laser_topic)"/>
+  <remap from="cmd_vel" to="$(arg base_topic)"/>
 
- <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-  <rosparam file="$(find tr3_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
-  <rosparam file="$(find tr3_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-  <rosparam file="$(find tr3_navigation)/config/local_costmap_params.yaml" command="load" />
-  <rosparam file="$(find tr3_navigation)/config/global_costmap_params.yaml" command="load" /> 
-  <rosparam file="$(find tr3_navigation)/config/base_local_planner_params.yaml" command="load" />
- </node>
+  <node pkg="tr3_navigation" name="tr3_cmd_map_node" type="tr3_cmd_map.py" output="screen" />
+  <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
+  <node pkg="tr3_navigation" name="tr3_tf_broadcaster_node" type="tr3_tf_broadcaster.py" output="screen" />
 
-</launch> 
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+    <param name="base_frame" value="$(arg base_frame_id)" />
+
+    <param name="delta" value="0.01"/>
+    <param name="xmin" value="-20"/>
+    <param name="xmax" value="20"/>
+    <param name="ymin" value="-20"/>
+    <param name="ymax" value="20"/>
+
+    <param name="linearUpdate" value="0.5"/>
+    <param name="angularUpdate" value="0.436"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="80"/>
+  </node>
+
+  <!--
+    - need a custom tf to map from world->odom, odom->base_link is done via diff controller
+
+    - this is to allow for corrections in drift from odom, so any additional corrections in localization can be done at this transform
+
+     - should work after that
+  -->
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam command="load" file="$(find tr3_navigation)/config/costmap_common_params.yaml" ns="global_costmap" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/costmap_common_params.yaml" ns="local_costmap" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/local_costmap_params.yaml" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/global_costmap_params.yaml" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/global_planner_params.yaml"  />
+    <rosparam command="load" file="$(find tr3_navigation)/config/move_base_params.yaml"  />
+
+    <rosparam command="load" file="$(find tr3_navigation)/config/dwa_local_planner_params.yaml" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/navfn_global_planner_params.yaml" />
+
+    <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
+    <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
+    <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="DWAPlannerROS/global_frame_id" value="$(arg odom_frame_id)"/>
+  </node>
+
+</launch>

@@ -10,8 +10,7 @@ This is a logical progression of the mission of the company. We eventually want 
 # To Do
   - FRV
     - Mini Map
-      - SLAM, Odom, etc.
-      - Navigation
+      - Optimization
     - 3D Render
       - Point cloud addition
     - Arm control
@@ -22,7 +21,6 @@ This is a logical progression of the mission of the company. We eventually want 
     - Waypoint record and playback
   - Gazebo
     - Controller tuning
-    - Simulated rear casters
   - Other
     - Inverse Kinematics
   - Hardware
