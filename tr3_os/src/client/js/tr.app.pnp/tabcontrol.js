@@ -14,8 +14,8 @@ tr.controls.pnp2.tabControl = function() {
     },
     children: [{
       type: "tabControl",
-      labels: ["Simulated", "Realtime"],
-      pages: [c.tabSimulated(), c.tabRealtime()],
+      labels: ["Forward", "Inverse"],
+      pages: [c.tabForward(), c.tabInverse()],
     }]
     }
   }
