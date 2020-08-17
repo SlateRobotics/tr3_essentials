@@ -6,9 +6,9 @@ tr.controls.pnp2.inverseColR = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_durationUp());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Display('d'));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_durationDown());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
   return {
     type: "container",
     size: {

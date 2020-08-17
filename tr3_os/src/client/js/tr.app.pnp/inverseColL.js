@@ -7,7 +7,7 @@ tr.controls.pnp2.inverseColL = function() {
 
   var children = [];
   children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveUp());   children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zUp());
-  children.push(c.inverseBtn_moveLeft()); children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveRight()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_moveLeft()); children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveRight()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Display('h'));
   children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveDown()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zDown());
   return {
     type: "container",

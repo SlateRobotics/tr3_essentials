@@ -11,7 +11,9 @@ tr.controls.pnp2.render = function() {
       h: 0.9,
     },
     children: [{
+      id: 'tr',
     type: "tr2",
+    useLiveState: false,
       }],
     }
   }

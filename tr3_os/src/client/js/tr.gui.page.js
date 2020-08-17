@@ -86,6 +86,10 @@ tr.gui.page = function(config) {
     }
   }
 
+  this.getApp = function() {
+    return this.app
+  }
+
   this.hideElements = function(p) {
     if (!p) p = this;
     if (!p.children) p.children = [];

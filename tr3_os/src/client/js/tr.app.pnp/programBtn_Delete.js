@@ -1,6 +1,7 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Delete = function() {
   return {
@@ -13,7 +14,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program Delete
+          var app = this.getApp().config;
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{

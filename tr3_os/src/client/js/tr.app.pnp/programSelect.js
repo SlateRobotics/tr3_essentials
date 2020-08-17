@@ -1,6 +1,7 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programSelect = function() {
   return {
@@ -25,11 +26,13 @@ tr.controls.pnp2.programSelect = function() {
         },
         padding: 5,
         options: ["Did Not Load", ],
-        textSize: 22,
+        textSize: 9,
         onChange: function(val) {
-          var app = this.getApp();
-        //  app.config.changeProgram(val);
-        },
+          var app = this.getApp().config;
+          if(app.programs){
+            p.changeProgram(app,val);
+            }
+          },
       }],
     }]
   }

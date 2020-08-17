@@ -5,6 +5,7 @@ tr.gui.select = {
     this.defaultValue = this.config.defaultValue || "";
     this.onChange = this.config.onChange;
     this.element = "";
+    this.textSize = this.config.textSize || 10;
     this.changed = function() {
       var val = this.element.value();
       if (this.onChange) {
@@ -40,6 +41,7 @@ tr.gui.select = {
 
   draw: function() {
     var pos = this.getAbsolutePosition();
+    this.element.style("font-size", this.textSize + "px");
     this.element.position(pos.x, pos.y);
     this.element.size(this.size.w - this.padding * 2, this.size.h - this.padding * 2);
     this.element.show();

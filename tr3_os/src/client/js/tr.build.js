@@ -2534,19 +2534,34 @@ if (!tr.app) tr.app = {};
 
 tr.app.pnp2 = function() {
   var c = tr.controls.pnp2;
+  var p = c.program_Tools;
 
 var columns = [];
 columns.push(c.columnLeft());
 columns.push(c.columnRight());
 
+
   return new App({
+
     id: 4,
     name: "P.N.P. V2",
     iconUrl: "/img/icon-app-pnp",
+    programs: [],
+    currentProgram: -1,
+    waypointStart: 0,
+    programMode: 0, // 0 = edit, 1, playback
+    robotState: [],
+    setup: function() {
+        p.Program_Setup(this)
+    },
     pages: [{
       pos: {
         x: 0,
         y: 0
+      },
+      onDraw: function() {
+        var app = this.getApp().config;
+        p.programRun(app);
       },
       header: {
         text: "P.N.P v2",
@@ -2554,6 +2569,8 @@ columns.push(c.columnRight());
       children: columns,
   }],
   });
+
+
 };
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -2573,6 +2590,216 @@ tr.controls.pnp2.inverseBtn_Blnk = function() {
         //Do waypoint Add
           //tr.data.socket.emit(rostopic, value);
       }
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_Display = function(disp) {
+
+  if(disp == 'x'){
+  return {
+    type: "container",
+    size: {
+      w: 1 / 5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+        //Do waypoint Add
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        id: "inverse_X",
+        type: "text",
+        text: "X",
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+
+if(disp == 'y'){
+return {
+  type: "container",
+  size: {
+    w: 1 / 5,
+    h: 35
+  },
+  children: [{
+    type: "container",
+    border: false,
+    onClick: function() {
+      //Do waypoint Add
+        //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      id: "inverse_Y",
+      type: "text",
+      text: "Y",
+      textSize: 12,
+      textFont: "noto",
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+    }],
+  }]
+}
+}
+
+if(disp == 'z'){
+return {
+  type: "container",
+  size: {
+    w: 1 / 5,
+    h: 35
+  },
+  children: [{
+    type: "container",
+    border: false,
+    onClick: function() {
+      //Do waypoint Add
+        //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      id: "inverse_Z",
+      type: "text",
+      text: "X",
+      textSize: 12,
+      textFont: "noto",
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+    }],
+  }]
+}
+}
+
+if(disp == 'h'){
+return {
+  type: "container",
+  size: {
+    w: 1 / 5,
+    h: 35
+  },
+  children: [{
+    type: "container",
+    border: false,
+    onClick: function() {
+      //Do waypoint Add
+        //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      id: "inverse_H",
+      type: "text",
+      text: "H",
+      textSize: 12,
+      textFont: "noto",
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+    }],
+  }]
+}
+}
+if(disp == 'd'){
+return {
+  type: "container",
+  size: {
+    w: 1 / 5,
+    h: 35
+  },
+  children: [{
+    type: "container",
+    border: false,
+    onClick: function() {
+      //Do waypoint Add
+        //tr.data.socket.emit(rostopic, value);
+    },
+    children: [{
+      id: "inverse_Duration",
+      type: "text",
+      text: "D",
+      textSize: 12,
+      textFont: "noto",
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+    }],
+  }]
+}
+}
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_durationDown = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▼", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.inverseBtn_durationUp = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1/5,
+      h: 35
+    },
+    children: [{
+      type: "container",
+      border: false,
+      onClick: function() {
+          //tr.data.socket.emit(rostopic, value);
+      },
+      children: [{
+        type: "text",
+        text: "▲", // Add symbol
+        textSize: 12,
+        textFont: "noto",
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
     }]
   }
 }
@@ -2845,7 +3072,7 @@ tr.controls.pnp2.inverseColL = function() {
 
   var children = [];
   children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveUp());   children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zUp());
-  children.push(c.inverseBtn_moveLeft()); children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveRight()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_moveLeft()); children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveRight()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Display('h'));
   children.push(c.inverseBtn_Blnk());     children.push(c.inverseBtn_moveDown()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_Blnk()); children.push(c.inverseBtn_zDown());
   return {
     type: "container",
@@ -2873,7 +3100,7 @@ tr.controls.pnp2.inverseColM = function() {
 
   var children = [];
   children.push(c.inverseBtn_tiltR("x"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltR("y"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltR("z"));
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Display('x'));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Display('y'));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Display('z'));
   children.push(c.inverseBtn_tiltL("x"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltL("y"));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_tiltL("z"));
   return {
     type: "container",
@@ -2900,9 +3127,9 @@ tr.controls.pnp2.inverseColR = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
-  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_durationUp());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Display('d'));children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
+  children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_durationDown());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());children.push(c.inverseBtn_Blnk());
   return {
     type: "container",
     size: {
@@ -2947,6 +3174,7 @@ tr.controls.pnp2.joystick = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Add = function() {
   return {
@@ -2959,7 +3187,7 @@ tr.controls.pnp2.programBtn_Add = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program Add
+          var app = this.getApp().config;
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -2978,6 +3206,7 @@ tr.controls.pnp2.programBtn_Add = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Delete = function() {
   return {
@@ -2990,7 +3219,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program Delete
+          var app = this.getApp().config;
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3009,6 +3238,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Pause = function() {
   return {
@@ -3021,7 +3251,8 @@ tr.controls.pnp2.programBtn_Pause = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program play
+          var app = this.getApp().config;
+        p.programStop(app)
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3040,6 +3271,7 @@ tr.controls.pnp2.programBtn_Pause = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Play = function() {
   return {
@@ -3052,7 +3284,8 @@ tr.controls.pnp2.programBtn_Play = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program play
+          var app = this.getApp().config;
+      p.programStart(app)
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3071,6 +3304,7 @@ tr.controls.pnp2.programBtn_Play = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Settings = function() {
   return {
@@ -3083,6 +3317,7 @@ tr.controls.pnp2.programBtn_Settings = function() {
       type: "container",
       border: false,
       onClick: function() {
+        var app = this.getApp().config;
         //Do program Settings
           //tr.data.socket.emit(rostopic, value);
       },
@@ -3102,6 +3337,7 @@ tr.controls.pnp2.programBtn_Settings = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Stop = function() {
   return {
@@ -3114,7 +3350,8 @@ tr.controls.pnp2.programBtn_Stop = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do program play
+          var app = this.getApp().config;
+        p.programStop(app)
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3162,6 +3399,7 @@ tr.controls.pnp2.programHeader = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programSelect = function() {
   return {
@@ -3186,15 +3424,349 @@ tr.controls.pnp2.programSelect = function() {
         },
         padding: 5,
         options: ["Did Not Load", ],
-        textSize: 22,
+        textSize: 9,
         onChange: function(val) {
-          var app = this.getApp();
-        //  app.config.changeProgram(val);
-        },
+          var app = this.getApp().config;
+          if(app.programs){
+            p.changeProgram(app,val);
+            }
+          },
       }],
     }]
   }
 }
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.waypoint = function(config) {
+  this.config = config;
+  if (!this.config) this.config = {};
+  this.positions = this.config.positions || [0, 0, 0, 0, 0];
+  this.speed = this.config.speed || 1;
+
+  this.config.positions = this.positions;
+  this.config.speed = this.speed;
+
+  this.incrementPosition = function(idx, i) {
+    this.positions[idx] += i;
+  }
+
+  this.incrementDuration = function(i) {
+    this.speed += i;
+    if (this.speed < 0) {
+      this.speed = 0;
+    }
+  }
+}
+
+tr.controls.pnp2.program = function(config) {
+  this.config = config || {};
+  this.id = config.id || 0;
+  this.name = config.name || "Program " + this.id;
+  this.waypoints = [];
+  this.currentWaypoint = -1;
+
+  this.setup = function() {
+    this.config.waypoints = this.config.waypoints || [];
+    for (var i = 0; i < this.config.waypoints.length; i++) {
+      var wp = this.config.waypoints[i];
+      if (wp.config) {
+        this.waypoints.push(wp);
+      } else {
+        this.waypoints.push(new tr.app.pnp.waypoint(wp));
+      }
+    }
+
+    if (this.waypoints.length > 0) {
+      this.currentWaypoint = 0;
+    }
+  }
+
+  this.getCurrentWaypoint = function() {
+    return this.waypoints[this.currentWaypoint];
+  }
+
+  this.insertWaypoint = function() {
+    var wp = [];
+    console.log(this);
+    for (var i = 0; i < this.waypoints.length; i++) {
+      wp.push(this.waypoints[i]);
+      if (i == this.currentWaypoint) {
+        var config = Object.assign({}, this.waypoints[i].config);
+        config.positions = Object.assign([], config.positions);
+        wp.push(new tr.app.pnp.waypoint(config));
+      }
+    }
+
+    if (wp.length == 0) {
+      wp.push(new tr.app.pnp.waypoint());
+      this.currentWaypoint = 0;
+    } else {
+      this.currentWaypoint += 1;
+    }
+
+    this.waypoints = wp;
+  }
+
+  this.removeWaypoint = function() {
+    var wp = [];
+    for (var i = 0; i < this.waypoints.length; i++) {
+      if (i != this.currentWaypoint) {
+        wp.push(this.waypoints[i]);
+      }
+    }
+    this.waypoints = wp;
+
+    if (this.currentWaypoint >= this.waypoints.length) {
+      this.currentWaypoint = this.waypoints.length - 1;
+    }
+
+    if (this.waypoints.length == 0) {
+      this.insertWaypoint();
+    }
+  }
+
+  this.incrementWaypoint = function(i) {
+    this.currentWaypoint += i;
+    if (this.currentWaypoint < 0) {
+      this.currentWaypoint = 0;
+    } else if (this.currentWaypoint >= this.waypoints.length) {
+      this.currentWaypoint = this.waypoints.length - 1;
+    }
+  }
+
+  this.setup();
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+if (!tr.controls.pnp2.program_Tools) tr.controls.pnp2.program_Tools = {};
+var p = tr.controls.pnp2.program_Tools;
+
+p.Program_Setup = function(app) {
+  app.currentProgram = 0;
+  p.LoadPrograms(app)
+  app.robotState = p.getCurrentProgram(app).getCurrentWaypoint().positions;
+  p.updateUI(app);
+};
+
+p.programRun = function(app) {
+  if (app.programMode == 1) {
+    var prog = p.getCurrentProgram(app);
+    var wp = prog.getCurrentWaypoint();
+    var pos = wp.positions;
+    var wpDuration = wp.speed; // seconds
+
+    var startPos = app.waypointStartPos;
+
+    var time = new Date();
+    var duration = (time - app.waypointStart) / 1000.0;
+    var durationComplete = (duration / wpDuration)
+
+    if (wpDuration == 0) {
+      durationComplete = 1.0;
+    }
+
+    for (var i = 0; i < app.robotState.length; i++) {
+      app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
+    }
+
+    p.updateUI(app);
+
+    if (duration >= wpDuration) {
+      if (prog.waypoints.length - 1 <= prog.currentWaypoint) {
+        p.programMode = 0;
+      } else {
+        p.waypointStart = new Date();
+        p.waypointStartPos = Object.assign([], pos);
+        prog.currentWaypoint += 1;
+      }
+    }
+  } else {
+    var pos = p.getCurrentProgram(app).getCurrentWaypoint().positions;
+    app.waypointStart = new Date();
+    app.waypointStartPos = Object.assign([], pos);
+    app.robotState = Object.assign([], pos);
+    p.updateUI(app);
+  };
+};
+
+p.LoadPrograms = function(app){
+  app.programs.push(new tr.controls.pnp2.program({
+    id: 0,
+    name: "Program 0",
+    waypoints: [{
+      positions: [0, 0, 0, 0, 0],
+      speed: 1
+    }, {
+      positions: [0, .85, .46, .25, .3],
+      speed: 3
+    }, {
+      positions: [.5, .4, .8, .6, .8],
+      speed: 5
+    }]
+  }));
+
+  app.programs.push(new tr.controls.pnp2.program({
+    id: 1,
+    name: "Program 1",
+    waypoints: [{
+      positions: [0, 0, .2, .2, .4],
+      speed: 3
+    }, {
+      positions: [.2, .7, 1, .9, .7],
+      speed: 6
+    }, {
+      positions: [.5, .4, .6, .4, .8],
+      speed: 2
+    }]
+  }));
+};
+
+p.addProgram = function(app) {
+  var id = 0;
+  for (var i = 0; i < app.programs.length; i++) {
+    if (app.programs[i].id >= id) {
+      id = app.programs[i].id + 1;
+    }
+  }
+
+  app.programs.push(new tr.controls.pnp2.program({
+    id: id
+  }));
+
+  p.updateUI(app);
+};
+
+p.changeProgram = function(app , name) {
+  for (var i = 0; i < app.programs.length; i++) {
+    if (app.programs[i].name == name) {
+      app.currentProgram = i;
+      p.updateUI(app);
+    }
+  }
+};
+
+p.getCurrentProgram = function(app) {
+  return app.programs[app.currentProgram];
+};
+
+p.programStart = function(app) {
+  var prog = p.getCurrentProgram(app);
+  prog.currentWaypoint = 0;
+  var wp = prog.getCurrentWaypoint().positions;
+  app.waypointStartPos = Object.assign([], wp);
+  if (prog.waypoints.length > 2) {
+    prog.currentWaypoint += 1;
+    app.programMode = 1;
+  }
+};
+
+p.programStartFrom = function(app) {
+  var prog = p.getCurrentProgram(app);
+  var wp = prog.getCurrentWaypoint().positions;
+  app.waypointStartPos = Object.assign([], wp);
+  if (prog.currentWaypoint < prog.waypoints.length - 1) {
+    prog.currentWaypoint += 1;
+    app.programMode = 1
+  } else {
+    app.programMode = 0;
+  }
+};
+
+p.programStop = function(app) {
+  app.programMode = 0;
+};
+
+p.programRun = function(app) {
+  if (app.programMode == 1) {
+    var prog = p.getCurrentProgram(app);
+    var wp = prog.getCurrentWaypoint();
+    var pos = wp.positions;
+    var wpDuration = wp.speed; // seconds
+
+    var startPos = app.waypointStartPos;
+
+    var time = new Date();
+    var duration = (time - app.waypointStart) / 1000.0;
+    var durationComplete = (duration / wpDuration)
+
+    if (wpDuration == 0) {
+      durationComplete = 1.0;
+    }
+
+    for (var i = 0; i < app.robotState.length; i++) {
+      app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
+    }
+
+    p.updateUI(app);
+
+    if (duration >= wpDuration) {
+      if (prog.waypoints.length - 1 <= prog.currentWaypoint) {
+        app.programMode = 0;
+      } else {
+        app.waypointStart = new Date();
+        app.waypointStartPos = Object.assign([], pos);
+        prog.currentWaypoint += 1;
+      }
+    }
+  } else {
+    var pos = p.getCurrentProgram(app).getCurrentWaypoint().positions;
+    app.waypointStart = new Date();
+    app.waypointStartPos = Object.assign([], pos);
+    app.robotState = Object.assign([], pos);
+    p.updateUI(app);
+  }
+};
+
+p.updateUI = function(app) {
+  var prog = p.getCurrentProgram(app);
+  var positions = prog.getCurrentWaypoint().positions;
+  var speed = prog.getCurrentWaypoint().speed;
+
+  var page = app._app.getCurrentPage();
+  var tr2 = page.getChild('tr');
+  //console.log(tr2);
+//  console.log(app.robotState);
+  tr2.state.a0 = app.robotState[0];
+  tr2.state.a1 = app.robotState[1];
+  tr2.state.a2 = app.robotState[2];
+  tr2.state.a3 = app.robotState[3];
+  tr2.state.a4 = app.robotState[4];
+
+  //page.getChild('dwaypoint').text = prog.currentWaypoint;
+  // page.getChild('dspeed').text = Math.round(speed * 100) / 100;
+  // page.getChild('d0').text = Math.floor(positions[0]) + "°";
+  // page.getChild('d1').text = Math.floor(positions[1]) + "°";
+  // page.getChild('d2').text = Math.floor(positions[2]) + "°";
+  // page.getChild('d3').text = Math.floor(positions[3]) + "°";
+  // page.getChild('d4').text = Math.floor(positions[4]) + "°";
+
+  p.updateSelect(app);
+};
+
+p.updateSelect = function(app) {
+  var page = app._app.pages[0];
+  var sel = page.getChild('progselect');
+  var options = sel.options;
+
+  var opts = [];
+  var update = false;
+  for (i = 0; i < app.programs.length; i++) {
+    opts.push(app.programs[i].name);
+
+    if (options.length - 1 < i) {
+      update = true;
+    } else if (opts[i] != options[i]) {
+      update = true;
+    }
+  }
+
+  if (update) {
+    page.getChild('progselect').setOptions(opts);
+  }
+};
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
@@ -3208,7 +3780,9 @@ tr.controls.pnp2.render = function() {
       h: 0.9,
     },
     children: [{
+      id: 'tr',
     type: "tr2",
+    useLiveState: false,
       }],
     }
   }
@@ -3419,6 +3993,7 @@ tr.controls.pnp2.tabControl = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypointBtn_Add = function() {
   return {
@@ -3431,7 +4006,8 @@ tr.controls.pnp2.waypointBtn_Add = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do waypoint Add
+          var app = this.getApp().config;
+        p.insertWaypoint(app)
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3450,6 +4026,7 @@ tr.controls.pnp2.waypointBtn_Add = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypointBtn_Delete = function() {
   return {
@@ -3462,6 +4039,7 @@ tr.controls.pnp2.waypointBtn_Delete = function() {
       type: "container",
       border: false,
       onClick: function() {
+          var app = this.getApp().config;
         //Do waypoint Delete
           //tr.data.socket.emit(rostopic, value);
       },
@@ -3481,6 +4059,7 @@ tr.controls.pnp2.waypointBtn_Delete = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypointBtn_Next = function() {
   return {
@@ -3493,7 +4072,8 @@ tr.controls.pnp2.waypointBtn_Next = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //Do waypoint previous
+          var app = this.getApp().config;
+        p.incrementWaypoint()
           //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3512,6 +4092,7 @@ tr.controls.pnp2.waypointBtn_Next = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypointBtn_Previous = function() {
   return {
@@ -3524,6 +4105,7 @@ tr.controls.pnp2.waypointBtn_Previous = function() {
       type: "container",
       border: false,
       onClick: function() {
+          var app = this.getApp().config;
         //Do waypoint previous
           //tr.data.socket.emit(rostopic, value);
       },
@@ -6476,6 +7058,10 @@ tr.gui.page = function(config) {
     }
   }
 
+  this.getApp = function() {
+    return this.app
+  }
+
   this.hideElements = function(p) {
     if (!p) p = this;
     if (!p.children) p.children = [];
@@ -6598,6 +7184,7 @@ tr.gui.select = {
     this.defaultValue = this.config.defaultValue || "";
     this.onChange = this.config.onChange;
     this.element = "";
+    this.textSize = this.config.textSize || 10;
     this.changed = function() {
       var val = this.element.value();
       if (this.onChange) {
@@ -6633,6 +7220,7 @@ tr.gui.select = {
 
   draw: function() {
     var pos = this.getAbsolutePosition();
+    this.element.style("font-size", this.textSize + "px");
     this.element.position(pos.x, pos.y);
     this.element.size(this.size.w - this.padding * 2, this.size.h - this.padding * 2);
     this.element.show();
