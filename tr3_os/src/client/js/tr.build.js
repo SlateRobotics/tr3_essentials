@@ -4623,7 +4623,7 @@ tr.data.lidar = {
 }
 
 tr.data.setup = function() {
-  tr.data.socket = io('http://localhost:8080/');
+  tr.data.socket = io();
 
   tr.data.socket.on('/tr3/state', function(data) {
     tr.data.robotState = data;
@@ -5593,9 +5593,11 @@ tr.gui.minimap = {
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomIn, function () {
         this.scale += 1;
+        if (this.scale >= 20)  this.scale = 20;
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomOut, function () {
         this.scale -= 1;
+        if (this.scale <= 1)  this.scale = 1;
       }.bind(this)).bind(this)();
     }
   },
@@ -5608,7 +5610,7 @@ tr.gui.minimap = {
     this.absolutePosition = this.getAbsolutePosition();
     this.componentConfig.drawBackground.bind(this)();
     this.componentConfig.drawLidar.bind(this)();
-    this.componentConfig.drawDepth.bind(this)();
+    //this.componentConfig.drawDepth.bind(this)();
     this.componentConfig.drawMap.bind(this)();
     this.componentConfig.drawGoal.bind(this)();
     this.componentConfig.drawButtons.bind(this)();
@@ -5737,6 +5739,7 @@ tr.gui.minimap = {
 
     stroke("red");
     fill("red");
+    strokeWeight(0.3);
 
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
@@ -5747,7 +5750,7 @@ tr.gui.minimap = {
 
         var d = sqrt((x * x) + (y * y));
         if (d < this.radius - 1) {
-          circle(this.center.x + x, this.center.y + y, 1);
+          point(this.center.x + x, this.center.y + y);
         }
       }
     }
@@ -5758,15 +5761,20 @@ tr.gui.minimap = {
 
     stroke("orange");
     fill("orange");
+    strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.depth.length; i++) {
-      var d = tr.data.depth[i];
+    for (var i = 0; i < tr.data.depth.length; i+=3) {
+      var d = {
+        x: tr.data.depth[i],
+        y: tr.data.depth[i+1],
+        z: tr.data.depth[i+2]
+      }
       if (d.z > 0) {
         var x = d.x * this.scale;
         var y = d.y * this.scale;
-        var dist = sqrt((d.x * d.x) + (d.y * d.y));
+        var dist = sqrt((x * x) + (y * y));
         if (dist < this.radius - 1) {
-          circle(this.center.x + x, this.center.y - y, 1);
+          point(this.center.x + x, this.center.y - y);
         }
       }
     }
@@ -5783,14 +5791,18 @@ tr.gui.minimap = {
 
     stroke("white");
     fill("white");
+    strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.map.length; i++) {
-      var d = tr.data.map[i];
+    for (var i = 0; i < tr.data.map.length; i+=2) {
+      var d = {
+        x: tr.data.map[i],
+        y: tr.data.map[i+1]
+      }
       var x = (d.x - p.x) * this.scale;
       var y = (d.y - p.y) * this.scale;
       var dist = sqrt((x * x) + (y * y));
       if (dist < this.radius - 1) {
-        circle(x, -y, 1);
+        point(x, -y);
       }
     }
 
@@ -6411,17 +6423,17 @@ tr.gui.tr2 = {
     this.p5.angleMode(RADIANS);
     this.p5.perspective();
 
-    this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-    this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-    this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-    this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-    this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-    this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-    this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-    this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-    this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-    this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-    this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+    this.links.b0 = tr.links.b0;
+    this.links.w0 = tr.links.w0;
+    this.links.a0 = tr.links.a0;
+    this.links.a1 = tr.links.a1;
+    this.links.a2 = tr.links.a2;
+    this.links.a3 = tr.links.a3;
+    this.links.a4 = tr.links.a4;
+    this.links.g0 = tr.links.g0;
+    this.links.g1 = tr.links.g1;
+    this.links.h0 = tr.links.h0;
+    this.links.h1 = tr.links.h1;
   },
 
   draw: function() {
@@ -6446,17 +6458,17 @@ tr.gui.tr2 = {
       this.p5.angleMode(RADIANS);
       this.p5.perspective();
 
-      this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-      this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-      this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-      this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-      this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-      this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-      this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-      this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-      this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-      this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-      this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+      this.links.b0 = tr.links.b0;
+      this.links.w0 = tr.links.w0;
+      this.links.a0 = tr.links.a0;
+      this.links.a1 = tr.links.a1;
+      this.links.a2 = tr.links.a2;
+      this.links.a3 = tr.links.a3;
+      this.links.a4 = tr.links.a4;
+      this.links.g0 = tr.links.g0;
+      this.links.g1 = tr.links.g1;
+      this.links.h0 = tr.links.h0;
+      this.links.h1 = tr.links.h1;
     }
 
     if (this.useLiveState) {
@@ -6553,8 +6565,12 @@ tr.gui.tr2 = {
     this.p5.line(0, 0, 0, 0, 0, 1000);*/
 
     this.p5.stroke("white");
-    for (var i = 0; i < tr.data.depth.length; i++) {
-      var d = tr.data.depth[i];
+    for (var i = 0; i < tr.data.depth.length; i+=3) {
+      var d = {
+        x: tr.data.depth[i],
+        y: tr.data.depth[i+1],
+        z: tr.data.depth[i+2]
+      }
       this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
       this.p5.sphere(4);
       this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);
@@ -6799,10 +6815,23 @@ var canvasHeight = 480;
 var appSelected = -1;
 
 tr.fonts = {};
+tr.links = {};
 
 function preload() {
   tr.fonts.noto = loadFont('/ttf/noto.otf');
   tr.fonts.roboto = loadFont('/ttf/roboto.ttf');
+
+  tr.links.b0 = loadModel("/stl/tr-bs-a.stl");
+  tr.links.w0 = loadModel("/stl/xt-wl-a.stl");
+  tr.links.a0 = loadModel("/stl/xt-lg-b.stl");
+  tr.links.a1 = loadModel("/stl/xt-lg-c.stl");
+  tr.links.a2 = loadModel("/stl/xt-lg-b.stl");
+  tr.links.a3 = loadModel("/stl/xt-sm-c.stl");
+  tr.links.a4 = loadModel("/stl/xt-sm-b.stl");
+  tr.links.g0 = loadModel("/stl/xt-gp-a.stl");
+  tr.links.g1 = loadModel("/stl/xt-gp-b.stl");
+  tr.links.h0 = loadModel("/stl/xt-hd-a.stl");
+  tr.links.h1 = loadModel("/stl/xt-hd-b.stl");
 }
 
 function setup() {

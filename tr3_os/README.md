@@ -10,7 +10,9 @@ This is a logical progression of the mission of the company. We eventually want 
 # To Do
   - FRV
     - Mini Map
-      - Optimization
+      - Optimization for speed
+    - Navigation
+      - Robot crashes
     - 3D Render
       - Point cloud addition
     - Arm control
@@ -23,5 +25,6 @@ This is a logical progression of the mission of the company. We eventually want 
     - Controller tuning
   - Other
     - Inverse Kinematics
+    - Fix build script
   - Hardware
     - Actuator acceleration limits

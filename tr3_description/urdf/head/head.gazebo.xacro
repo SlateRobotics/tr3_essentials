@@ -18,7 +18,7 @@
 				</depth_camera>
 				<clip>
 					<near>0.6</near>
-					<far>8.0</far>
+					<far>25.0</far>
 				</clip>
 			</camera>
 			<plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">

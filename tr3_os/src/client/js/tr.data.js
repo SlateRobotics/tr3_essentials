@@ -20,7 +20,7 @@ tr.data.lidar = {
 }
 
 tr.data.setup = function() {
-  tr.data.socket = io('http://localhost:8080/');
+  tr.data.socket = io();
 
   tr.data.socket.on('/tr3/state', function(data) {
     tr.data.robotState = data;

@@ -65,17 +65,17 @@ tr.gui.tr2 = {
     this.p5.angleMode(RADIANS);
     this.p5.perspective();
 
-    this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-    this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-    this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-    this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-    this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-    this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-    this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-    this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-    this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-    this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-    this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+    this.links.b0 = tr.links.b0;
+    this.links.w0 = tr.links.w0;
+    this.links.a0 = tr.links.a0;
+    this.links.a1 = tr.links.a1;
+    this.links.a2 = tr.links.a2;
+    this.links.a3 = tr.links.a3;
+    this.links.a4 = tr.links.a4;
+    this.links.g0 = tr.links.g0;
+    this.links.g1 = tr.links.g1;
+    this.links.h0 = tr.links.h0;
+    this.links.h1 = tr.links.h1;
   },
 
   draw: function() {
@@ -100,17 +100,17 @@ tr.gui.tr2 = {
       this.p5.angleMode(RADIANS);
       this.p5.perspective();
 
-      this.links.b0 = this.p5.loadModel("/stl/tr-bs-a.stl");
-      this.links.w0 = this.p5.loadModel("/stl/xt-wl-a.stl");
-      this.links.a0 = this.p5.loadModel("/stl/xt-lg-b.stl");
-      this.links.a1 = this.p5.loadModel("/stl/xt-lg-c.stl");
-      this.links.a2 = this.p5.loadModel("/stl/xt-lg-b.stl");
-      this.links.a3 = this.p5.loadModel("/stl/xt-sm-c.stl");
-      this.links.a4 = this.p5.loadModel("/stl/xt-sm-b.stl");
-      this.links.g0 = this.p5.loadModel("/stl/xt-gp-a.stl");
-      this.links.g1 = this.p5.loadModel("/stl/xt-gp-b.stl");
-      this.links.h0 = this.p5.loadModel("/stl/xt-hd-a.stl");
-      this.links.h1 = this.p5.loadModel("/stl/xt-hd-b.stl");
+      this.links.b0 = tr.links.b0;
+      this.links.w0 = tr.links.w0;
+      this.links.a0 = tr.links.a0;
+      this.links.a1 = tr.links.a1;
+      this.links.a2 = tr.links.a2;
+      this.links.a3 = tr.links.a3;
+      this.links.a4 = tr.links.a4;
+      this.links.g0 = tr.links.g0;
+      this.links.g1 = tr.links.g1;
+      this.links.h0 = tr.links.h0;
+      this.links.h1 = tr.links.h1;
     }
 
     if (this.useLiveState) {
@@ -207,8 +207,12 @@ tr.gui.tr2 = {
     this.p5.line(0, 0, 0, 0, 0, 1000);*/
 
     this.p5.stroke("white");
-    for (var i = 0; i < tr.data.depth.length; i++) {
-      var d = tr.data.depth[i];
+    for (var i = 0; i < tr.data.depth.length; i+=3) {
+      var d = {
+        x: tr.data.depth[i],
+        y: tr.data.depth[i+1],
+        z: tr.data.depth[i+2]
+      }
       this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
       this.p5.sphere(4);
       this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);

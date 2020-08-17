@@ -23,9 +23,11 @@ tr.gui.minimap = {
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomIn, function () {
         this.scale += 1;
+        if (this.scale >= 20)  this.scale = 20;
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomOut, function () {
         this.scale -= 1;
+        if (this.scale <= 1)  this.scale = 1;
       }.bind(this)).bind(this)();
     }
   },
@@ -38,7 +40,7 @@ tr.gui.minimap = {
     this.absolutePosition = this.getAbsolutePosition();
     this.componentConfig.drawBackground.bind(this)();
     this.componentConfig.drawLidar.bind(this)();
-    this.componentConfig.drawDepth.bind(this)();
+    //this.componentConfig.drawDepth.bind(this)();
     this.componentConfig.drawMap.bind(this)();
     this.componentConfig.drawGoal.bind(this)();
     this.componentConfig.drawButtons.bind(this)();
@@ -167,6 +169,7 @@ tr.gui.minimap = {
 
     stroke("red");
     fill("red");
+    strokeWeight(0.3);
 
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
@@ -177,7 +180,7 @@ tr.gui.minimap = {
 
         var d = sqrt((x * x) + (y * y));
         if (d < this.radius - 1) {
-          circle(this.center.x + x, this.center.y + y, 1);
+          point(this.center.x + x, this.center.y + y);
         }
       }
     }
@@ -188,15 +191,20 @@ tr.gui.minimap = {
 
     stroke("orange");
     fill("orange");
+    strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.depth.length; i++) {
-      var d = tr.data.depth[i];
+    for (var i = 0; i < tr.data.depth.length; i+=3) {
+      var d = {
+        x: tr.data.depth[i],
+        y: tr.data.depth[i+1],
+        z: tr.data.depth[i+2]
+      }
       if (d.z > 0) {
         var x = d.x * this.scale;
         var y = d.y * this.scale;
-        var dist = sqrt((d.x * d.x) + (d.y * d.y));
+        var dist = sqrt((x * x) + (y * y));
         if (dist < this.radius - 1) {
-          circle(this.center.x + x, this.center.y - y, 1);
+          point(this.center.x + x, this.center.y - y);
         }
       }
     }
@@ -213,14 +221,18 @@ tr.gui.minimap = {
 
     stroke("white");
     fill("white");
+    strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.map.length; i++) {
-      var d = tr.data.map[i];
+    for (var i = 0; i < tr.data.map.length; i+=2) {
+      var d = {
+        x: tr.data.map[i],
+        y: tr.data.map[i+1]
+      }
       var x = (d.x - p.x) * this.scale;
       var y = (d.y - p.y) * this.scale;
       var dist = sqrt((x * x) + (y * y));
       if (dist < this.radius - 1) {
-        circle(x, -y, 1);
+        point(x, -y);
       }
     }
 

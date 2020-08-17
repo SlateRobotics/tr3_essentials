@@ -52,5 +52,5 @@
 		<param name="publish_frequency" type="double" value="30.0"/>
 	</node>
 
-  <node name="tr3_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model tr3 -x 0 -y 0 -z 0.175" />
+  <node name="tr3_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model tr3 -x 0 -y 0 -z 0.500" />
 </launch>

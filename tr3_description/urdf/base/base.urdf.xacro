@@ -10,9 +10,9 @@
 			<parent link="base_link"/>
 			<child link="link_${name}"/>
 			<xacro:insert_block name="axis" />
-			<limit effort="100.0" velocity="8.8"/>
+			<limit effort="100.0" velocity="0.5"/>
 			<xacro:insert_block name="origin" />
-    	<dynamics damping="0.001" friction="0.001"/>
+    	<dynamics damping="0.001" friction="0.1"/>
 		</joint>
 		<link name="link_${name}">
 			<collision>

@@ -4,10 +4,23 @@ var canvasHeight = 480;
 var appSelected = -1;
 
 tr.fonts = {};
+tr.links = {};
 
 function preload() {
   tr.fonts.noto = loadFont('/ttf/noto.otf');
   tr.fonts.roboto = loadFont('/ttf/roboto.ttf');
+
+  tr.links.b0 = loadModel("/stl/tr-bs-a.stl");
+  tr.links.w0 = loadModel("/stl/xt-wl-a.stl");
+  tr.links.a0 = loadModel("/stl/xt-lg-b.stl");
+  tr.links.a1 = loadModel("/stl/xt-lg-c.stl");
+  tr.links.a2 = loadModel("/stl/xt-lg-b.stl");
+  tr.links.a3 = loadModel("/stl/xt-sm-c.stl");
+  tr.links.a4 = loadModel("/stl/xt-sm-b.stl");
+  tr.links.g0 = loadModel("/stl/xt-gp-a.stl");
+  tr.links.g1 = loadModel("/stl/xt-gp-b.stl");
+  tr.links.h0 = loadModel("/stl/xt-hd-a.stl");
+  tr.links.h1 = loadModel("/stl/xt-hd-b.stl");
 }
 
 function setup() {

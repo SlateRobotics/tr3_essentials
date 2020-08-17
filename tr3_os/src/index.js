@@ -8,6 +8,7 @@ var stdMsgs = rosnodejs.require('std_msgs');
 var geometryMsgs = rosnodejs.require('geometry_msgs');
 var actionlibMsgs = rosnodejs.require('actionlib_msgs');
 var qte = require('quaternion-to-euler');
+var nj = require('@aas395/numjs');
 
 var app = express();
 
@@ -103,13 +104,17 @@ io.on('connection', function (socket) {
         var z = msg.data[i+3] / 1000000.0;
 
         if (n == 1) {
-          result.push({ x: NaN, y: NaN, z: NaN });
+          //result.push(NaN);
+          //result.push(NaN);
+          //result.push(NaN);
         } else {
-          result.push({ x: x, y: y, z: z });
+          result.push(x);
+          result.push(y);
+          result.push(z);
         }
       }
 
-      socket.emit('/tr3/depth', result);
+      //socket.emit('/tr3/depth', result);
     });
 
     nh.subscribe('/tr3/lidar', 'sensor_msgs/LaserScan', function (msg) {
@@ -138,21 +143,53 @@ io.on('connection', function (socket) {
       });
     });
 
+    // need to properly scale this down, biggest area for optimizations
+    // UI render is fairly quick under ~1000 points
     nh.subscribe('/map', 'nav_msgs/OccupancyGrid', function (msg) {
+
+      var start = new Date();
+
+      var result = [];
+
       var r = [];
-      for (var w = 0; w < msg.info.width; w++) {
-        for (var h = 0; h < msg.info.height; h++) {
-          var d = msg.data[h*msg.info.width + w];
-          if (d > 0) {
-            r.push({
-              x: w * msg.info.resolution + msg.info.resolution / 2.0 + msg.info.origin.position.x,
-              y: h * msg.info.resolution + msg.info.resolution / 2.0 + msg.info.origin.position.y
-            });
+      for (var i = 0; i < msg.data.length; i++) {
+        if (msg.data[i] == -1) {
+          msg.data[i] = 0;
+        } else {
+          msg.data[i] = Math.floor(msg.data[i] * (255 / 100));
+        }
+      }
+
+      var mid = new Date();
+
+      var m = nj.array(msg.data);
+      m = m.reshape(msg.info.height, msg.info.width);
+      r = nj.images.resize(m, 400, 400);
+
+      var mid2 = new Date();
+
+      var res = msg.info.resolution * (msg.info.width / r.shape[1]);
+
+      for (var w = 0; w < r.shape[1]; w++) {
+        for (var h = 0; h < r.shape[0]; h++) {
+          var d = r.get(h, w);
+          if (d > 10) {
+            result.push(w * res + res / 2.0 + msg.info.origin.position.x);
+            result.push(h * res + res / 2.0 + msg.info.origin.position.y);
           }
         }
       }
 
-      socket.emit('/map', r);
+      var end = new Date();
+
+      var t1 = end.getTime() - start.getTime();
+      var m1 = mid.getTime() - start.getTime();
+      var m2 = mid2.getTime() - mid.getTime();
+      var m3 = end.getTime() - mid2.getTime();
+
+      console.log(t1, m1, m2, m3);
+
+      socket.emit('/map', result);
     });
 
     for (var i = 0; i < rostopics.length; i++) {

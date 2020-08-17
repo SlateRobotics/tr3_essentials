@@ -1,28 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-	<gazebo reference="link_b0">
-		<material>Gazebo/DarkGrey</material>
-		<collision>
-      <surface>
-			  <contact>
-		      <ode>
-		        <kp>1e15</kp>
-		        <kd>1e13</kd>
-		      </ode>
-		    </contact>
-        <friction>
-          <ode>
-            <mu>100000.0</mu>
-            <mu2>100000.0</mu2>
-            <slip1>0.0</slip1>
-            <slip2>0.0</slip2>
-          </ode>
-        </friction>
-      </surface>
-		</collision>
-	</gazebo>
-
   <gazebo reference="laser">
     <sensor type="gpu_ray" name="head_rplidar_sensor">
       <pose>0 0 0.06 0 0 0</pose>
@@ -59,8 +37,10 @@
 		<material>Gazebo/DarkGrey</material>
 	</gazebo>
 
-	<gazebo reference="link_b1">
+	<gazebo reference="link_b0">
 		<material>Gazebo/DarkGrey</material>
+    <mu1 value="100000.0"/>
+    <mu2 value="100000.0"/>
 		<collision>
       <surface>
 			  <contact>
@@ -81,20 +61,68 @@
 		</collision>
 	</gazebo>
 
-	<gazebo reference="link_b2">
+	<gazebo reference="link_b1">
 		<material>Gazebo/DarkGrey</material>
+    <mu1 value="100000.0"/>
+    <mu2 value="100000.0"/>
+		<collision>
+      <surface>
+			  <contact>
+		      <ode>
+		        <kp>1e15</kp>
+		        <kd>1e13</kd>
+		      </ode>
+		    </contact>
+        <friction>
+          <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+            <slip1>0.0</slip1>
+            <slip2>0.0</slip2>
+          </ode>
+        </friction>
+      </surface>
+		</collision>
 	</gazebo>
 
-	<gazebo reference="link_b3">
-		<material>Gazebo/DarkGrey</material>
-	</gazebo>
+  <gazebo reference="link_b2">
+    <mu1 value="0.1"/>
+    <mu2 value="0.1"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+  	<material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
 
-	<gazebo reference="link_b4">
-		<material>Gazebo/DarkGrey</material>
-	</gazebo>
+  <gazebo reference="link_b3">
+    <mu1 value="0.1"/>
+    <mu2 value="0.1"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+  	<material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
 
-	<gazebo reference="link_b5">
-		<material>Gazebo/DarkGrey</material>
-	</gazebo>
+  <gazebo reference="link_b4">
+    <mu1 value="0.1"/>
+    <mu2 value="0.1"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+  	<material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo reference="link_b5">
+    <mu1 value="0.1"/>
+    <mu2 value="0.1"/>
+    <kp value="10000000.0"/>
+    <kd value="1.0"/>
+    <fdir1 value="1 0 0"/>
+  	<material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
 
 </robot>
