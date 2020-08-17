@@ -187,7 +187,7 @@ tr.lib.tr2 = function() {
       },
       translate: {
         x: 0,
-        y: 67+120,
+        y: 67 + 120,
         z: 67
       },
     }));

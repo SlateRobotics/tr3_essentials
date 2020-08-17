@@ -14,9 +14,9 @@ tr.controls.pnp2.waypointBtn_Previous = function() {
       type: "container",
       border: false,
       onClick: function() {
-          var app = this.getApp().config;
+        var app = this.getApp().config;
         //Do waypoint previous
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

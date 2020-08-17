@@ -5,9 +5,9 @@ tr.app.pnp2 = function() {
   var c = tr.controls.pnp2;
   var p = c.program_Tools;
 
-var columns = [];
-columns.push(c.columnLeft());
-columns.push(c.columnRight());
+  var columns = [];
+  columns.push(c.columnLeft());
+  columns.push(c.columnRight());
 
 
   return new App({
@@ -21,7 +21,7 @@ columns.push(c.columnRight());
     programMode: 0, // 0 = edit, 1, playback
     robotState: [],
     setup: function() {
-        p.Program_Setup(this)
+      p.Program_Setup(this)
     },
     pages: [{
       pos: {
@@ -36,7 +36,7 @@ columns.push(c.columnRight());
         text: "P.N.P v2",
       },
       children: columns,
-  }],
+    }],
   });
 
 

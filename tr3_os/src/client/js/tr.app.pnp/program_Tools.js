@@ -52,7 +52,7 @@ p.programRun = function(app) {
   };
 };
 
-p.LoadPrograms = function(app){
+p.LoadPrograms = function(app) {
   app.programs.push(new tr.controls.pnp2.program({
     id: 0,
     name: "Program 0",
@@ -99,7 +99,7 @@ p.addProgram = function(app) {
   p.updateUI(app);
 };
 
-p.changeProgram = function(app , name) {
+p.changeProgram = function(app, name) {
   for (var i = 0; i < app.programs.length; i++) {
     if (app.programs[i].name == name) {
       app.currentProgram = i;
@@ -188,7 +188,7 @@ p.updateUI = function(app) {
   var page = app._app.getCurrentPage();
   var tr2 = page.getChild('tr');
   //console.log(tr2);
-//  console.log(app.robotState);
+  //  console.log(app.robotState);
   tr2.state.a0 = app.robotState[0];
   tr2.state.a1 = app.robotState[1];
   tr2.state.a2 = app.robotState[2];

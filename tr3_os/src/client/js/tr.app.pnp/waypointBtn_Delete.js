@@ -14,9 +14,9 @@ tr.controls.pnp2.waypointBtn_Delete = function() {
       type: "container",
       border: false,
       onClick: function() {
-          var app = this.getApp().config;
+        var app = this.getApp().config;
         //Do waypoint Delete
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

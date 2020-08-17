@@ -11,8 +11,14 @@ tr.controls.frv.btnArm = function() {
     children: [{
       type: "text",
       text: "x",
-      align: { v: "CENTER", h: "CENTER" },
-      size: { w: 1, h: 1 },
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+      size: {
+        w: 1,
+        h: 1
+      },
     }]
   }
 }

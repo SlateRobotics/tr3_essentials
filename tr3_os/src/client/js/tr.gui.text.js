@@ -25,7 +25,7 @@ tr.gui.text = {
     }
   },
 
-  setup: function () {
+  setup: function() {
     if (this.config.textFont) {
       this.textFont = tr.fonts[this.config.textFont];
     }

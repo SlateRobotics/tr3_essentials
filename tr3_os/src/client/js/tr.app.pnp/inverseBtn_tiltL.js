@@ -6,7 +6,7 @@ tr.controls.pnp2.inverseBtn_tiltL = function(xyz) {
   return {
     type: "container",
     size: {
-      w: 1/5,
+      w: 1 / 5,
       h: 35
     },
     children: [{
@@ -14,16 +14,16 @@ tr.controls.pnp2.inverseBtn_tiltL = function(xyz) {
       border: false,
       onClick: function() {
 
-        if(xyz == x){
+        if (xyz == x) {
 
         }
-        if(xyz == y){
+        if (xyz == y) {
 
         }
-        if(xyz == z){
+        if (xyz == z) {
 
         }
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

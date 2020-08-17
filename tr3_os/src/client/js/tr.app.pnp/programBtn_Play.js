@@ -14,9 +14,9 @@ tr.controls.pnp2.programBtn_Play = function() {
       type: "container",
       border: false,
       onClick: function() {
-          var app = this.getApp().config;
-      p.programStart(app)
-          //tr.data.socket.emit(rostopic, value);
+        var app = this.getApp().config;
+        p.programStart(app)
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

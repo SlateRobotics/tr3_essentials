@@ -19,11 +19,11 @@ tr.controls.pnp2.programHeader = function() {
   children.push(c.waypointBtn_Add());
   return {
     type: "container",
-    border:false,
-    size:{
+    border: false,
+    size: {
       w: 1,
       h: 100,
     },
     children: children,
-    }
   }
+}

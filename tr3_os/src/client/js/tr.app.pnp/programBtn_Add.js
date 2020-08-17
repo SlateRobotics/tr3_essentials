@@ -14,8 +14,8 @@ tr.controls.pnp2.programBtn_Add = function() {
       type: "container",
       border: false,
       onClick: function() {
-          var app = this.getApp().config;
-          //tr.data.socket.emit(rostopic, value);
+        var app = this.getApp().config;
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

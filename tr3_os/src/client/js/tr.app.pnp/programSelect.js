@@ -15,7 +15,7 @@ tr.controls.pnp2.programSelect = function() {
       border: false,
       onClick: function() {
         //Do program Settings
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         id: "progselect",
@@ -29,10 +29,10 @@ tr.controls.pnp2.programSelect = function() {
         textSize: 9,
         onChange: function(val) {
           var app = this.getApp().config;
-          if(app.programs){
-            p.changeProgram(app,val);
-            }
-          },
+          if (app.programs) {
+            p.changeProgram(app, val);
+          }
+        },
       }],
     }]
   }

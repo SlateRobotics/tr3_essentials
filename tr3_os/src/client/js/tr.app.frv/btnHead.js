@@ -8,7 +8,7 @@ tr.controls.frv.btnHead = function(lbl) {
       h: 50,
     },
     background: "rgb(80, 80, 80)",
-    onClick: function () {
+    onClick: function() {
       var h0 = tr.data.getState("h0").position;
       var h1 = tr.data.getState("h1").position;
 
@@ -41,8 +41,14 @@ tr.controls.frv.btnHead = function(lbl) {
       type: "text",
       textFont: "noto",
       text: lbl,
-      align: { v: "CENTER", h: "CENTER" },
-      size: { w: 1, h: 1 },
+      align: {
+        v: "CENTER",
+        h: "CENTER"
+      },
+      size: {
+        w: 1,
+        h: 1
+      },
     }]
   }
 }

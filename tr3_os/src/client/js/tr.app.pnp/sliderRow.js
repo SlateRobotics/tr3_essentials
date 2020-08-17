@@ -25,6 +25,6 @@ tr.controls.pnp2.sliderRow = function(id) {
       type: "container",
       border: false,
       children: children,
-}]
+    }]
   }
 }

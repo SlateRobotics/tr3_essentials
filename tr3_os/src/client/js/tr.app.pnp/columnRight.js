@@ -3,13 +3,13 @@ if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
 tr.controls.pnp2.columnRight = function() {
-    var c = tr.controls.pnp2;
+  var c = tr.controls.pnp2;
 
-    var children = [];
-    children.push(c.render());
-    children.push(c.programBtn_Play());
-    children.push(c.programBtn_Pause());
-    children.push(c.programBtn_Stop());
+  var children = [];
+  children.push(c.render());
+  children.push(c.programBtn_Play());
+  children.push(c.programBtn_Pause());
+  children.push(c.programBtn_Stop());
 
   return {
     type: "container",

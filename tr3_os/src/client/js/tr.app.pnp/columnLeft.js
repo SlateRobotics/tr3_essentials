@@ -25,6 +25,6 @@ tr.controls.pnp2.columnLeft = function() {
       type: "container",
       border: false,
       children: children,
-}]
+    }]
   }
 }

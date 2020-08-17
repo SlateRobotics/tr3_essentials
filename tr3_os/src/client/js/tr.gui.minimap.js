@@ -10,10 +10,10 @@ tr.gui.minimap = {
     this.goal = '';
   },
 
-  setup: function () {
-    this.onClick = function () {
+  setup: function() {
+    this.onClick = function() {
       this.componentConfig.handleClick_Goal.bind(this)();
-      this.componentConfig.handleClick_Button(this.btnCancel, function () {
+      this.componentConfig.handleClick_Button(this.btnCancel, function() {
         var l = tr.data.nav.status.status_list;
         for (var i = 0; i < l.length; i++) {
           if (l[i].status == 1) {
@@ -21,21 +21,33 @@ tr.gui.minimap = {
           }
         }
       }.bind(this)).bind(this)();
-      this.componentConfig.handleClick_Button(this.btnZoomIn, function () {
+      this.componentConfig.handleClick_Button(this.btnZoomIn, function() {
         this.scale += 1;
-        if (this.scale >= 20)  this.scale = 20;
+        if (this.scale >= 20) this.scale = 20;
       }.bind(this)).bind(this)();
-      this.componentConfig.handleClick_Button(this.btnZoomOut, function () {
+      this.componentConfig.handleClick_Button(this.btnZoomOut, function() {
         this.scale -= 1;
-        if (this.scale <= 1)  this.scale = 1;
+        if (this.scale <= 1) this.scale = 1;
       }.bind(this)).bind(this)();
     }
   },
 
   draw: function() {
-    this.btnCancel = { x: 17, y: this.size.h - 25, r: 18 };
-    this.btnZoomIn = { x: this.size.w - 27, y: this.size.h - 65, r: 18 };
-    this.btnZoomOut = { x: this.size.w - 27, y: this.size.h - 25, r: 18 }
+    this.btnCancel = {
+      x: 17,
+      y: this.size.h - 25,
+      r: 18
+    };
+    this.btnZoomIn = {
+      x: this.size.w - 27,
+      y: this.size.h - 65,
+      r: 18
+    };
+    this.btnZoomOut = {
+      x: this.size.w - 27,
+      y: this.size.h - 25,
+      r: 18
+    }
 
     this.absolutePosition = this.getAbsolutePosition();
     this.componentConfig.drawBackground.bind(this)();
@@ -46,8 +58,8 @@ tr.gui.minimap = {
     this.componentConfig.drawButtons.bind(this)();
   },
 
-  handleClick_Button: function (btn, callback) {
-    return function () {
+  handleClick_Button: function(btn, callback) {
+    return function() {
       var p = {
         x: this.absolutePosition.x + btn.x,
         y: this.absolutePosition.y + btn.y
@@ -66,7 +78,7 @@ tr.gui.minimap = {
     }
   },
 
-  handleClick_Goal: function () {
+  handleClick_Goal: function() {
     var p = {
       x: this.absolutePosition.x + this.center.x,
       y: this.absolutePosition.y + this.center.y
@@ -114,7 +126,7 @@ tr.gui.minimap = {
     }
   },
 
-  drawGoal: function () {
+  drawGoal: function() {
     if (!this.goal || tr.data.nav.complete) return;
     if (!tr.data.odom) return;
 
@@ -143,17 +155,17 @@ tr.gui.minimap = {
     translate(-this.center.x, -this.center.y);
   },
 
-  drawButton: function (btn, backColor, txt) {
+  drawButton: function(btn, backColor, txt) {
     fill(backColor);
     stroke("rgb(50, 50, 50)");
-    circle(btn.x, btn.y, btn.r*2);
+    circle(btn.x, btn.y, btn.r * 2);
 
     stroke("white");
     fill("white");
-    text(" " + txt, btn.x-btn.r, btn.y-btn.r, btn.r*2, btn.r*2);
+    text(" " + txt, btn.x - btn.r, btn.y - btn.r, btn.r * 2, btn.r * 2);
   },
 
-  drawButtons: function () {
+  drawButtons: function() {
     textFont(tr.fonts.noto);
     textSize(22);
     textAlign(CENTER, TOP);
@@ -163,7 +175,7 @@ tr.gui.minimap = {
     this.componentConfig.drawButton(this.btnCancel, "red", "x");
   },
 
-  drawLidar: function () {
+  drawLidar: function() {
     var l = tr.data.lidar;
     if (!l.ranges) return;
 
@@ -186,18 +198,18 @@ tr.gui.minimap = {
     }
   },
 
-  drawDepth: function () {
+  drawDepth: function() {
     if (!tr.data.depth) return;
 
     stroke("orange");
     fill("orange");
     strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.depth.length; i+=3) {
+    for (var i = 0; i < tr.data.depth.length; i += 3) {
       var d = {
         x: tr.data.depth[i],
-        y: tr.data.depth[i+1],
-        z: tr.data.depth[i+2]
+        y: tr.data.depth[i + 1],
+        z: tr.data.depth[i + 2]
       }
       if (d.z > 0) {
         var x = d.x * this.scale;
@@ -210,7 +222,7 @@ tr.gui.minimap = {
     }
   },
 
-  drawMap: function () {
+  drawMap: function() {
     if (!tr.data.map) return;
     if (!tr.data.odom) return;
 
@@ -223,10 +235,10 @@ tr.gui.minimap = {
     fill("white");
     strokeWeight(0.3);
 
-    for (var i = 0; i < tr.data.map.length; i+=2) {
+    for (var i = 0; i < tr.data.map.length; i += 2) {
       var d = {
         x: tr.data.map[i],
-        y: tr.data.map[i+1]
+        y: tr.data.map[i + 1]
       }
       var x = (d.x - p.x) * this.scale;
       var y = (d.y - p.y) * this.scale;
@@ -240,11 +252,14 @@ tr.gui.minimap = {
     translate(-this.center.x, -this.center.y);
   },
 
-  drawBackground: function () {
+  drawBackground: function() {
     var x = this.pos.x + this.size.w / 2.0 - this.padding;
     var y = this.pos.y + this.size.h / 2.0 - this.padding;
 
-    this.center = { x: x, y: y };
+    this.center = {
+      x: x,
+      y: y
+    };
 
     var d = this.size.w - this.padding * 2.0 - this.margin * 2.0;
     if (this.size.h < this.size.w) {

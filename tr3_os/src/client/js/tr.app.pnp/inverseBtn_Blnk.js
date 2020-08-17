@@ -14,7 +14,7 @@ tr.controls.pnp2.inverseBtn_Blnk = function() {
       border: false,
       onClick: function() {
         //Do waypoint Add
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       }
     }]
   }

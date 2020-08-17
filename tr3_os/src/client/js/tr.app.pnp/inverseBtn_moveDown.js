@@ -6,14 +6,14 @@ tr.controls.pnp2.inverseBtn_moveDown = function() {
   return {
     type: "container",
     size: {
-      w: 1/5,
+      w: 1 / 5,
       h: 35
     },
     children: [{
       type: "container",
       border: false,
       onClick: function() {
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",

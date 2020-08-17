@@ -12,11 +12,11 @@ tr.controls.pnp2.tabInverse = function() {
 
   return {
     type: "container",
-    border:false,
-    size:{
+    border: false,
+    size: {
       w: 1,
       h: 1,
     },
     children: children,
-    }
   }
+}

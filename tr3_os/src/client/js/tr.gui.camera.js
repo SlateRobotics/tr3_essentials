@@ -9,7 +9,7 @@ tr.gui.camera = {
 
   setup: function() {
     this.loadingImage = true;
-    this.element = createElement("img","");
+    this.element = createElement("img", "");
     this.element.attribute("src", this.cameraImageUrl);
     this.element.style("user-select", "none");
     this.element.hide();
@@ -24,7 +24,7 @@ tr.gui.camera = {
     this.element.show();
   },
 
-  clear: function () {
+  clear: function() {
     this.element.remove();
   },
 

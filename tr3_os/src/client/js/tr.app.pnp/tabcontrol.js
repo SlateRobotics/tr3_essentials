@@ -7,8 +7,8 @@ tr.controls.pnp2.tabControl = function() {
 
   return {
     type: "container",
-    border:false,
-    size:{
+    border: false,
+    size: {
       w: 1,
       h: 1,
     },
@@ -17,5 +17,5 @@ tr.controls.pnp2.tabControl = function() {
       labels: ["Forward", "Inverse"],
       pages: [c.tabForward(), c.tabInverse()],
     }]
-    }
   }
+}

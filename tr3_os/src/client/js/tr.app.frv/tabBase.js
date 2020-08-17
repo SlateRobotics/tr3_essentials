@@ -9,9 +9,9 @@ tr.controls.frv.tabBase = function() {
     },
     background: "rgb(80, 80, 80)",
     children: [
-      c.btnBase("◤"),c.btnBase("▲"),c.btnBase("◥"),
-      c.btnBase("◀"),c.btnBase("●"),c.btnBase("▶"),
-      c.btnBase("◣"),c.btnBase("▼"),c.btnBase("◢"),
+      c.btnBase("◤"), c.btnBase("▲"), c.btnBase("◥"),
+      c.btnBase("◀"), c.btnBase("●"), c.btnBase("▶"),
+      c.btnBase("◣"), c.btnBase("▼"), c.btnBase("◢"),
     ],
   }
 }

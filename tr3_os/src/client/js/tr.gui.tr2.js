@@ -207,11 +207,11 @@ tr.gui.tr2 = {
     this.p5.line(0, 0, 0, 0, 0, 1000);*/
 
     this.p5.stroke("white");
-    for (var i = 0; i < tr.data.depth.length; i+=3) {
+    for (var i = 0; i < tr.data.depth.length; i += 3) {
       var d = {
         x: tr.data.depth[i],
-        y: tr.data.depth[i+1],
-        z: tr.data.depth[i+2]
+        y: tr.data.depth[i + 1],
+        z: tr.data.depth[i + 2]
       }
       this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
       this.p5.sphere(4);

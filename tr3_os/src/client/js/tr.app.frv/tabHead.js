@@ -9,9 +9,9 @@ tr.controls.frv.tabHead = function() {
     },
     background: "rgb(50, 50, 50)",
     children: [
-      c.btnHead("◤"),c.btnHead("▲"),c.btnHead("◥"),
-      c.btnHead("◀"),c.btnHead("●"),c.btnHead("▶"),
-      c.btnHead("◣"),c.btnHead("▼"),c.btnHead("◢"),
+      c.btnHead("◤"), c.btnHead("▲"), c.btnHead("◥"),
+      c.btnHead("◀"), c.btnHead("●"), c.btnHead("▶"),
+      c.btnHead("◣"), c.btnHead("▼"), c.btnHead("◢"),
     ],
   }
 }

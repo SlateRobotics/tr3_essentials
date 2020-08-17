@@ -24,7 +24,7 @@ tr.gui.tabControl = {
     this.children.push(container);
   },
 
-  draw: function () {
+  draw: function() {
     for (var i = 0; i < this.children[0].children[0].children.length; i++) {
       var b = this.children[0].children[0].children[i];
       if (i == this.config.currentPage) {

@@ -16,7 +16,7 @@ tr.controls.pnp2.programBtn_Settings = function() {
       onClick: function() {
         var app = this.getApp().config;
         //Do program Settings
-          //tr.data.socket.emit(rostopic, value);
+        //tr.data.socket.emit(rostopic, value);
       },
       children: [{
         type: "text",
