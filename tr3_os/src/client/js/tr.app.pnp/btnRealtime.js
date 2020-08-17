@@ -1,27 +1,26 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
-var p = tr.controls.pnp2.program_Tools;
 
-tr.controls.pnp2.programBtn_Delete = function() {
+tr.controls.pnp2.btnRealtime = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 4,
-      h: 50
+      w: 0.5,
+      h: 30
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    onClick: function() {
+      //tr.data.socket.emit(rostopic, value);
     },
     children: [{
       type: "container",
       border: false,
-      onClick: function() {
-          var app = this.getApp().config;
-          //tr.data.socket.emit(rostopic, value);
-      },
       children: [{
         type: "text",
-        text: "♲", //recycle symbol
-        textSize: 24,
-        textFont: "noto",
+        text: "Realtime",
+        textSize: 18,
+        padding: 12,
         align: {
           v: "CENTER",
           h: "CENTER"
