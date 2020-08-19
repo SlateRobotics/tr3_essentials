@@ -9,10 +9,8 @@ This is a logical progression of the mission of the company. We eventually want 
 
 # To Do
   - FRV
-    - Mini Map
-      - Optimization for speed
     - Navigation
-      - Robot crashes
+      - Obstacle avoidance
     - 3D Render
       - Point cloud addition
     - Arm control
@@ -21,8 +19,6 @@ This is a logical progression of the mission of the company. We eventually want 
     - Console
   - Control Panel
     - Waypoint record and playback
-  - Gazebo
-    - Controller tuning
   - Other
     - Inverse Kinematics
   - Hardware

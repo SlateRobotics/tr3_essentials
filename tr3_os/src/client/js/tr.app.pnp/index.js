@@ -12,8 +12,8 @@ tr.app.pnp2 = function() {
 
   return new App({
 
-    id: 4,
-    name: "P.N.P. V2",
+    id: 2,
+    name: "Pick-n-Place",
     iconUrl: "/img/icon-app-pnp",
     programs: [],
     currentProgram: -1,

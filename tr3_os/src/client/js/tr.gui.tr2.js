@@ -59,6 +59,10 @@ tr.gui.tr2 = {
     this.container.style.display = "none";
     document.body.appendChild(this.container);
 
+    if (this.config.useLiveState != undefined) {
+      this.useLiveState = this.config.useLiveState;
+    }
+
     this.p5 = new p5(function(p) {}, this.container.id);
     this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
