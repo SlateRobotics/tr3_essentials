@@ -15,6 +15,7 @@ tr.controls.pnp2.programBtn_Add = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
+        p.addProgram(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{

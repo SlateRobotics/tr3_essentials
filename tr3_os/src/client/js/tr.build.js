@@ -2526,6 +2526,7 @@ tr.controls.pnp2.columnLeft = function() {
   children.push(c.programHeader());
   children.push(c.btnSimulated());
   children.push(c.btnRealtime());
+  children.push(c.goalGroup());
   //children.push(c.joystick()); //For Testing - Position values arnt as expected, manualy tuned for this spot.
   children.push(c.tabControl());
   return {
@@ -2567,6 +2568,221 @@ tr.controls.pnp2.columnRight = function() {
     margin: 10,
     padding: 5,
     children: children,
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalCurrent_Label = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "currentpos",
+        type: "text",
+        text: "0.00",
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalDurCompleted_Label = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "durcurrent",
+        type: "text",
+        text: "---" + "%",
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalDurTotal_Label = function() {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: "durtotal",
+        type: "text",
+        text: "0.00" + " -Seconds",
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+
+tr.controls.pnp2.goalGroup = function() {
+  var c = tr.controls.pnp2;
+
+  var children = [];
+  children.push(c.goalHeader_Label("Target"));
+  children.push(c.goalHeader_Label("Current"));
+  children.push(c.goalID_Label("a0"));
+  children.push(c.goalTarget_Label("a0"));
+  children.push(c.goalID_Label("a0"));
+  children.push(c.goalCurrent_Label("a0"));
+
+  children.push(c.goalID_Label("a1"));
+  children.push(c.goalTarget_Label("a1"));
+  children.push(c.goalID_Label("a1"));
+  children.push(c.goalCurrent_Label("a1"));
+
+  children.push(c.goalID_Label("a2"));
+  children.push(c.goalTarget_Label("a2"));
+  children.push(c.goalID_Label("a2"));
+  children.push(c.goalCurrent_Label("a2"));
+
+  children.push(c.goalID_Label("a3"));
+  children.push(c.goalTarget_Label("a3"));
+  children.push(c.goalID_Label("a3"));
+  children.push(c.goalCurrent_Label("a3"));
+
+  children.push(c.goalID_Label("a4"));
+  children.push(c.goalTarget_Label("a4"));
+  children.push(c.goalID_Label("a4"));
+  children.push(c.goalCurrent_Label("a4"));
+
+  children.push(c.goalID_Label("Duration Total"));
+  children.push(c.goalDurTotal_Label());
+  children.push(c.goalID_Label("Duration Passed"));
+  children.push(c.goalDurCompleted_Label());
+  return {
+    type: "container",
+    size: {
+      w: 1,
+      h: 0.288,
+    },
+    background: "rgba(255, 255, 255, 0.2)",
+    margin: 2,
+    padding: 5,
+    children: [{
+      type: "container",
+      border: false,
+      children: children,
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalHeader_Label = function(text) {
+  return {
+    type: "container",
+    size: {
+      w: .5,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: text,
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalID_Label = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        type: "text",
+        text: id,
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
+  }
+}
+if (!tr) tr = {};
+if (!tr.controls) tr.controls = {};
+if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+
+tr.controls.pnp2.goalTarget_Label = function(id) {
+  return {
+    type: "container",
+    size: {
+      w: 1 / 4,
+      h: 15
+    },
+    children: [{
+      type: "container",
+      border: false,
+      children: [{
+        id: id + "targetpos",
+        type: "text",
+        text: "0.00",
+        textSize: 12,
+        align: {
+          v: "CENTER",
+          h: "CENTER"
+        },
+      }],
+    }]
   }
 }
 if (!tr) tr = {};
@@ -3261,6 +3477,7 @@ tr.controls.pnp2.programBtn_Add = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
+        p.addProgram(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3293,6 +3510,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
+        p.removeProgram(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -3500,9 +3718,7 @@ tr.controls.pnp2.programSelect = function() {
         textSize: 9,
         onChange: function(val) {
           var app = this.getApp().config;
-          if (app.programs) {
-            p.changeProgram(app, val);
-          }
+          p.changeProgram(app, val);
         },
       }],
     }]
@@ -3511,6 +3727,7 @@ tr.controls.pnp2.programSelect = function() {
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypoint = function(config) {
   this.config = config;
@@ -3523,6 +3740,10 @@ tr.controls.pnp2.waypoint = function(config) {
 
   this.incrementPosition = function(idx, i) {
     this.positions[idx] += i;
+  }
+
+  this.setwpPositions = function(pos) {
+    this.positions = pos;
   }
 
   this.incrementDuration = function(i) {
@@ -3547,7 +3768,7 @@ tr.controls.pnp2.program = function(config) {
       if (wp.config) {
         this.waypoints.push(wp);
       } else {
-        this.waypoints.push(new tr.app.pnp.waypoint(wp));
+        this.waypoints.push(new tr.controls.pnp2.waypoint(wp));
       }
     }
 
@@ -3556,19 +3777,26 @@ tr.controls.pnp2.program = function(config) {
     }
   }
 
+  this.setPositions = function(pos, app) {
+    if (this.waypoints[this.currentWaypoint]) {
+      this.waypoints[this.currentWaypoint].setwpPositions(pos);
+      p.updateUI(app)
+    }
+  }
+
   this.getCurrentWaypoint = function() {
     return this.waypoints[this.currentWaypoint];
   }
 
-  this.insertWaypoint = function() {
+  this.insertWaypoint = function(app) {
     var wp = [];
-    console.log(this);
+    //console.log(this);
     for (var i = 0; i < this.waypoints.length; i++) {
       wp.push(this.waypoints[i]);
       if (i == this.currentWaypoint) {
         var config = Object.assign({}, this.waypoints[i].config);
         config.positions = Object.assign([], config.positions);
-        wp.push(new tr.app.pnp.waypoint(config));
+        wp.push(new tr.controls.pnp2.waypoint(config));
       }
     }
 
@@ -3580,9 +3808,10 @@ tr.controls.pnp2.program = function(config) {
     }
 
     this.waypoints = wp;
+    p.updateUI(app)
   }
 
-  this.removeWaypoint = function() {
+  this.removeWaypoint = function(app) {
     var wp = [];
     for (var i = 0; i < this.waypoints.length; i++) {
       if (i != this.currentWaypoint) {
@@ -3598,15 +3827,17 @@ tr.controls.pnp2.program = function(config) {
     if (this.waypoints.length == 0) {
       this.insertWaypoint();
     }
+    p.updateUI(app)
   }
 
-  this.incrementWaypoint = function(i) {
+  this.incrementWaypoint = function(i, app) {
     this.currentWaypoint += i;
     if (this.currentWaypoint < 0) {
       this.currentWaypoint = 0;
     } else if (this.currentWaypoint >= this.waypoints.length) {
       this.currentWaypoint = this.waypoints.length - 1;
     }
+    p.updateUI(app)
   }
 
   this.setup();
@@ -3619,6 +3850,7 @@ var p = tr.controls.pnp2.program_Tools;
 
 p.Program_Setup = function(app) {
   app.currentProgram = 0;
+  app.programs = [];
   p.LoadPrograms(app)
   app.robotState = p.getCurrentProgram(app).getCurrentWaypoint().positions;
   p.updateUI(app);
@@ -3706,11 +3938,25 @@ p.addProgram = function(app) {
   }
 
   app.programs.push(new tr.controls.pnp2.program({
-    id: id
+    id: id,
+    waypoints: [{
+      positions: [0, 0, 0, 0, 0],
+      speed: 1
+    }]
   }));
 
   p.updateUI(app);
 };
+
+p.removeProgram = function(app) {
+  var i = app.currentProgram;
+  app.programs.splice(i, 1);
+  if (app.programs.length == 0) {
+    p.addProgram(app)
+  }
+  app.currentProgram = 0;
+  p.updateUI(app);
+}
 
 p.changeProgram = function(app, name) {
   for (var i = 0; i < app.programs.length; i++) {
@@ -3758,6 +4004,7 @@ p.programRun = function(app) {
     var wp = prog.getCurrentWaypoint();
     var pos = wp.positions;
     var wpDuration = wp.speed; // seconds
+    var page = app._app.getCurrentPage();
 
     var startPos = app.waypointStartPos;
 
@@ -3767,17 +4014,22 @@ p.programRun = function(app) {
 
     if (wpDuration == 0) {
       durationComplete = 1.0;
+      page.getChild("durcurrent").text = (durationComplete * 100).toFixed(0) + "%";
     }
 
     for (var i = 0; i < app.robotState.length; i++) {
       app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
+      page.getChild("a" + i + "currentpos").text = app.robotState[i].toFixed(2) + "°";
+      page.getChild("durcurrent").text = (durationComplete * 100).toFixed(0) + "%";
     }
 
     p.updateUI(app);
 
     if (duration >= wpDuration) {
+      page.getChild("durcurrent").text = ("100") + "%";
       if (prog.waypoints.length - 1 <= prog.currentWaypoint) {
         app.programMode = 0;
+        page.getChild("durcurrent").text = ("---") + "%";
       } else {
         app.waypointStart = new Date();
         app.waypointStartPos = Object.assign([], pos);
@@ -3808,13 +4060,14 @@ p.updateUI = function(app) {
   tr2.state.a3 = app.robotState[3];
   tr2.state.a4 = app.robotState[4];
 
-  //page.getChild('dwaypoint').text = prog.currentWaypoint;
+  page.getChild('dwaypoint').text = prog.currentWaypoint;
   // page.getChild('dspeed').text = Math.round(speed * 100) / 100;
-  // page.getChild('d0').text = Math.floor(positions[0]) + "°";
-  // page.getChild('d1').text = Math.floor(positions[1]) + "°";
-  // page.getChild('d2').text = Math.floor(positions[2]) + "°";
-  // page.getChild('d3').text = Math.floor(positions[3]) + "°";
-  // page.getChild('d4').text = Math.floor(positions[4]) + "°";
+  page.getChild("a0targetpos").text = positions[0].toFixed(2) + "°";
+  page.getChild("a1targetpos").text = positions[1].toFixed(2) + "°";
+  page.getChild("a2targetpos").text = positions[2].toFixed(2) + "°";
+  page.getChild("a3targetpos").text = positions[3].toFixed(2) + "°";
+  page.getChild("a4targetpos").text = positions[4].toFixed(2) + "°";
+  page.getChild("durtotal").text = speed.toFixed(2) + " -Seconds";
 
   p.updateSelect(app);
 };
@@ -3823,6 +4076,7 @@ p.updateSelect = function(app) {
   var page = app._app.pages[0];
   var sel = page.getChild('progselect');
   var options = sel.options;
+
 
   var opts = [];
   var update = false;
@@ -3839,6 +4093,20 @@ p.updateSelect = function(app) {
   if (update) {
     page.getChild('progselect').setOptions(opts);
   }
+};
+
+p.sliderchanged = function(app) {
+  var page = app._app.getCurrentPage();
+  var pos_array = [];
+
+  pos_array[0] = (page.getChild("a0slider").element.value() * 2 * Math.PI);
+  pos_array[1] = (page.getChild("a1slider").element.value() * 2 * Math.PI);
+  pos_array[2] = (page.getChild("a2slider").element.value() * 2 * Math.PI);
+  pos_array[3] = (page.getChild("a3slider").element.value() * 2 * Math.PI);
+  pos_array[4] = (page.getChild("a4slider").element.value() * 2 * Math.PI);
+
+  p.getCurrentProgram(app).setPositions(pos_array, app);
+
 };
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
@@ -3861,7 +4129,8 @@ tr.controls.pnp2.render = function() {
 }
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
-if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.slider = function(id) {
   return {
@@ -3893,6 +4162,7 @@ tr.controls.pnp2.slider = function(id) {
           //tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
           var label = page.getChild(id + "sliderl");
           label.text = val.toFixed(2);
+          p.sliderchanged(app.config);
         },
 
         onChange: function(val) {
@@ -4080,7 +4350,7 @@ tr.controls.pnp2.waypointBtn_Add = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        p.insertWaypoint(app)
+        p.getCurrentProgram(app).insertWaypoint(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -4113,7 +4383,7 @@ tr.controls.pnp2.waypointBtn_Delete = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        //Do waypoint Delete
+        p.getCurrentProgram(app).removeWaypoint(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -4146,7 +4416,7 @@ tr.controls.pnp2.waypointBtn_Next = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        p.incrementWaypoint()
+        p.getCurrentProgram(app).incrementWaypoint(1, app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
@@ -4179,7 +4449,7 @@ tr.controls.pnp2.waypointBtn_Previous = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        //Do waypoint previous
+        p.getCurrentProgram(app).incrementWaypoint(-1, app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{

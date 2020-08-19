@@ -15,7 +15,7 @@ tr.controls.pnp2.waypointBtn_Previous = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        //Do waypoint previous
+        p.getCurrentProgram(app).incrementWaypoint(-1, app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{

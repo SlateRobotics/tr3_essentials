@@ -15,6 +15,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
+        p.removeProgram(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{

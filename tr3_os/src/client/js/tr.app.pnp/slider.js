@@ -1,6 +1,7 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
-if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
+if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.slider = function(id) {
   return {
@@ -32,6 +33,7 @@ tr.controls.pnp2.slider = function(id) {
           //tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
           var label = page.getChild(id + "sliderl");
           label.text = val.toFixed(2);
+          p.sliderchanged(app.config);
         },
 
         onChange: function(val) {
