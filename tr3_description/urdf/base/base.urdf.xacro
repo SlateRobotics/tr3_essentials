@@ -10,7 +10,7 @@
 			<parent link="base_link"/>
 			<child link="link_${name}"/>
 			<xacro:insert_block name="axis" />
-			<limit effort="100.0" velocity="0.5"/>
+			<limit effort="100.0" velocity="1.0"/>
 			<xacro:insert_block name="origin" />
     	<dynamics damping="0.001" friction="0.1"/>
 		</joint>
@@ -43,11 +43,11 @@
 			<geometry>
         <mesh filename="package://tr3_description/meshes/stl/tr-bs-a.stl" scale="0.001 0.001 0.001"/>
 			</geometry>
-			<origin rpy="0 0 3.1415" />
+			<origin rpy="0 0 1.5708" />
 		</collision>
 		<inertial>
-      	<mass value="1" />
-        <origin xyz="0 -0.300 0" />
+      	<mass value="10" />
+        <origin xyz="-0.300 0 0" />
 		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
 		</inertial>
 		<visual>
@@ -57,7 +57,7 @@
       <material name="slate_gray">
         <color rgba="0.2 0.2 0.2 1"/>
       </material>
-			<origin rpy="0 0 3.1415" />
+			<origin rpy="0 0 1.5708" />
 		</visual>
 	</link>
 
@@ -152,7 +152,7 @@
   <joint name="b2" type="continuous">
     <parent link="base_link"/>
     <child link="link_b2"/>
-    <origin xyz="-0.147 -0.39975 -0.09635" rpy="0 3.1415 -1.5708"/>
+    <origin xyz="-0.39975 -0.147 -0.09635" rpy="0 3.1415 3.1415"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
@@ -168,7 +168,7 @@
   <joint name="b4" type="continuous">
     <parent link="base_link"/>
     <child link="link_b4"/>
-    <origin xyz="0.147 -0.39975 -0.09635" rpy="0 3.1415 -1.5708"/>
+    <origin xyz="-0.39975 0.147 -0.09635" rpy="0 3.1415 3.1415"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
@@ -183,7 +183,7 @@
 
   <joint name="rplidar_joint" type="fixed">
     <axis xyz="0 0 1" />
-    <origin xyz="0 0.11 0" rpy="0 0 0" />
+    <origin xyz="0.11 0 0" rpy="0 0 -1.5708" />
     <parent link="base_link" />
     <child link="laser" />
   </joint>
@@ -192,13 +192,13 @@
   </link>
 
 	<xacro:tr3_wheel name="b0">
-    <axis xyz="0 -1 0"/>
-		<origin rpy="0 0 -1.5708" xyz="0.3281 0 0"/>
+    <axis xyz="0 1 0"/>
+		<origin rpy="0 0 0" xyz="0 0.3281 0"/>
 	</xacro:tr3_wheel>
 
 	<xacro:tr3_wheel name="b1">
-    <axis xyz="0 1 0"/>
-		<origin rpy="0 0 1.5708" xyz="-0.3281 0 0"/>
+    <axis xyz="0 -1 0"/>
+		<origin rpy="0 0 3.1415" xyz="0 -0.3281 0"/>
 	</xacro:tr3_wheel>
 
 </robot>

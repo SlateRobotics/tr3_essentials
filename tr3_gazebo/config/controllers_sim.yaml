@@ -15,21 +15,21 @@ tr3:
       twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
       linear:
         x:
-          has_velocity_limits: true
-          max_velocity: 8.8
-          min_velocity: -8.8
-          has_acceleration_limits: true
+          has_velocity_limits: false
+          max_velocity: 1.0
+          min_velocity: -1.0
+          has_acceleration_limits: false
           max_acceleration: 0.8
           min_acceleration: -0.4
-          has_jerk_limits: true
+          has_jerk_limits: false
           max_jerk: 5.0
       angular:
         z:
-          has_velocity_limits: true
+          has_velocity_limits: false
           max_velocity: 1.7
-          has_acceleration_limits: true
+          has_acceleration_limits: false
           max_acceleration: 1.5
-          has_jerk_limits: true
+          has_jerk_limits: false
           max_jerk: 2.5
   arm:
     follow_joint_trajectory:

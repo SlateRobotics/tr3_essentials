@@ -79,7 +79,7 @@
 	<joint name="h0" type="revolute">
 		<parent link="base_link"/>
 		<child link="neck_link"/>
-		<origin rpy="0 0 3.1415" xyz="0 -0.3579 0.70325"/>
+		<origin xyz="-0.3579 0 0.70325" rpy="0 0 1.5708" />
     <axis xyz="0 0 1"/>
 		<limit effort="100.0" lower="-15" upper="15" velocity="0.20"/>
     <dynamics damping="0.1" friction="0.1"/>

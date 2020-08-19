@@ -94,7 +94,7 @@ tr.gui.minimap = {
     var dist = sqrt((_x * _x) + (_y * _y));
     if (dist < this.radius - 1) {
       if (!tr.data.odom) return;
-      var a = tr.data.odom.orientation.z;
+      var a = tr.data.odom.orientation.z - 1.5708;
       var x = d.x * cos(a) - d.y * sin(a);
       var y = d.x * sin(a) + d.y * cos(a);
 
@@ -136,7 +136,7 @@ tr.gui.minimap = {
 
     var d = this.goal.position;
 
-    var a = -tr.data.odom.orientation.z;
+    var a = -tr.data.odom.orientation.z + 1.5708;
     var x = (d.x - p.x) * cos(a) - (d.y - p.y) * sin(a);
     var y = (d.x - p.x) * sin(a) + (d.y - p.y) * cos(a);
 
@@ -229,7 +229,7 @@ tr.gui.minimap = {
     var p = tr.data.odom.position;
 
     translate(this.center.x, this.center.y);
-    rotateZ(tr.data.odom.orientation.z);
+    rotateZ(tr.data.odom.orientation.z - 1.5708);
 
     stroke("white");
     fill("white");
@@ -248,7 +248,7 @@ tr.gui.minimap = {
       }
     }
 
-    rotateZ(-tr.data.odom.orientation.z);
+    rotateZ(-tr.data.odom.orientation.z + 1.5708);
     translate(-this.center.x, -this.center.y);
   },
 

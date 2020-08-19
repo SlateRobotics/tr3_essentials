@@ -24,7 +24,7 @@
 	<joint name="a0" type="revolute">
 		<parent link="base_link"/>
 		<child link="link_a0"/>
-		<origin xyz="0.1016 -0.1229 0.459937" rpy="0 0 3.1415"/>
+		<origin xyz="-0.1229 -0.1016 0.459937" rpy="0 0 1.5708"/>
     <axis xyz="0 0 -1"/>
 		<limit effort="100.0" lower="-10" upper="10" velocity="0.85"/>
     <dynamics damping="0.1" friction="0.1"/>

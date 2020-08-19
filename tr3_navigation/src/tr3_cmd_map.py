@@ -12,7 +12,7 @@ pub = None
 
 def handle_cmd(msg):
     cmd_vel = Twist()
-    cmd_vel.linear.x = msg.linear.y
+    cmd_vel.linear.x = msg.linear.x
     cmd_vel.angular.z = -msg.angular.z
     pub.publish(cmd_vel)
 

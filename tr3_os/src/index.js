@@ -146,12 +146,9 @@ io.on('connection', function (socket) {
     // need to properly scale this down, biggest area for optimizations
     // UI render is fairly quick under ~1000 points
     nh.subscribe('/map', 'nav_msgs/OccupancyGrid', function (msg) {
-
-      var start = new Date();
-
       var result = [];
-
       var r = [];
+
       for (var i = 0; i < msg.data.length; i++) {
         if (msg.data[i] == -1) {
           msg.data[i] = 0;
@@ -160,13 +157,9 @@ io.on('connection', function (socket) {
         }
       }
 
-      var mid = new Date();
-
       var m = nj.array(msg.data);
       m = m.reshape(msg.info.height, msg.info.width);
       r = nj.images.resize(m, 400, 400);
-
-      var mid2 = new Date();
 
       var res = msg.info.resolution * (msg.info.width / r.shape[1]);
 
@@ -179,15 +172,6 @@ io.on('connection', function (socket) {
           }
         }
       }
-
-      var end = new Date();
-
-      var t1 = end.getTime() - start.getTime();
-      var m1 = mid.getTime() - start.getTime();
-      var m2 = mid2.getTime() - mid.getTime();
-      var m3 = end.getTime() - mid2.getTime();
-
-      console.log(t1, m1, m2, m3);
 
       socket.emit('/map', result);
     });

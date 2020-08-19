@@ -22,25 +22,25 @@ tr.controls.frv.btnBase = function(lbl) {
         }
       }
       if (lbl == "▲") {
-        msg.linear.x = 10;
+        msg.linear.x = 1.0;
       } else if (lbl == "▼") {
-        msg.linear.x = -10;
+        msg.linear.x = -1.0;
       } else if (lbl == "▶") {
-        msg.angular.z = 10;
+        msg.angular.z = -1.7;
       } else if (lbl == "◀") {
-        msg.angular.z = -10;
+        msg.angular.z = 1.7;
       } else if (lbl == "◤") {
-        msg.linear.x = 10;
-        msg.angular.z = -10;
+        msg.linear.x = 1.0;
+        msg.angular.z = 1.7;
       } else if (lbl == "◥") {
-        msg.linear.x = 10;
-        msg.angular.z = 10;
+        msg.linear.x = 1.0;
+        msg.angular.z = -1.7;
       } else if (lbl == "◣") {
-        msg.linear.x = -10;
-        msg.angular.z = -10;
+        msg.linear.x = -1.0;
+        msg.angular.z = 1.7;
       } else if (lbl == "◢") {
-        msg.linear.x = -10;
-        msg.angular.z = 10;
+        msg.linear.x = -1.0;
+        msg.angular.z = -1.7;
       }
       tr.data.socket.emit("/tr3/base/diff/cmd_vel", msg);
     },

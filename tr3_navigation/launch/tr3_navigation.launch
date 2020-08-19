@@ -4,20 +4,20 @@
   <arg name="global_frame_id" default="map"/>
   <arg name="odom_topic" default="/tr3/base/odom" />
   <arg name="laser_topic" default="/tr3/lidar" />
-  <arg name="base_topic" default="/cmd_vel" />
+  <arg name="base_topic" default="/tr3/base/diff/cmd_vel" />
 
   <remap from="odom" to="$(arg odom_topic)"/>
   <remap from="scan" to="$(arg laser_topic)"/>
   <remap from="cmd_vel" to="$(arg base_topic)"/>
 
-  <node pkg="tr3_navigation" name="tr3_cmd_map_node" type="tr3_cmd_map.py" output="screen" />
+  <!--node pkg="tr3_navigation" name="tr3_cmd_map_node" type="tr3_cmd_map.py" output="screen" /-->
   <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
   <node pkg="tr3_navigation" name="tr3_tf_broadcaster_node" type="tr3_tf_broadcaster.py" output="screen" />
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
     <param name="base_frame" value="$(arg base_frame_id)" />
 
-    <param name="delta" value="0.01"/>
+    <param name="delta" value="0.1"/>
     <param name="xmin" value="-20"/>
     <param name="xmax" value="20"/>
     <param name="ymin" value="-20"/>
@@ -47,6 +47,7 @@
     <rosparam command="load" file="$(find tr3_navigation)/config/move_base_params.yaml"  />
 
     <rosparam command="load" file="$(find tr3_navigation)/config/dwa_local_planner_params.yaml" />
+    <rosparam command="load" file="$(find tr3_navigation)/config/base_local_planner_params.yaml" />
     <rosparam command="load" file="$(find tr3_navigation)/config/navfn_global_planner_params.yaml" />
 
     <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>

@@ -25,6 +25,5 @@ This is a logical progression of the mission of the company. We eventually want 
     - Controller tuning
   - Other
     - Inverse Kinematics
-    - Fix build script
   - Hardware
     - Actuator acceleration limits
