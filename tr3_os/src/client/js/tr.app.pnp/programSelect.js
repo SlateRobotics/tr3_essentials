@@ -29,9 +29,7 @@ tr.controls.pnp2.programSelect = function() {
         textSize: 9,
         onChange: function(val) {
           var app = this.getApp().config;
-          if (app.programs) {
-            p.changeProgram(app, val);
-          }
+          p.changeProgram(app, val);
         },
       }],
     }]

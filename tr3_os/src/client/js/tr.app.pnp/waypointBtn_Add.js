@@ -15,7 +15,7 @@ tr.controls.pnp2.waypointBtn_Add = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
-        p.insertWaypoint(app)
+        p.getCurrentProgram(app).insertWaypoint(app);
         //tr.data.socket.emit(rostopic, value);
       },
       children: [{
