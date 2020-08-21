@@ -79,6 +79,52 @@ tr.gui.tr2 = {
       this.displayPointCloud = this.config.displayPointCloud;
     }
 
+    this.zoomOut = function () {
+      this.cameraRadius += 25;
+    }
+
+    this.zoomIn = function () {
+      this.cameraRadius -= 25;
+    }
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-zoom-in",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: 10, y: -95 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.zoomIn();
+      },
+      children: [{
+        type: "text",
+        text: "+",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-zoom-out",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: 10, y: -50 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.zoomOut();
+      },
+      children: [{
+        type: "text",
+        text: "-",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
     this.p5 = new p5(function(p) {}, this.container.id);
     this.p5.createCanvas(this.size.w, this.size.h, WEBGL);
 
@@ -237,6 +283,9 @@ tr.gui.tr2 = {
     if (this.displayPointCloud) {
       this.componentConfig.drawPointCloud.bind(this)();
     }
+
+    //this.buttonZoomOut.position = { x: 25, y: this.size.h - 25 };
+    //this.buttonZoomOut.draw();
   },
 
   drawMap: function () {

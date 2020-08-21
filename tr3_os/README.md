@@ -15,6 +15,7 @@ This is a logical progression of the mission of the company. We eventually want 
       - Point cloud addition
       - Options:
         - Display LiDAR, Point Cloud, Map
+        - Zoom in/out
     - Arm control
       - Goal position coordinate frame: robot vs. world
       - Gripper control

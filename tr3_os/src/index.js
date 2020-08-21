@@ -159,14 +159,14 @@ io.on('connection', function (socket) {
 
       var m = nj.array(msg.data);
       m = m.reshape(msg.info.height, msg.info.width);
-      r = nj.images.resize(m, 400, 400);
+      r = nj.images.resize(m, 200, 200);
 
       var res = msg.info.resolution * (msg.info.width / r.shape[1]);
 
       for (var w = 0; w < r.shape[1]; w++) {
         for (var h = 0; h < r.shape[0]; h++) {
           var d = r.get(h, w);
-          if (d > 10) {
+          if (d > 50) {
             result.push(w * res + res / 2.0 + msg.info.origin.position.x);
             result.push(h * res + res / 2.0 + msg.info.origin.position.y);
           }

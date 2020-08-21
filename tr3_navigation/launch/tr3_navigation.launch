@@ -18,10 +18,10 @@
     <param name="base_frame" value="$(arg base_frame_id)" />
 
     <param name="delta" value="0.1"/>
-    <param name="xmin" value="-20"/>
-    <param name="xmax" value="20"/>
-    <param name="ymin" value="-20"/>
-    <param name="ymax" value="20"/>
+    <param name="xmin" value="-10"/>
+    <param name="xmax" value="10"/>
+    <param name="ymin" value="-10"/>
+    <param name="ymax" value="10"/>
 
     <param name="linearUpdate" value="0.5"/>
     <param name="angularUpdate" value="0.436"/>

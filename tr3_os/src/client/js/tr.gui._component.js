@@ -2,6 +2,7 @@ if (!tr) tr = {};
 if (!tr.gui) tr.gui = {};
 
 tr.gui.component = function(componentConfig) {
+  if (!componentConfig) componentConfig = {};
   this.componentConfig = componentConfig;
 
   this.setup = function(config) {
@@ -11,6 +12,7 @@ tr.gui.component = function(componentConfig) {
     this.index = config.index || 0;
     this.id = this.config.id;
     this.parent = config.parent;
+    this.posType = config.posType || "static";
     this.pos = config.pos || {
       x: 0,
       y: 0
@@ -137,6 +139,8 @@ tr.gui.component = function(componentConfig) {
     }
 
     this.initialized = true;
+
+    return this;
   }
 
   this.reset = function() {
@@ -197,9 +201,14 @@ tr.gui.component = function(componentConfig) {
     }
     for (var i = 0; i < this.children.length; i++) {
       if (shift.x + this.children[i].size.w <= this.size.w) {
+        if (this.children[i].config.pos && this.children[i].config.pos.y < 0) {
+          this.children[i].pos.y = this.size.h + this.children[i].config.pos.y;
+        }
         this.children[i].draw();
-        this.translate(this.children[i].size.w, 0);
-        shift.x += this.children[i].size.w;
+        if (this.children[i].posType != "fixed") {
+          this.translate(this.children[i].size.w, 0);
+          shift.x += this.children[i].size.w;
+        }
       } else {
         this.translate(-shift.x, this.children[i - 1].size.h);
         shift.x = 0;
