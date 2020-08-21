@@ -11,6 +11,10 @@ tr.gui.tr2 = {
     this.border = false;
     this.useLiveState = true;
 
+    this.displayMap = false;
+    this.displayLidar = false;
+    this.displayPointCloud = false;
+
     this.links = {};
 
     this.tr2 = new tr.lib.tr2();
@@ -61,6 +65,18 @@ tr.gui.tr2 = {
 
     if (this.config.useLiveState != undefined) {
       this.useLiveState = this.config.useLiveState;
+    }
+
+    if (this.config.displayLidar != undefined) {
+      this.displayLidar = this.config.displayLidar;
+    }
+
+    if (this.config.displayMap != undefined) {
+      this.displayMap = this.config.displayMap;
+    }
+
+    if (this.config.displayPointCloud != undefined) {
+      this.displayPointCloud = this.config.displayPointCloud;
     }
 
     this.p5 = new p5(function(p) {}, this.container.id);
@@ -210,6 +226,64 @@ tr.gui.tr2 = {
     this.p5.stroke('blue');
     this.p5.line(0, 0, 0, 0, 0, 1000);*/
 
+    if (this.displayLidar) {
+      this.componentConfig.drawLidar.bind(this)();
+    }
+
+    if (this.displayMap) {
+      this.componentConfig.drawMap.bind(this)();
+    }
+
+    if (this.displayPointCloud) {
+      this.componentConfig.drawPointCloud.bind(this)();
+    }
+  },
+
+  drawMap: function () {
+    if (!tr.data.map) return;
+    if (!tr.data.odom) return;
+
+    var p = tr.data.odom.position;
+
+    this.p5.rotateZ(tr.data.odom.orientation.z - 1.5708);
+
+    this.p5.stroke("white");
+
+    for (var i = 0; i < tr.data.map.length; i += 2) {
+      var d = {
+        x: tr.data.map[i],
+        y: tr.data.map[i + 1]
+      }
+      var x = (d.x - p.x) * 200.0;
+      var y = (d.y - p.y) * 200.0;
+      this.p5.translate(-x, y, 0);
+      this.p5.sphere(4);
+      this.p5.translate(x, -y, 0);
+    }
+
+    this.p5.rotateZ(-tr.data.odom.orientation.z + 1.5708);
+  },
+
+  drawLidar: function () {
+    var l = tr.data.lidar;
+    if (!l.ranges) return;
+
+    this.p5.stroke("red");
+
+    for (var i = 0; i < l.ranges.length; i++) {
+      var m = l.ranges[i];
+      if (m) {
+        var a = l.angle_min + i * l.angle_increment + 1.5708;
+        var x = sin(a) * m * 200;
+        var y = cos(a) * m * 200;
+        this.p5.translate(-x, -y, 0);
+        this.p5.sphere(2);
+        this.p5.translate(x, y, 0);
+      }
+    }
+  },
+
+  drawPointCloud: function () {
     this.p5.stroke("white");
     for (var i = 0; i < tr.data.depth.length; i += 3) {
       var d = {

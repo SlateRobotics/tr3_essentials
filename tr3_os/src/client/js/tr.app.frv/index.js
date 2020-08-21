@@ -53,7 +53,9 @@ tr.app.frv = function() {
             },
             background: "rgb(100, 100, 100)",
             children: [{
-              type: "tr2"
+              type: "tr2",
+              displayLidar: true,
+              displayMap: true,
             }]
           }],
         }],

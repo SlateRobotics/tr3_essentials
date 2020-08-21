@@ -13,6 +13,8 @@ This is a logical progression of the mission of the company. We eventually want 
       - Obstacle avoidance
     - 3D Render
       - Point cloud addition
+      - Options:
+        - Display LiDAR, Point Cloud, Map
     - Arm control
       - Goal position coordinate frame: robot vs. world
       - Gripper control

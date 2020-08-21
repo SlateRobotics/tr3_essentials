@@ -22,9 +22,9 @@
 				<origin rpy="0 0 0" />
 			</collision>
 			<inertial>
-      	<mass value="0.01" />
-		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
-				</inertial>
+      	<mass value="10" />
+		    <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+			</inertial>
 			<visual>
 				<geometry>
 		      <mesh filename="package://tr3_description/meshes/stl/xt-wl-a.stl" scale="0.001 0.001 0.001"/>
@@ -47,7 +47,7 @@
 		</collision>
 		<inertial>
       	<mass value="10" />
-        <origin xyz="-0.300 0 0" />
+        <origin xyz="-0.300 0 0.100" />
 		    <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
 		</inertial>
 		<visual>
@@ -69,8 +69,8 @@
       <origin rpy="0 0 1.5708" />
     </collision>
     <inertial>
-        <mass value="0.01" />
-        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+        <mass value="0.1" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
     </inertial>
     <visual>
       <geometry>
@@ -91,8 +91,8 @@
       <origin rpy="0 0 1.5708" />
     </collision>
     <inertial>
-        <mass value="0.01" />
-        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+        <mass value="0.1" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
     </inertial>
     <visual>
       <geometry>
@@ -113,8 +113,8 @@
       <origin rpy="0 0 1.5708" />
     </collision>
     <inertial>
-        <mass value="0.01" />
-        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+        <mass value="0.1" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
     </inertial>
     <visual>
       <geometry>
@@ -135,8 +135,8 @@
       <origin rpy="0 0 1.5708" />
     </collision>
     <inertial>
-        <mass value="0.01" />
-        <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+        <mass value="0.1" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
     </inertial>
     <visual>
       <geometry>
@@ -149,15 +149,15 @@
     </visual>
   </link>
 
-  <joint name="b2" type="continuous">
+  <joint name="b2" type="fixed">
     <parent link="base_link"/>
     <child link="link_b2"/>
-    <origin xyz="-0.39975 -0.147 -0.09635" rpy="0 3.1415 3.1415"/>
+    <origin xyz="-0.39975 -0.147 -0.097" rpy="0 3.1415 3.1415"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
-  <joint name="b3" type="continuous">
+  <joint name="b3" type="fixed">
     <parent link="link_b2"/>
     <child link="link_b3"/>
     <origin xyz="-0.0138 0 0.0390" rpy="1.5708 0 0"/>
@@ -165,15 +165,15 @@
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
-  <joint name="b4" type="continuous">
+  <joint name="b4" type="fixed">
     <parent link="base_link"/>
     <child link="link_b4"/>
-    <origin xyz="-0.39975 0.147 -0.09635" rpy="0 3.1415 3.1415"/>
+    <origin xyz="-0.39975 0.147 -0.097" rpy="0 3.1415 3.1415"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
-  <joint name="b5" type="continuous">
+  <joint name="b5" type="fixed">
     <parent link="link_b4"/>
     <child link="link_b5"/>
     <origin xyz="-0.0138 0 0.0390" rpy="1.5708 0 0"/>

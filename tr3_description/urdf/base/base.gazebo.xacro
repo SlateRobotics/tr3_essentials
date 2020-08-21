@@ -39,8 +39,7 @@
 
 	<gazebo reference="link_b0">
 		<material>Gazebo/DarkGrey</material>
-    <mu1 value="100000.0"/>
-    <mu2 value="100000.0"/>
+    <turnGravityOff>false</turnGravityOff>
 		<collision>
       <surface>
 			  <contact>
@@ -63,8 +62,7 @@
 
 	<gazebo reference="link_b1">
 		<material>Gazebo/DarkGrey</material>
-    <mu1 value="100000.0"/>
-    <mu2 value="100000.0"/>
+    <turnGravityOff>false</turnGravityOff>
 		<collision>
       <surface>
 			  <contact>
@@ -90,7 +88,7 @@
     <mu2 value="0.1"/>
     <kp value="10000000.0"/>
     <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
+    <fdir1 value="0 0 1"/>
   	<material>Gazebo/DarkGrey</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
@@ -110,7 +108,7 @@
     <mu2 value="0.1"/>
     <kp value="10000000.0"/>
     <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
+    <fdir1 value="0 0 1"/>
   	<material>Gazebo/DarkGrey</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
