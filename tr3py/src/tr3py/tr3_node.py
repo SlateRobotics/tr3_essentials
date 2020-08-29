@@ -437,11 +437,16 @@ class TR3_Node:
         if self.append_states == False:
             state[0].append('g0_b')
             state[1].append(0.0)
+            state[2].append(0.0)
+            state[3].append(0.0)
+            state[4].append(0.0)
             append_states = True
 
         joint_state = JointState()
         joint_state.name = state[0]
         joint_state.position = state[1]
+        joint_state.velocity = state[3]
+        joint_state.effort = state[2]
 
         g0_pos = 0.0
         for i in range(len(joint_state.name)):
@@ -463,22 +468,22 @@ class TR3_Node:
             except:
                 pass
 
-	odom_quat = tf.transformations.quaternion_from_euler(0, 0, 0)
+	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.tr3.pos_th)
 
 	odom = Odometry()
 	odom.header.stamp = rospy.Time.now()
 	odom.header.frame_id = "odom"
 
 	# set the position
-	odom.pose.pose = Pose(Point(0, 0, 0), Quaternion(*odom_quat))
+	odom.pose.pose = Pose(Point(self.tr3.pos_x, self.tr3.pos_y, 0), Quaternion(*odom_quat))
 
 	# set the velocity
 	odom.child_frame_id = "base_link"
 	odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
-
-	# publish the message
+	
+        # publish the message
 	br = tf.TransformBroadcaster()
-	br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "base_link", "odom")
+	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
 	#br = tf.TransformBroadcaster()
 	#br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
 	self.tr3_odom_pub.publish(odom)

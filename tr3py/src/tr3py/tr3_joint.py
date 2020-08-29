@@ -24,7 +24,10 @@ CMD_SET_VELOCITY = 0x21
 class Joint:
         _tr3 = None
         _id = None
-        _state = None
+        _position = None
+        _rotations = None
+        _effort = None
+        _torque = None
 
         def __init__(self, t, i):
                 self._tr3 = t

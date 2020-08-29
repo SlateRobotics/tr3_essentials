@@ -159,12 +159,53 @@ class TR3:
         if self._state == None:
             return
 
-        ids, states = self._state
+        ids, pos, rot, eff, vel, trq = self._state
         for i in range(len(ids)):
             try:
-                getattr(self,ids[i])._state = states[i]
+                getattr(self,ids[i])._position = pos[i]
+                getattr(self,ids[i])._rotations = rot[i]
+                getattr(self,ids[i])._effort = eff[i]
+                getattr(self,ids[i])._velocity = vel[i]
+                getattr(self,ids[i])._torque = trq[i]
             except:
                 pass
+
+        self.step_odom()
+
+    l_pos_prev = None
+    r_pos_prev = None
+    pos_x = 0
+    pos_y = 0
+    pos_th = 0
+
+    def step_odom(self):
+        wheel_dist = 0.6562
+
+        if (self.b0._position == None or self.b0._rotations == None or self.b1._position == None or self.b1._rotations == None):
+            return
+
+        l_pos = -(self.b0._position + self.b0._rotations * 6.283185)
+        r_pos = (self.b1._position + self.b1._rotations * 6.283185)
+
+        if (self.l_pos_prev == None or self.r_pos_prev == None):
+            self.l_pos_prev = l_pos
+            self.r_pos_prev = r_pos
+            return
+        else:
+            d_l = l_pos - self.l_pos_prev
+            d_r = r_pos - self.r_pos_prev
+
+            self.l_pos_prev = l_pos
+            self.r_pos_prev = r_pos
+
+        dist_per_rad = 0.15875 # meters
+        dist_l = d_l * dist_per_rad
+        dist_r = d_r * dist_per_rad
+        dist_c = (dist_l + dist_r) / 2.0;
+
+        self.pos_x += dist_c * math.cos(self.pos_th)
+        self.pos_y += dist_c * math.sin(self.pos_th)
+        self.pos_th += (dist_r - dist_l) / wheel_dist
 
     def spin(self, condition = True):
         global close
