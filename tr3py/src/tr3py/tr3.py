@@ -18,6 +18,7 @@ CMD_FLIP_MOTOR = 0x17
 CMD_CALIBRATE = 0x18
 CMD_SHUTDOWN = 0x19
 CMD_UPDATE_PID = 0x20
+CMD_SET_VELOCITY = 0x21
 
 TAU = math.pi * 2.0
 
@@ -38,6 +39,7 @@ class TR3:
     mode_servo = 0x10
     mode_backdrive = 0x11
     mode_rotate = 0x12
+    mode_velocity = 0x13
 
     def __init__(self):
         self.b0 = Joint(self, "b0")
@@ -91,6 +93,8 @@ class TR3:
         self.a4.release()
         self.h0.release()
         self.h1.release()
+        self.b0.release()
+        self.b1.release()
 
     def powerup(self):
         self.p0.setPosition(1)
@@ -104,6 +108,8 @@ class TR3:
         self.a4.shutdown()
         self.h0.shutdown()
         self.h1.shutdown()
+        self.b0.shutdown()
+        self.b1.shutdown()
         self.sleep(2)
         self.close()
 
@@ -115,6 +121,8 @@ class TR3:
         self.a4.stop()
         self.h0.stop()
         self.h1.stop()
+        self.b0.stop()
+        self.b1.stop()
 
     def setMode(self, mode):
         self.a0.setMode(mode)
@@ -124,6 +132,8 @@ class TR3:
         self.a4.setMode(mode)
         self.h0.setMode(mode)
         self.h1.setMode(mode)
+        self.b0.setMode(mode)
+        self.b1.setMode(mode)
 
     def sleep(self, sec):
         t_start = time.time()

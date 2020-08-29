@@ -15,6 +15,8 @@ tr.controls.controlPanel.tabControl = function() {
   children.push.apply(children, c.controlRow("g0"));
   children.push.apply(children, c.controlRow("h0"));
   children.push.apply(children, c.controlRow("h1"));
+  children.push.apply(children, c.controlRow("b0"));
+  children.push.apply(children, c.controlRow("b1"));
 
   children.push(c.spacer());
   children.push(c.btnToglStop());

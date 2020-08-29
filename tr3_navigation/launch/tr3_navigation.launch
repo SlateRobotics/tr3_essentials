@@ -7,14 +7,28 @@
   <arg name="base_topic" default="/tr3/base/diff/cmd_vel" />
 
   <remap from="odom" to="$(arg odom_topic)"/>
-  <remap from="scan" to="$(arg laser_topic)"/>
+  <!--remap from="scan" to="$(arg laser_topic)"/-->
+  <remap from="scan_filtered" to="$(arg laser_topic)" />
   <remap from="cmd_vel" to="$(arg base_topic)"/>
 
-  <!--node pkg="tr3_navigation" name="tr3_cmd_map_node" type="tr3_cmd_map.py" output="screen" /-->
-  <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
+  <node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+    <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>
+    <param name="serial_baudrate"     type="int"    value="115200"/><!--A1/A2 -->
+    <!--param name="serial_baudrate"     type="int"    value="256000"--><!--A3 -->
+    <param name="frame_id"            type="string" value="laser"/>
+    <param name="inverted"            type="bool"   value="false"/>
+    <param name="angle_compensate"    type="bool"   value="true"/>
+  </node>
+
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain"
+      name="laser_filter">
+    <rosparam command="load" file="$(find tr3_navigation)/config/rplidar_filter_config.yaml" />
+  </node>
+
+  <!--<node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />-->
   <node pkg="tr3_navigation" name="tr3_tf_broadcaster_node" type="tr3_tf_broadcaster.py" output="screen" />
 
-  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"  args="scan:=$(arg laser_topic)" >
     <param name="base_frame" value="$(arg base_frame_id)" />
 
     <param name="delta" value="0.1"/>
@@ -29,14 +43,6 @@
     <param name="resampleThreshold" value="0.5"/>
     <param name="particles" value="80"/>
   </node>
-
-  <!--
-    - need a custom tf to map from world->odom, odom->base_link is done via diff controller
-
-    - this is to allow for corrections in drift from odom, so any additional corrections in localization can be done at this transform
-
-     - should work after that
-  -->
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam command="load" file="$(find tr3_navigation)/config/costmap_common_params.yaml" ns="global_costmap" />
