@@ -79,3 +79,5 @@ qtcreator-*
 CATKIN_IGNORE
 
 package-lock.json
+
+*tr.build.js
