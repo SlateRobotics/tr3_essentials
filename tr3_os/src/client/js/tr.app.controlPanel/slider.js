@@ -40,6 +40,9 @@ tr.controls.controlPanel.slider = function(id) {
           } else if (select.element.value() == "SERVO") {
             val = sliderVal * Math.PI * 2.0;
             tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
+          } else if (select.element.value() == "VELOCITY") {
+            val = sliderVal;
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/velocity", val);
           }
 
           var label = page.getChild(id + "sliderl");
@@ -50,7 +53,7 @@ tr.controls.controlPanel.slider = function(id) {
           var app = this.getApp();
           var page = app.getCurrentPage();
           var select = page.getChild("select-" + id);
-          if (select.element.value() == "EFFORT") {
+          if (select.element.value() == "EFFORT" || select.element.value() == "VELOCITY") {
             var val = 0;
 
             var slider = page.getChild(id + "slider");

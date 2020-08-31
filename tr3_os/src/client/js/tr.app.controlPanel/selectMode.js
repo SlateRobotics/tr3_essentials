@@ -16,7 +16,7 @@ tr.controls.controlPanel.selectMode = function(id) {
       children: [{
         type: "select",
         id: "select-" + id,
-        options: ["EFFORT", "BACKDRIVE", "SERVO"],
+        options: ["EFFORT", "BACKDRIVE", "SERVO", "VELOCITY"],
         onChange: function(val) {
           var app = this.getApp();
           var page = app.getCurrentPage();
@@ -30,6 +30,8 @@ tr.controls.controlPanel.selectMode = function(id) {
               } else if (val == "SERVO") {
                 var state = tr.data.getState(id).position;
                 slider.setval(state / Math.PI / 2.0);
+              } else if (val == "VELOCITY") {
+                slider.setval(0);
               }
             }
           }
@@ -41,6 +43,8 @@ tr.controls.controlPanel.selectMode = function(id) {
             i = 1;
           } else if (val == "SERVO") {
             i = 2;
+          } else if (val == "VELOCITY") {
+            i = 3;
           }
 
           tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);

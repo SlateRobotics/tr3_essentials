@@ -50,6 +50,7 @@ tr.gui.component = function(componentConfig) {
     this.onMousePress = config.onMousePress;
     this.onMouseRelease = config.onMouseRelease;
     this.onDraw = config.onDraw;
+    this.onSetup = config.onSetup;
 
     if (this.componentConfig.defaults) {
       this.componentConfig.defaults.bind(this)();
@@ -136,6 +137,10 @@ tr.gui.component = function(componentConfig) {
 
     if (this.componentConfig.setup) {
       this.componentConfig.setup.bind(this)();
+    }
+
+    if (this.onSetup) {
+      this.onSetup();
     }
 
     this.initialized = true;

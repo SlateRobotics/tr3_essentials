@@ -18,6 +18,9 @@ tr.controls.controlPanel.tabConfig = function() {
   children.push.apply(children, c.configRow("b0"));
   children.push.apply(children, c.configRow("b1"));
 
+  children.push(c.spacer());
+  children.push(c.btnTogglePower());
+
   return {
     type: "container",
     size: {
