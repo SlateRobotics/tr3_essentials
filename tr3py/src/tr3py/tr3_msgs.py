@@ -160,24 +160,23 @@ class Msgs:
 		res = self.recv(4096)
 		if res and res != "ns;":
 			_states = res.split(";")
-			self._state = ([], [])
+			self._state = ([], [], [], [], [], [])
 			for _state in _states:
 				if (len(_state.split(':')) > 1):
 					id = _state.split(':')[0]
 					state = _state.split(':')[1]
 
-					is_float = False
-					try:
-						state = float(state)
-						is_float = True
-					except:
-						pass
+                                        self._state[0].append(id)
 
-					if is_float == True:
-						self._state[0].append(id)
-						self._state[1].append(state)
+                                        vals = state.split(',');
+                                        for idx in range(5):
+    					    try:
+						state = float(vals[idx])
+						self._state[idx + 1].append(state)
+					    except:
+						self._state[idx + 1].append(0.0)
 
-		if self._state_change != None:
+                if self._state_change != None:
 			self._state_change(self._state)
 
 	def step(self):

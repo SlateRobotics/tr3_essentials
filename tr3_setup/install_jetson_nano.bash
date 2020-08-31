@@ -26,7 +26,7 @@ rosdep update
 echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential -y
-sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs ros-melodic-slam-gmapping ros-melodic-navigation ros-melodic-joint-state-publisher-gui -y
+sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs ros-melodic-slam-gmapping ros-melodic-navigation ros-melodic-joint-state-publisher-gui ros-melodic-rplidar-ros -y
 
 echo "Installing TR3 Packages"
 mkdir ~/ros_ws
@@ -52,16 +52,7 @@ roscd astra_camera
 echo "Configuring environment"
 sudo cp local.rules /etc/udev/rules.d/
 sudo cp orbbec-usb.rules /etc/udev/rules.d/
-
-echo "Installing Kernel USB-UART Drivers"
-mkdir ~/Documents/Github
-cd ~/Documents/Github
-sudo chmod -R 777 ~/Documents/Github
-git clone https://github.com/jetsonhacks/installACMModule
-cd installACMModule
-./installCH341.sh
-./installCP210x.sh
-./installCDCACM.sh
+sudo gpasswd --add ${USER} dialout
 
 echo "Installing Node.js"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash

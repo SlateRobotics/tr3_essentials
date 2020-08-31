@@ -186,7 +186,7 @@ tr.gui.minimap = {
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
       if (m) {
-        var a = l.angle_min + i * l.angle_increment + 1.5708;
+        var a = l.angle_min + i * l.angle_increment;
         var x = sin(a) * m * this.scale;
         var y = cos(a) * m * this.scale;
 

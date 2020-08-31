@@ -18,6 +18,7 @@ CMD_FLIP_MOTOR = 0x17
 CMD_CALIBRATE = 0x18
 CMD_SHUTDOWN = 0x19
 CMD_UPDATE_PID = 0x20
+CMD_SET_VELOCITY = 0x21
 
 TAU = math.pi * 2.0
 
@@ -38,6 +39,7 @@ class TR3:
     mode_servo = 0x10
     mode_backdrive = 0x11
     mode_rotate = 0x12
+    mode_velocity = 0x13
 
     def __init__(self):
         self.b0 = Joint(self, "b0")
@@ -91,6 +93,8 @@ class TR3:
         self.a4.release()
         self.h0.release()
         self.h1.release()
+        self.b0.release()
+        self.b1.release()
 
     def powerup(self):
         self.p0.setPosition(1)
@@ -104,6 +108,8 @@ class TR3:
         self.a4.shutdown()
         self.h0.shutdown()
         self.h1.shutdown()
+        self.b0.shutdown()
+        self.b1.shutdown()
         self.sleep(2)
         self.close()
 
@@ -115,6 +121,8 @@ class TR3:
         self.a4.stop()
         self.h0.stop()
         self.h1.stop()
+        self.b0.stop()
+        self.b1.stop()
 
     def setMode(self, mode):
         self.a0.setMode(mode)
@@ -124,6 +132,8 @@ class TR3:
         self.a4.setMode(mode)
         self.h0.setMode(mode)
         self.h1.setMode(mode)
+        self.b0.setMode(mode)
+        self.b1.setMode(mode)
 
     def sleep(self, sec):
         t_start = time.time()
@@ -149,12 +159,53 @@ class TR3:
         if self._state == None:
             return
 
-        ids, states = self._state
+        ids, pos, rot, eff, vel, trq = self._state
         for i in range(len(ids)):
             try:
-                getattr(self,ids[i])._state = states[i]
+                getattr(self,ids[i])._position = pos[i]
+                getattr(self,ids[i])._rotations = rot[i]
+                getattr(self,ids[i])._effort = eff[i]
+                getattr(self,ids[i])._velocity = vel[i]
+                getattr(self,ids[i])._torque = trq[i]
             except:
                 pass
+
+        self.step_odom()
+
+    l_pos_prev = None
+    r_pos_prev = None
+    pos_x = 0
+    pos_y = 0
+    pos_th = 0
+
+    def step_odom(self):
+        wheel_dist = 0.6562
+
+        if (self.b0._position == None or self.b0._rotations == None or self.b1._position == None or self.b1._rotations == None):
+            return
+
+        l_pos = -(self.b0._position + self.b0._rotations * 6.283185)
+        r_pos = (self.b1._position + self.b1._rotations * 6.283185)
+
+        if (self.l_pos_prev == None or self.r_pos_prev == None):
+            self.l_pos_prev = l_pos
+            self.r_pos_prev = r_pos
+            return
+        else:
+            d_l = l_pos - self.l_pos_prev
+            d_r = r_pos - self.r_pos_prev
+
+            self.l_pos_prev = l_pos
+            self.r_pos_prev = r_pos
+
+        dist_per_rad = 0.15875 # meters
+        dist_l = d_l * dist_per_rad
+        dist_r = d_r * dist_per_rad
+        dist_c = (dist_l + dist_r) / 2.0;
+
+        self.pos_x += dist_c * math.cos(self.pos_th)
+        self.pos_y += dist_c * math.sin(self.pos_th)
+        self.pos_th += (dist_r - dist_l) / wheel_dist
 
     def spin(self, condition = True):
         global close

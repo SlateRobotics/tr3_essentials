@@ -19,11 +19,15 @@ CMD_FLIP_MOTOR = 0x17
 CMD_CALIBRATE = 0x18
 CMD_SHUTDOWN = 0x19
 CMD_UPDATE_PID = 0x20
+CMD_SET_VELOCITY = 0x21
 
 class Joint:
         _tr3 = None
         _id = None
-        _state = None
+        _position = None
+        _rotations = None
+        _effort = None
+        _torque = None
 
         def __init__(self, t, i):
                 self._tr3 = t
@@ -44,6 +48,18 @@ class Joint:
                 
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
+
+        def setVelocity (self, vel):
+            x = (vel + 10.0) * 100.0
+            
+            packet = tr3_msgs.Packet()
+            packet.address = self._id
+            packet.cmd = CMD_SET_VELOCITY
+            packet.addParam(int(math.floor(x % 256)))
+            packet.addParam(int(math.floor(x / 256)))
+
+            self._tr3._msgs.add(packet)
+            self._tr3.step()
 
         def release(self):
                 cmd = CMD_STOP_RELEASE

@@ -322,7 +322,7 @@ tr.gui.tr2 = {
     for (var i = 0; i < l.ranges.length; i++) {
       var m = l.ranges[i];
       if (m) {
-        var a = l.angle_min + i * l.angle_increment + 1.5708;
+        var a = l.angle_min + i * l.angle_increment;
         var x = sin(a) * m * 200;
         var y = cos(a) * m * 200;
         this.p5.translate(-x, -y, 0);
