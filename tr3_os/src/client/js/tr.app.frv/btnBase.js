@@ -11,8 +11,8 @@ tr.controls.frv.btnBase = function(lbl) {
     onDraw: function () {
       if (this.joystickPressed) {
         var p = this.getAbsolutePosition();
-        var x = -(mouseX - p.x - this.size.w / 2.0);
-        var y = -(mouseY - p.y - this.size.h / 2.0);
+        var x = -(mouseX - this.startMouseX);
+        var y = -(mouseY - this.startMouseY);
 
         var msg = {
           linear: {
@@ -78,6 +78,8 @@ tr.controls.frv.btnBase = function(lbl) {
         msg.angular.z = -0.5;
       } else if (lbl == "●") {
         this.joystickPressed = true;
+        this.startMouseX = mouseX;
+        this.startMouseY = mouseY;
       }
       tr.data.socket.emit("/tr3/base/diff/cmd_vel", msg);
     },
