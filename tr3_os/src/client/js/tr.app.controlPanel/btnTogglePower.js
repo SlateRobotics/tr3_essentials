@@ -13,16 +13,16 @@ tr.controls.controlPanel.btnTogglePower = function() {
     onSetup: function () {
       var p0 = tr.data.getState("p0");
       if (p0 && p0.position > 0) {
-        this.mode = "OFF";
-      } else {
         this.mode = "ON";
+      } else {
+        this.mode = "OFF";
       }
     },
     onDraw: function () {
       var app = this.getApp();
       var page = app.getCurrentPage();
 
-      if (this.mode == "ON") {
+      if (this.mode == "OFF") {
         this.background = "green";
         page.getChild("btn-toggle-power").text = "POWER ON";
       } else {
@@ -34,7 +34,7 @@ tr.controls.controlPanel.btnTogglePower = function() {
       if (this.mode == "ON") {
         this.mode = "OFF";
         tr.data.socket.emit("/tr3/shutdown", true);
-      } else {
+      } else if (this.mode == "OFF") {
         this.mode = "ON";
         tr.data.socket.emit("/tr3/powerup", true);
       }
