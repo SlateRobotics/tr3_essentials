@@ -3,7 +3,7 @@
 import time
 import os
 import math
-import tr3_msgs
+import tr3_network
 
 CMD_UPDATE_FIRMWARE_BEGIN = 0x01
 CMD_UPDATE_FIRMWARE = 0x02
@@ -39,7 +39,7 @@ class Joint:
         def setPosition(self, pos, speed = 100):
                 x = pos / (math.pi * 2) * 65535
         
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_SET_POS
                 packet.addParam(int(math.floor(x % 256)))
@@ -52,7 +52,7 @@ class Joint:
         def setVelocity (self, vel):
             x = (vel + 10.0) * 100.0
             
-            packet = tr3_msgs.Packet()
+            packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_SET_VELOCITY
             packet.addParam(int(math.floor(x % 256)))
@@ -64,7 +64,7 @@ class Joint:
         def release(self):
                 cmd = CMD_STOP_RELEASE
                 
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = cmd
 
@@ -74,7 +74,7 @@ class Joint:
         def stop(self):
                 cmd = CMD_STOP_EMERGENCY
                 
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = cmd
                 
@@ -85,7 +85,7 @@ class Joint:
                 offsetBinary = 128
                 x = int(math.floor(motorValue * 100.0))
                         
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_ROTATE
                 packet.addParam(x + offsetBinary)
@@ -96,7 +96,7 @@ class Joint:
                 self._tr3.step()
 
         def flipMotor(self):
-            packet = tr3_msgs.Packet()
+            packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_FLIP_MOTOR
             
@@ -104,7 +104,7 @@ class Joint:
             self._tr3.step()
 
         def shutdown(self):
-            packet = tr3_msgs.Packet()
+            packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_SHUTDOWN
 
@@ -112,7 +112,7 @@ class Joint:
             self._tr3.step()
         
         def resetEncoderPosition(self):
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_RESET_POS
                 
@@ -120,7 +120,7 @@ class Joint:
                 self._tr3.step()
 
         def calibrate(self):
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_CALIBRATE
 
@@ -128,7 +128,7 @@ class Joint:
                 self._tr3.step()
                 
         def setMode(self, mode):
-                packet = tr3_msgs.Packet()
+                packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_SET_MODE
                 packet.addParam(mode)
@@ -137,7 +137,7 @@ class Joint:
                 self._tr3.step()
 
         def updatePID(self, p, i, d):
-            packet = tr3_msgs.Packet()
+            packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_UPDATE_PID
             packet.addParam(int(math.floor(p * 10.0)))
@@ -148,7 +148,7 @@ class Joint:
             self._tr3.step()
 
         def updateFirmware(self, file_path):
-		packet = tr3_msgs.Packet()
+		packet = tr3_network.Packet()
 		packet.address = self._id
 		packet.cmd = CMD_UPDATE_FIRMWARE_BEGIN
                 self._tr3._msgs.add(packet)
@@ -168,7 +168,7 @@ class Joint:
                         if not byte_s:
                             break
 
-                        packet = tr3_msgs.Packet()
+                        packet = tr3_network.Packet()
                         packet.address = self._id
                         packet.cmd = CMD_UPDATE_FIRMWARE
 
@@ -199,7 +199,7 @@ class Joint:
 
                 self._tr3.sleep(2)
 
-		packet = tr3_msgs.Packet()
+		packet = tr3_network.Packet()
 		packet.address = self._id
 		packet.cmd = CMD_UPDATE_FIRMWARE_END
                 self._tr3._msgs.add(packet)

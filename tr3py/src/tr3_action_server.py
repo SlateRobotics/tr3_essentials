@@ -12,6 +12,7 @@ from std_msgs.msg import UInt8
 from std_msgs.msg import Float64
 from trajectory_msgs.msg import JointTrajectoryPoint
 from control_msgs.msg import JointTrajectoryAction, JointTrajectoryGoal, FollowJointTrajectoryAction, FollowJointTrajectoryGoal, FollowJointTrajectoryFeedback, FollowJointTrajectoryResult
+from tr3_msgs.msg import ActuatorState
 
 tr3_a0_state = None
 tr3_a1_state = None
@@ -90,11 +91,11 @@ def program():
 
 	rospy.init_node('tr3_action_server')
 
-	rospy.Subscriber("/tr3/joints/a0/state", Float64, cb_tr3_a0_state)
-	rospy.Subscriber("/tr3/joints/a1/state", Float64, cb_tr3_a1_state)
-	rospy.Subscriber("/tr3/joints/a2/state", Float64, cb_tr3_a2_state)
-	rospy.Subscriber("/tr3/joints/a3/state", Float64, cb_tr3_a3_state)
-	rospy.Subscriber("/tr3/joints/a4/state", Float64, cb_tr3_a4_state)
+	rospy.Subscriber("/tr3/joints/a0/state", ActuatorState, cb_tr3_a0_state)
+	rospy.Subscriber("/tr3/joints/a1/state", ActuatorState, cb_tr3_a1_state)
+	rospy.Subscriber("/tr3/joints/a2/state", ActuatorState, cb_tr3_a2_state)
+	rospy.Subscriber("/tr3/joints/a3/state", ActuatorState, cb_tr3_a3_state)
+	rospy.Subscriber("/tr3/joints/a4/state", ActuatorState, cb_tr3_a4_state)
 	tr3_a0_pub = rospy.Publisher("/tr3/joints/a0/control/position", Float64, queue_size=1)
 	tr3_a1_pub = rospy.Publisher("/tr3/joints/a1/control/position", Float64, queue_size=1)
 	tr3_a2_pub = rospy.Publisher("/tr3/joints/a2/control/position", Float64, queue_size=1)
