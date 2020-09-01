@@ -4,7 +4,7 @@ import sys
 import time
 import signal
 import math
-import tr3_msgs
+import tr3_network
 from tr3_joint import Joint
 
 CMD_SET_MODE = 0x10
@@ -31,7 +31,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 class TR3:
-    _msgs = tr3_msgs.Msgs()
+    _msgs = tr3_network.Network()
 
     _state = None
     state_change = None

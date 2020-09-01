@@ -17,6 +17,10 @@ tr.gui.component = function(componentConfig) {
       x: 0,
       y: 0
     };
+    this.positionAbsolute = {
+      x: undefined,
+      y: undefined
+    };
     this.size = config.size || {
       w: 1,
       h: 1
@@ -182,6 +186,7 @@ tr.gui.component = function(componentConfig) {
 
     this.translate(this.padding, this.padding);
 
+    this.positionAbsolute = this.getAbsolutePosition();
     if (this.componentConfig.draw) {
       push();
       this.componentConfig.draw.bind(this)();
@@ -304,7 +309,7 @@ tr.gui.component = function(componentConfig) {
       }
     }
 
-    if (!this.childClicked && (this.onClick || this.componentConfig.mousePressed)) {
+    if (this.onClick || this.componentConfig.mousePressed) {
       var t = {
         x: this.pos.x,
         y: this.pos.y
@@ -316,8 +321,8 @@ tr.gui.component = function(componentConfig) {
         selected = selected.parent;
       }
 
-      var mX = mouseX - t.x;
-      var mY = mouseY - t.y;
+      var mX = mouseX - this.positionAbsolute.x;
+      var mY = mouseY - this.positionAbsolute.y;
 
       var x1 = mX > 0;
       var x2 = mX < this.size.w;
