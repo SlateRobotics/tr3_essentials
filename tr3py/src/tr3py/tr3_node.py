@@ -4,9 +4,10 @@ import time
 import sys
 import math
 import tf
+import rospy
+
 from tr3py.tr3 import TR3
 from tr3py import tr3_utils
-import rospy
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
 from std_msgs.msg import UInt8
@@ -14,6 +15,7 @@ from std_msgs.msg import Float64
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 from nav_msgs.msg import Odometry
+from tr3_msgs.msg import ActuatorState
 
 class TR3_Node:
     tr3 = None
@@ -122,16 +124,16 @@ class TR3_Node:
         self.tr3_odom_pub = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
 
         self.tr3_state_pub = rospy.Publisher("/tr3/state", JointState, queue_size=1)
-        self.tr3_state_a0_pub = rospy.Publisher("/tr3/joints/a0/state", Float64, queue_size=1)
-        self.tr3_state_a1_pub = rospy.Publisher("/tr3/joints/a1/state", Float64, queue_size=1)
-        self.tr3_state_a2_pub = rospy.Publisher("/tr3/joints/a2/state", Float64, queue_size=1)
-        self.tr3_state_a3_pub = rospy.Publisher("/tr3/joints/a3/state", Float64, queue_size=1)
-        self.tr3_state_a4_pub = rospy.Publisher("/tr3/joints/a4/state", Float64, queue_size=1)
-        self.tr3_state_g0_pub = rospy.Publisher("/tr3/joints/g0/state", Float64, queue_size=1)
-        self.tr3_state_h0_pub = rospy.Publisher("/tr3/joints/h0/state", Float64, queue_size=1)
-        self.tr3_state_h1_pub = rospy.Publisher("/tr3/joints/h1/state", Float64, queue_size=1)
-        self.tr3_state_b0_pub = rospy.Publisher("/tr3/joints/b0/state", Float64, queue_size=1)
-        self.tr3_state_b1_pub = rospy.Publisher("/tr3/joints/b1/state", Float64, queue_size=1)
+        self.tr3_state_a0_pub = rospy.Publisher("/tr3/joints/a0/state", ActuatorState, queue_size=1)
+        self.tr3_state_a1_pub = rospy.Publisher("/tr3/joints/a1/state", ActuatorState, queue_size=1)
+        self.tr3_state_a2_pub = rospy.Publisher("/tr3/joints/a2/state", ActuatorState, queue_size=1)
+        self.tr3_state_a3_pub = rospy.Publisher("/tr3/joints/a3/state", ActuatorState, queue_size=1)
+        self.tr3_state_a4_pub = rospy.Publisher("/tr3/joints/a4/state", ActuatorState, queue_size=1)
+        self.tr3_state_g0_pub = rospy.Publisher("/tr3/joints/g0/state", ActuatorState, queue_size=1)
+        self.tr3_state_h0_pub = rospy.Publisher("/tr3/joints/h0/state", ActuatorState, queue_size=1)
+        self.tr3_state_h1_pub = rospy.Publisher("/tr3/joints/h1/state", ActuatorState, queue_size=1)
+        self.tr3_state_b0_pub = rospy.Publisher("/tr3/joints/b0/state", ActuatorState, queue_size=1)
+        self.tr3_state_b1_pub = rospy.Publisher("/tr3/joints/b1/state", ActuatorState, queue_size=1)
 
         self.tr3.state_change = self.tr3_state_change
 
@@ -205,7 +207,7 @@ class TR3_Node:
 
     def base_cmd(self, msg):
         x, th = (msg.linear.x, msg.angular.z)
-        
+
         R = 0.3175
         L = 0.6562
         l = ((2 * x) - (th * L)) / (2 * R)
@@ -294,19 +296,19 @@ class TR3_Node:
         self.pid(msg.data, self.tr3.a3)
 
     def pid_a4(self, msg):
-        self.pid(msg.data, self.tr3.a4)  
+        self.pid(msg.data, self.tr3.a4)
 
     def pid_h0(self, msg):
-        self.pid(msg.data, self.tr3.h0)  
+        self.pid(msg.data, self.tr3.h0)
 
     def pid_h1(self, msg):
-        self.pid(msg.data, self.tr3.h1)  
+        self.pid(msg.data, self.tr3.h1)
 
     def pid_b0(self, msg):
-        self.pid(msg.data, self.tr3.b0)  
+        self.pid(msg.data, self.tr3.b0)
 
     def pid_b1(self, msg):
-        self.pid(msg.data, self.tr3.b1)  
+        self.pid(msg.data, self.tr3.b1)
 
     def flip(self, b, a):
         if b == True:
@@ -432,7 +434,6 @@ class TR3_Node:
     def ctrl_effort_b1(self, msg):
         self.ctrl_effort(msg.data, self.tr3.b1)
 
-
     def tr3_state_change(self, state):
         if self.append_states == False:
             state[0].append('g0_b')
@@ -461,9 +462,13 @@ class TR3_Node:
         self.tr3_state_pub.publish(joint_state)
 
         for i in range(len(state[0])):
-            id, s = state[0][i], state[1][i]
+            id, pos, eff, vel = state[0][i], state[1][i], state[2][i], state[3][i]
             try:
                 pub = getattr(self, "tr3_state_" + id + "_pub")
+                actuator_state = ActuatorState()
+                actuator_state.position = pos
+                actuator_state.effort = eff
+                actuator_state.velocity = vel
                 pub.publish(s)
             except:
                 pass
@@ -480,7 +485,7 @@ class TR3_Node:
 	# set the velocity
 	odom.child_frame_id = "base_link"
 	odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
-	
+
         # publish the message
 	br = tf.TransformBroadcaster()
 	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")

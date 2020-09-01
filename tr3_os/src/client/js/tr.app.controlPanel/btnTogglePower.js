@@ -4,6 +4,7 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.btnTogglePower = function() {
   return {
+    id: "container-toggle-power",
     type: "container",
     size: {
       w: 3 / 9,

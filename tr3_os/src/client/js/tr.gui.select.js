@@ -32,8 +32,7 @@ tr.gui.select = {
         this.element.value(this.defaultValue);
       }
 
-      this.options = o
-      this.changed();
+      this.options = o;
     }.bind(this);
 
     this.setOptions(this.options);

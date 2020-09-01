@@ -50,7 +50,7 @@ class Packet:
 		self.computeLength()
 
 		result = [self._startByte, self.address, self.msgId, self.length, self.cmd]
-                
+
 		for p in self.params:
 			result.append(p)
 
@@ -67,10 +67,10 @@ class Packet:
 
 		for p in self.params:
 			msgString = msgString + str(p) + ','
-                
+
 		return msgString + ';'
 
-class Msgs:
+class Network:
 	_msgs = ""
 	_msgId = 0
 

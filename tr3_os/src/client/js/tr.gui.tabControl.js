@@ -71,6 +71,7 @@ tr.gui.tabControl = {
 
   createButton: function(label, w) {
     return {
+      id: "btn-tab-" + label,
       type: "container",
       size: {
         w: w,
