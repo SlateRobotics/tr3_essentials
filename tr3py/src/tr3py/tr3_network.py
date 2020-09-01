@@ -160,24 +160,25 @@ class Network:
 		res = self.recv(4096)
 		if res and res != "ns;":
 			_states = res.split(";")
-			self._state = ([], [], [], [], [], [])
+			# id, pos, rot, eff, vel, trq, mod, stp,tmp
+			self._state = ([],[],[],[],[],[],[],[],[])
 			for _state in _states:
 				if (len(_state.split(':')) > 1):
 					id = _state.split(':')[0]
 					state = _state.split(':')[1]
 
-                                        self._state[0].append(id)
+					self._state[0].append(id)
 
-                                        vals = state.split(',');
-                                        for idx in range(5):
-    					    try:
-						state = float(vals[idx])
-						self._state[idx + 1].append(state)
-					    except:
-						self._state[idx + 1].append(0.0)
+					vals = state.split(',');
+					for idx in range(len(self._state) - 1):
+						try:
+							state = float(vals[idx])
+							self._state[idx + 1].append(state)
+						except:
+							self._state[idx + 1].append(0.0)
 
-                if self._state_change != None:
-			self._state_change(self._state)
+			if self._state_change != None:
+				self._state_change(self._state)
 
 	def step(self):
 		if self._close == True:

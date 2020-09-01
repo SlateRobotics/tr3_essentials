@@ -28,30 +28,33 @@ class Joint:
         _rotations = None
         _effort = None
         _torque = None
+        _mode = None
+        _stop = None
+        _temperature = None
 
         def __init__(self, t, i):
                 self._tr3 = t
                 self._id = i
-                        
+
         def state(self):
                 return self._state
-                
+
         def setPosition(self, pos, speed = 100):
                 x = pos / (math.pi * 2) * 65535
-        
+
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_SET_POS
                 packet.addParam(int(math.floor(x % 256)))
                 packet.addParam(int(math.floor(x / 256)))
                 packet.addParam(int(math.floor(speed / 100.0 * 255.0)))
-                
+
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
 
         def setVelocity (self, vel):
             x = (vel + 10.0) * 100.0
-            
+
             packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_SET_VELOCITY
@@ -63,35 +66,35 @@ class Joint:
 
         def release(self):
                 cmd = CMD_STOP_RELEASE
-                
+
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = cmd
 
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
-                
+
         def stop(self):
                 cmd = CMD_STOP_EMERGENCY
-                
+
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = cmd
-                
+
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
-                
+
         def actuate(self, motorValue, motorDuration = 250):
                 offsetBinary = 128
                 x = int(math.floor(motorValue * 100.0))
-                        
+
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_ROTATE
                 packet.addParam(x + offsetBinary)
                 packet.addParam(int(math.floor(motorDuration % 256)))
                 packet.addParam(int(math.floor(motorDuration / 256)))
-                
+
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
 
@@ -99,7 +102,7 @@ class Joint:
             packet = tr3_network.Packet()
             packet.address = self._id
             packet.cmd = CMD_FLIP_MOTOR
-            
+
             self._tr3._msgs.add(packet)
             self._tr3.step()
 
@@ -110,12 +113,12 @@ class Joint:
 
             self._tr3._msgs.add(packet)
             self._tr3.step()
-        
+
         def resetEncoderPosition(self):
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_RESET_POS
-                
+
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
 
@@ -126,13 +129,13 @@ class Joint:
 
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
-                
+
         def setMode(self, mode):
                 packet = tr3_network.Packet()
                 packet.address = self._id
                 packet.cmd = CMD_SET_MODE
                 packet.addParam(mode)
-                
+
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
 
@@ -191,7 +194,7 @@ class Joint:
                                 print("Error parsing state. Is the device connected? Retrying...")
                                 self._tr3.sleep(0.500)
                                 return
-                            
+
                             if pid == numPacksSent + 1:
                                 numPacksSent = numPacksSent + 1
                                 break
@@ -205,5 +208,3 @@ class Joint:
                 self._tr3._msgs.add(packet)
                 self._tr3.step()
                 self._tr3.sleep(2)
-
-

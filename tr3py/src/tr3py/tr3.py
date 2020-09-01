@@ -159,7 +159,7 @@ class TR3:
         if self._state == None:
             return
 
-        ids, pos, rot, eff, vel, trq = self._state
+        ids, pos, rot, eff, vel, trq, mod, stp = self._state
         for i in range(len(ids)):
             try:
                 getattr(self,ids[i])._position = pos[i]
@@ -167,6 +167,8 @@ class TR3:
                 getattr(self,ids[i])._effort = eff[i]
                 getattr(self,ids[i])._velocity = vel[i]
                 getattr(self,ids[i])._torque = trq[i]
+                getattr(self,ids[i])._mode = mod[i]
+                getattr(self,ids[i])._stop = stp[i]
             except:
                 pass
 

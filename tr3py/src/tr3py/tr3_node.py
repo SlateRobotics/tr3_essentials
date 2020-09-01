@@ -462,13 +462,17 @@ class TR3_Node:
         self.tr3_state_pub.publish(joint_state)
 
         for i in range(len(state[0])):
-            id, pos, eff, vel = state[0][i], state[1][i], state[2][i], state[3][i]
             try:
                 pub = getattr(self, "tr3_state_" + id + "_pub")
                 actuator_state = ActuatorState()
-                actuator_state.position = pos
-                actuator_state.effort = eff
-                actuator_state.velocity = vel
+                actuator_state.id = state[0][i]
+                actuator_state.position = state[1][i]
+                actuator_state.rotations = state[2][i]
+                actuator_state.effort = state[3][i]
+                actuator_state.velocity = state[4][i]
+                actuator_state.mode = state[5][i]
+                actuator_state.stop = state[6][i]
+                actuator_state.temperature = state[7][i]
                 pub.publish(s)
             except:
                 pass
