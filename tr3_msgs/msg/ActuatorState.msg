@@ -1,5 +1,6 @@
 string id
 int8 mode
+bool stop
 float64 position
 uint64 rotations
 float64 effort

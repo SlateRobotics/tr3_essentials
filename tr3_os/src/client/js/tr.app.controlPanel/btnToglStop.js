@@ -3,7 +3,6 @@ if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.btnToglStop = function() {
-  var currentmode = "STOPPED"
   return {
     type: "container",
     size: {
@@ -11,20 +10,27 @@ tr.controls.controlPanel.btnToglStop = function() {
       h: 120
     },
     background: "red",
-    onClick: function() {
-      if (currentmode == "STOPPED") {
-        currentmode = "RELEASED"
-        this.background = "green"
-        var app = this.getApp();
-        var page = app.getCurrentPage();
-        page.getChild("ToglStop").text = "RELEASE";
-        tr.data.socket.emit("/tr3/stop", true, );
-      } else if (currentmode == "RELEASED") {
-        currentmode = "STOPPED"
+    onSetup: function () {
+      this.mode = "STOPPED";
+    },
+    onDraw: function () {
+      var app = this.getApp();
+      var page = app.getCurrentPage();
+
+      if (this.mode == "STOPPED") {
         this.background = "red"
-        var app = this.getApp();
-        var page = app.getCurrentPage();
         page.getChild("ToglStop").text = "STOP";
+      } else {
+        this.background = "green";
+        page.getChild("ToglStop").text = "RELEASE";
+      }
+    },
+    onClick: function() {
+      if (this.mode == "STOPPED") {
+        this.mode = "RELEASED"
+        tr.data.socket.emit("/tr3/stop", true, );
+      } else if (this.mode == "RELEASED") {
+        this.mode = "STOPPED"
         tr.data.socket.emit("/tr3/stop", false, );
       }
 
