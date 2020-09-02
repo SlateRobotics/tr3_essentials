@@ -11,18 +11,20 @@ This is a logical progression of the mission of the company. We eventually want 
   - FRV
     - Navigation
       - Obstacle avoidance
+      - Update speeds (max wheel vel is ~1.0)
+      - Odom drift
     - 3D Render
-      - Point cloud addition
       - Options:
         - Display LiDAR, Point Cloud, Map
-        - Zoom in/out
     - Arm control
       - Goal position coordinate frame: robot vs. world
       - Gripper control
     - Console
   - Control Panel
     - Waypoint record and playback
+  - MoveIt Tuning/Config
   - Other
     - Inverse Kinematics
   - Hardware
     - Actuator acceleration limits
+    - Actuator IMU state -> ROS
