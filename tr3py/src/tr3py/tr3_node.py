@@ -462,20 +462,19 @@ class TR3_Node:
         self.tr3_state_pub.publish(joint_state)
 
         for i in range(len(state[0])):
-            try:
-                pub = getattr(self, "tr3_state_" + id + "_pub")
+            pub_name = "tr3_state_" + state[0][i] + "_pub"
+            if hasattr(self, pub_name):
+                pub = getattr(self, pub_name)
                 actuator_state = ActuatorState()
                 actuator_state.id = state[0][i]
                 actuator_state.position = state[1][i]
-                actuator_state.rotations = state[2][i]
+                actuator_state.rotations = int(state[2][i])
                 actuator_state.effort = state[3][i]
                 actuator_state.velocity = state[4][i]
-                actuator_state.mode = state[5][i]
-                actuator_state.stop = state[6][i]
+                actuator_state.mode = int(state[5][i])
+                actuator_state.stop = bool(state[6][i])
                 actuator_state.temperature = state[7][i]
-                pub.publish(s)
-            except:
-                pass
+                pub.publish(actuator_state)
 
 	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.tr3.pos_th)
 
