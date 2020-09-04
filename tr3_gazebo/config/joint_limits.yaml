@@ -4,8 +4,8 @@
     b0:
       has_position_limits: false
       has_velocity_limits: true
-      min_velocity: -8.8
-      max_velocity: 8.8
+      min_velocity: -1.0
+      max_velocity: 1.0
       has_acceleration_limits: false
       has_jerk_limits: false
       has_effort_limits: true
@@ -15,8 +15,8 @@
     b1:
       has_position_limits: false
       has_velocity_limits: true
-      min_velocity: -8.8
-      max_velocity: 8.8
+      min_velocity: -1.0
+      max_velocity: 1.0
       has_acceleration_limits: false
       has_jerk_limits: false
       has_effort_limits: true
