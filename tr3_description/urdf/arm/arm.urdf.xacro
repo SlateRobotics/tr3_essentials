@@ -10,7 +10,7 @@
 	<xacro:arm_link name="a2" mesh_name="xt-lg-b" origin_xyz="0 0 0" origin_rpy="0 0 -1.5708" />
   <xacro:arm_link name="a3" mesh_name="xt-sm-c" origin_xyz="0.008 -0.3 0" origin_rpy="0 -1.5708 1.5708" />
   <xacro:arm_link name="a4" mesh_name="xt-sm-b" origin_xyz="0.067 0 -0.067" origin_rpy="1.5708 0 -1.5708" />
-  <xacro:arm_link name="g0" mesh_name="xt-gp-a" origin_xyz="0 0 -0.120" origin_rpy="3.1415 0 1.5708" />
+  <xacro:arm_link name="g0" mesh_name="xt-gp-a" origin_xyz="0 0 -0.120" origin_rpy="3.1415 0 0" />
 	<xacro:arm_link name="g1" mesh_name="xt-gp-b" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
 	<xacro:arm_link name="g1_b" mesh_name="xt-gp-c" origin_xyz="0 0 0" origin_rpy="1.5708 0 0" />
 
