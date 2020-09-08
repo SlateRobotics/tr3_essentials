@@ -17,7 +17,9 @@ catkin_package(
     std_msgs
     geometry_msgs
     sensor_msgs
-    moveit_ros_planning_interface 
+    moveit_ros_planning_interface
+  LIBRARIES
+    tr3_moveit
 )
 
 include_directories(${catkin_INCLUDE_DIRS})
