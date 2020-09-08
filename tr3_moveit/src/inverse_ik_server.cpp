@@ -35,15 +35,14 @@ bool inverse_ik(tr3_msgs::InverseIK::Request &req, tr3_msgs::InverseIK::Response
 			res.state.effort.push_back(0);
 			res.state.velocity.push_back(0);
 		}
-		
-		ROS_INFO_STREAM("Found Solution: \n" << res.state << "\n");
+		ROS_INFO("Found solution");
+		return true;
 	}
 	else
 	{
 		ROS_INFO("Could not find IK solution");
+		return false;
 	}
-
-	return true;
 }
 
 int main(int argc, char **argv)

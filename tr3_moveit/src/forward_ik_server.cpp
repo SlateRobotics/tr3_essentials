@@ -28,8 +28,6 @@ bool forward_ik(tr3_msgs::ForwardIK::Request &req, tr3_msgs::ForwardIK::Response
 				joint_values[i] = req.state.position[j];
 			}	
 		}
-
-		ROS_INFO("Joint %s: %f", joint_names[i].c_str(), joint_values[i]);
 	}
 
 	kinematic_state->setJointGroupPositions(joint_model_group, joint_values);
@@ -46,8 +44,6 @@ bool forward_ik(tr3_msgs::ForwardIK::Request &req, tr3_msgs::ForwardIK::Response
 	res.pose.orientation.y = q.y();
 	res.pose.orientation.z = q.z();
 	res.pose.orientation.w = q.w();
-
-	ROS_INFO_STREAM("Pose: \n" << res.pose << "\n");
 	
 	return true;
 }
@@ -57,7 +53,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "forward_ik_server");
 	ros::NodeHandle n;
 
-	ros::ServiceServer service = n.advertiseService("ForwardIK", forward_ik);
+	ros::ServiceServer service = n.advertiseService("forward_ik", forward_ik);
 	ROS_INFO("Ready.");
 	ros::spin();
 
