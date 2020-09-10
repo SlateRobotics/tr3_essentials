@@ -7,6 +7,7 @@ var rosnodejs = require('rosnodejs');
 var stdMsgs = rosnodejs.require('std_msgs');
 var geometryMsgs = rosnodejs.require('geometry_msgs');
 var actionlibMsgs = rosnodejs.require('actionlib_msgs');
+var tr3Msgs = rosnodejs.require('tr3_msgs');
 var qte = require('quaternion-to-euler');
 var nj = require('@aas395/numjs');
 
@@ -91,8 +92,31 @@ var io = require('socket.io')(httpServer);
 io.on('connection', function (socket) {
   rosnodejs.initNode('/tr3_os').then(function () {
     var nh = rosnodejs.nh;
+    var srvForwardIk = nh.serviceClient('/forward_ik', tr3Msgs.srv.ForwardIK);
+    var srvInverseIk = nh.serviceClient('/inverse_ik', tr3Msgs.srv.InverseIK);
+
     nh.subscribe('/tr3/state', 'sensor_msgs/JointState', function (msg) {
       socket.emit('/tr3/state', msg);
+    });
+
+    socket.on('/forward-ik', function (msg) {
+        var req = new tr3Msgs.srv.ForwardIK.Request();
+	req.state.name = msg.name;
+	req.state.position = msg.position;
+	req.state.velocity = msg.velocity;
+	req.state.effort = msg.effort;
+	srvForwardIk.call(req).then(function (res) {
+            socket.emit('/forward-ik-' + msg.id, res);
+        });
+    });
+
+    socket.on('/inverse-ik', function (msg) {
+        var req = new tr3Msgs.srv.InverseIK.Request();
+	req.pose.position = msg.position;
+	req.pose.orientation = msg.orientation;
+	srvInverseIk.call(req).then(function (res) {
+            socket.emit('/inverse-ik-' + msg.id, res);
+        });
     });
 
     nh.subscribe('/tr3/depth/scaled', 'std_msgs/Int32MultiArray', function (msg) {
