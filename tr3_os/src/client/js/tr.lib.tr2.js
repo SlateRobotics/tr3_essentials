@@ -92,7 +92,7 @@ tr.lib.tr2 = function() {
       rotate: {
         x: 0,
         y: 0,
-        z: 0
+        z: 1.5708
       },
       translate: {
         x: 101.6,
@@ -108,12 +108,12 @@ tr.lib.tr2 = function() {
       axis: "Z",
       rotate: {
         x: -1.5708,
-        y: 0,
+        y: 1.5708,
         z: 0
       },
       translate: {
-        x: 0,
-        y: 70,
+        x: 0+63,
+        y: 70+63,
         z: 76
       },
       offset: 0,

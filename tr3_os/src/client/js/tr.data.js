@@ -55,13 +55,19 @@ tr.data.setup = function() {
   });
 }
 
-tr.data.getState = function(aid) {
-  for (var i = 0; i < tr.data.robotState.name.length; i++) {
-    if (tr.data.robotState.name[i] == aid) {
+tr.data.getState = function(aid, _state) {
+  var s = tr.data.robotState;
+
+  if (_state) {
+    s = _state;
+  }
+
+  for (var i = 0; i < s.name.length; i++) {
+    if (s.name[i] == aid) {
       return {
-        position: tr.data.robotState.position[i],
-        velocity: tr.data.robotState.velocity[i],
-        effort: tr.data.robotState.effort[i]
+        position: s.position[i],
+        velocity: s.velocity[i],
+        effort: s.effort[i]
       }
     }
   }
@@ -73,7 +79,7 @@ tr.data.getForwardIk = function (state, callback) {
   var id = Math.floor(Math.random() * (1000000000 + 1));
 
   tr.data.socket.on('/forward-ik-' + id, function (data) {
-    callback(data);
+    callback(data.pose);
     tr.data.socket.off('/forward-ik-' + id);
   });
 
@@ -104,7 +110,7 @@ tr.data.getInverseIk = function (pose, callback) {
   var id = Math.floor(Math.random() * (1000000000 + 1));
 
   tr.data.socket.on('/inverse-ik-' + id, function (data) {
-    callback(data);
+    callback(data.state, data.err);
     tr.data.socket.off('/inverse-ik-' + id);
   });
 

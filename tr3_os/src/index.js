@@ -101,21 +101,27 @@ io.on('connection', function (socket) {
 
     socket.on('/forward-ik', function (msg) {
         var req = new tr3Msgs.srv.ForwardIK.Request();
-	req.state.name = msg.name;
-	req.state.position = msg.position;
-	req.state.velocity = msg.velocity;
-	req.state.effort = msg.effort;
-	srvForwardIk.call(req).then(function (res) {
-            socket.emit('/forward-ik-' + msg.id, res);
+      	req.state.name = msg.name;
+      	req.state.position = msg.position;
+      	req.state.velocity = msg.velocity;
+      	req.state.effort = msg.effort;
+      	srvForwardIk.call(req).then(function (res) {
+          socket.emit('/forward-ik-' + msg.id, res);
+        }).catch(function (err) {
+          console.log(err);
+          socket.emit('/forward-ik-' + msg.id, { err: true });
         });
     });
 
     socket.on('/inverse-ik', function (msg) {
         var req = new tr3Msgs.srv.InverseIK.Request();
-	req.pose.position = msg.position;
-	req.pose.orientation = msg.orientation;
-	srvInverseIk.call(req).then(function (res) {
-            socket.emit('/inverse-ik-' + msg.id, res);
+      	req.pose.position = msg.position;
+      	req.pose.orientation = msg.orientation;
+      	srvInverseIk.call(req).then(function (res) {
+          socket.emit('/inverse-ik-' + msg.id, res);
+        }).catch(function (err) {
+          console.log(err);
+          socket.emit('/inverse-ik-' + msg.id, { err: true });
         });
     });
 

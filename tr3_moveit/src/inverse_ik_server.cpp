@@ -22,9 +22,10 @@ bool inverse_ik(tr3_msgs::InverseIK::Request &req, tr3_msgs::InverseIK::Response
 		* Eigen::Quaterniond(m.orientation.w, m.orientation.x, m.orientation.y, m.orientation.z);
 	
 	std::vector<double> joint_values;
-	
+
 	double timeout = 5.0;
 	bool found_ik = kinematic_state->setFromIK(joint_model_group, end_effector_state, timeout);
+
 	if (found_ik)
 	{
 		kinematic_state->copyJointGroupPositions(joint_model_group, joint_values);

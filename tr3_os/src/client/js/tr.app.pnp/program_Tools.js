@@ -264,3 +264,23 @@ p.sliderchanged = function(app) {
   p.getCurrentProgram(app).setPositions(pos_array, app);
 
 };
+
+p.inverseIk = function (app, poseDelta) {
+  var pose = tr.controls.pnp2.desiredPose;
+  pose.position.x += poseDelta.x;
+  pose.position.y += poseDelta.y;
+  pose.position.z += poseDelta.z;
+
+  tr.data.getInverseIk(pose, function (state, err) {
+    if (err) return;
+
+    var positions = [];
+
+    var aids = ["a0", "a1", "a2", "a3", "a4"];
+    for (var i = 0; i < aids.length; i++) {
+      positions.push(tr.data.getState(aids[i], state).position);
+    }
+
+    p.getCurrentProgram(app).setPositions(positions, app);
+  });
+}

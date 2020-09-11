@@ -13,7 +13,9 @@ tr.controls.pnp2.inverseBtn_moveRight = function() {
       type: "container",
       border: false,
       onClick: function() {
-        //tr.data.socket.emit(rostopic, value);
+        var app = this.getApp().config;
+        var p = tr.controls.pnp2.program_Tools;
+        p.inverseIk(app, { x: 0, y: -0.05, z: 0 });
       },
       children: [{
         type: "text",

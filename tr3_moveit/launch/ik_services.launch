@@ -5,6 +5,6 @@
     <arg name="load_robot_description" value="true"/>
   </include>
 
-  <node pkg="tr3_moveit" name="forward_ik" type="forward_ik_server" />
-  <node pkg="tr3_moveit" name="inverse_ik" type="inverse_ik_server" />
+  <node pkg="tr3_moveit" name="forward_ik" type="forward_ik_server" output="screen" />
+  <node pkg="tr3_moveit" name="inverse_ik" type="inverse_ik_server" output="screen" />
 </launch>
