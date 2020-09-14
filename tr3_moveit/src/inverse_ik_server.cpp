@@ -10,7 +10,7 @@ bool inverse_ik(tr3_msgs::InverseIK::Request &req, tr3_msgs::InverseIK::Response
 	robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
 	robot_model::RobotModelPtr kinematic_model = robot_model_loader.getModel();
 	ROS_INFO("Model frame: %s", kinematic_model->getModelFrame().c_str());
-	
+
 	robot_state::RobotStatePtr kinematic_state(new robot_state::RobotState(kinematic_model));
 	kinematic_state->setToDefaultValues();
 	const robot_state::JointModelGroup* joint_model_group = kinematic_model->getJointModelGroup("tr3_arm");
@@ -20,10 +20,10 @@ bool inverse_ik(tr3_msgs::InverseIK::Request &req, tr3_msgs::InverseIK::Response
 	const geometry_msgs::Pose &m = req.pose;
 	const Eigen::Isometry3d& end_effector_state = Eigen::Translation3d(m.position.x, m.position.y, m.position.z)
 		* Eigen::Quaterniond(m.orientation.w, m.orientation.x, m.orientation.y, m.orientation.z);
-	
+
 	std::vector<double> joint_values;
 
-	double timeout = 5.0;
+	double timeout = 0.2;
 	bool found_ik = kinematic_state->setFromIK(joint_model_group, end_effector_state, timeout);
 
 	if (found_ik)
