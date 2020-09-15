@@ -14,6 +14,7 @@ tr.gui.tr2 = {
     this.displayMap = false;
     this.displayLidar = false;
     this.displayPointCloud = false;
+    this.displayWaypoints = true;
 
     this.links = {};
 
@@ -23,6 +24,8 @@ tr.gui.tr2 = {
     this.state.g0 = 0;
     this.state.h0 = 0;
     this.state.h1 = 0;
+
+    this.waypoints = [];
 
     this.allowDrag = false;
     this.p5 = '';
@@ -77,6 +80,10 @@ tr.gui.tr2 = {
 
     if (this.config.displayPointCloud != undefined) {
       this.displayPointCloud = this.config.displayPointCloud;
+    }
+
+    if (this.config.displayWaypoints != undefined) {
+      this.displayWaypoints = this.config.displayWaypoints;
     }
 
     this.zoomOut = function () {
@@ -284,6 +291,10 @@ tr.gui.tr2 = {
       this.componentConfig.drawPointCloud.bind(this)();
     }
 
+    if (this.displayWaypoints) {
+      this.componentConfig.drawWaypoints.bind(this)();
+    }
+
     //this.buttonZoomOut.position = { x: 25, y: this.size.h - 25 };
     //this.buttonZoomOut.draw();
   },
@@ -343,6 +354,64 @@ tr.gui.tr2 = {
       this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
       this.p5.sphere(4);
       this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);
+    }
+  },
+
+  drawWaypoint: function (wp) {
+    var p = wp.pose.position;
+    var o = tr.utils.quaternionToEuler(wp.pose.orientation);
+
+    var c_len = 25;
+    var c_rad = 2;
+
+    this.p5.push();
+    this.p5.rotateZ(-1.5708);
+    this.p5.normalMaterial();
+
+    this.p5.translate(-p.x * 200, p.y * 200, p.z * 200);
+    this.p5.rotateX(-o.y);
+    this.p5.rotateY(-o.z);
+    this.p5.rotateZ(-o.x);
+
+    this.p5.fill("red");
+    this.p5.rotateZ(1.5708);
+    this.p5.translate(0,c_len/2,0);
+    this.p5.cylinder(c_rad, c_len);
+    this.p5.translate(0,-c_len/2,0);
+    this.p5.rotateZ(-1.5708);
+
+    this.p5.fill("green");
+    this.p5.translate(0,c_len/2,0);
+    this.p5.cylinder(c_rad, c_len);
+    this.p5.translate(0,-c_len/2,0);
+
+    this.p5.fill("blue");
+    this.p5.rotateX(1.5708);
+    this.p5.translate(0,c_len/2,0);
+    this.p5.cylinder(c_rad, c_len);
+    this.p5.translate(0,-c_len/2,0);
+    this.p5.rotateX(-1.5708);
+
+    this.p5.pop();
+  },
+
+  drawWaypoints: function () {
+    tr.data.waypoints = [];
+    for (var i = 0; i < this.waypoints.length; i++) {
+      tr.data.waypoints.push(tr.utils.quaternionToEuler(this.waypoints[i].pose.orientation));
+      this.componentConfig.drawWaypoint.bind(this)(this.waypoints[i]);
+    }
+
+    for (var i = 0; i < this.waypoints.length - 1; i++) {
+      var p1 = this.waypoints[i].pose.position;
+      var p2 = this.waypoints[i+1].pose.position;
+
+      this.p5.push();
+      this.p5.rotateZ(-1.5708);
+      this.p5.stroke("yellow");
+      this.p5.line(-p1.x * 200, p1.y * 200, p1.z * 200, -p2.x * 200, p2.y * 200, p2.z * 200);
+      this.p5.rotateZ(1.5708);
+      this.p5.pop();
     }
   },
 

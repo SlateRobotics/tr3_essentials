@@ -9,8 +9,17 @@ tr.controls.pnp2.waypoint = function(config) {
   this.positions = this.config.positions || [0, 0, 0, 0, 0];
   this.speed = this.config.speed || 1;
 
+  this.pose = {
+    position: { x: 0, y: 0, z: 0 },
+    orientation: { x: 0, y: 0, z: 0, w: 0 }
+  }
+
   this.config.positions = this.positions;
   this.config.speed = this.speed;
+
+  this.setup = function () {
+    this.setPose();
+  }
 
   this.incrementPosition = function(idx, i) {
     this.positions[idx] += i;
@@ -26,6 +35,23 @@ tr.controls.pnp2.waypoint = function(config) {
       this.speed = 0;
     }
   }
+
+  this.setPose = function () {
+    var state = {
+      "a0": this.positions[0],
+      "a1": this.positions[1],
+      "a2": this.positions[2],
+      "a3": this.positions[3],
+      "a4": this.positions[4],
+    }
+
+    tr.data.getForwardIk(state, function (pose) {
+      tr.controls.pnp2.desiredPose = pose;
+      this.pose = pose;
+    }.bind(this));
+  }
+
+  this.setup();
 }
 
 tr.controls.pnp2.program = function(config) {
@@ -112,6 +138,8 @@ tr.controls.pnp2.program = function(config) {
       this.currentWaypoint = this.waypoints.length - 1;
     }
     p.updateUI(app)
+
+    this.waypoints[this.currentWaypoint].setPose();
   }
 
   this.setup();

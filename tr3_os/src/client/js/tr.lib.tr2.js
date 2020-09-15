@@ -182,7 +182,7 @@ tr.lib.tr2 = function() {
       flip: true,
       rotate: {
         x: 0,
-        y: 0,
+        y: 1.5708,
         z: 0
       },
       translate: {

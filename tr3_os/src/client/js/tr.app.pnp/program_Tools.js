@@ -216,6 +216,8 @@ p.updateUI = function(app) {
   tr2.state.a3 = app.robotState[3];
   tr2.state.a4 = app.robotState[4];
 
+  tr2.waypoints = prog.waypoints;
+
   page.getChild('dwaypoint').text = prog.currentWaypoint;
   // page.getChild('dspeed').text = Math.round(speed * 100) / 100;
   page.getChild("a0targetpos").text = positions[0].toFixed(2) + "°";
@@ -282,5 +284,6 @@ p.inverseIk = function (app, poseDelta) {
     }
 
     p.getCurrentProgram(app).setPositions(positions, app);
+    p.getCurrentProgram(app).getCurrentWaypoint().setPose();
   });
 }
