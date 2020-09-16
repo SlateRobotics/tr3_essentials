@@ -1,3 +1,4 @@
 src/client/js/tr.build.js
 node_modules/
 package-lock.json
+src/server/data/
