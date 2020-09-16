@@ -36,6 +36,17 @@ tr.controls.pnp2.waypoint = function(config) {
     }
   }
 
+  this.clone = function () {
+    return new tr.controls.pnp2.waypoint({
+      positions: this.positions,
+      speed: this.speed,
+      pose: {
+        position: this.pose.position,
+        orientation: this.pose.orientation,
+      }
+    });
+  }
+
   this.setPose = function () {
     var state = {
       "a0": this.positions[0],
@@ -93,7 +104,7 @@ tr.controls.pnp2.program = function(config) {
   }
 
   this.insertWaypoint = function(app) {
-    var wp = [];
+    /*var wp = [];
     //console.log(this);
     for (var i = 0; i < this.waypoints.length; i++) {
       wp.push(this.waypoints[i]);
@@ -109,9 +120,11 @@ tr.controls.pnp2.program = function(config) {
       this.currentWaypoint = 0;
     } else {
       this.currentWaypoint += 1;
-    }
+    }*/
 
-    this.waypoints = wp;
+    this.waypoints.splice(this.currentWaypoint + 1, 0, this.waypoints[this.currentWaypoint].clone());
+    this.currentWaypoint += 1;
+
     p.updateUI(app)
   }
 
