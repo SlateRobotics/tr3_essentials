@@ -57,7 +57,6 @@ tr.controls.pnp2.waypoint = function(config) {
     }
 
     tr.data.getForwardIk(state, function (pose) {
-      tr.controls.pnp2.desiredPose = pose;
       this.pose = pose;
     }.bind(this));
   }
@@ -104,24 +103,6 @@ tr.controls.pnp2.program = function(config) {
   }
 
   this.insertWaypoint = function(app) {
-    /*var wp = [];
-    //console.log(this);
-    for (var i = 0; i < this.waypoints.length; i++) {
-      wp.push(this.waypoints[i]);
-      if (i == this.currentWaypoint) {
-        var config = Object.assign({}, this.waypoints[i].config);
-        config.positions = Object.assign([], config.positions);
-        wp.push(new tr.controls.pnp2.waypoint(config));
-      }
-    }
-
-    if (wp.length == 0) {
-      wp.push(new tr.app.pnp.waypoint());
-      this.currentWaypoint = 0;
-    } else {
-      this.currentWaypoint += 1;
-    }*/
-
     this.waypoints.splice(this.currentWaypoint + 1, 0, this.waypoints[this.currentWaypoint].clone());
     this.currentWaypoint += 1;
 

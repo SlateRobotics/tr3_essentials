@@ -9,15 +9,6 @@ tr.app.pnp2 = function() {
   columns.push(c.toolbar());
   columns.push(c.body());
 
-  tr.controls.pnp2.desiredPose = {
-    position: {
-      x: 0, y: 0, z: 0
-    },
-    orientation: {
-      x: 0, y: 0, z: 0, w: 1
-    }
-  }
-
   var state = {
     "a0": 0,
     "a1": 0,
@@ -25,12 +16,6 @@ tr.app.pnp2 = function() {
     "a3": 0,
     "a4": 0,
   }
-
-  tr.data.getForwardIk(state, function (pose) {
-    tr.controls.pnp2.desiredPose = pose;
-    console.log(pose);
-  });
-
 
   return new App({
 
