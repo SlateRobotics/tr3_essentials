@@ -151,19 +151,34 @@ tr.controls.pnp2.program = function(config) {
       app: "tr.app.pnp",
       fileName: "program-" + this.id + ".json",
       callback: function (data) {
-        if (data.err) return;
-        var wp = JSON.parse(data.contents).waypoints;
-        this.waypoints = [];
-        for (var i = 0; i < wp.length; i++) {
-          this.waypoints.push(new tr.controls.pnp2.waypoint(wp[i]))
+        try {
+          var wp = JSON.parse(data.contents).waypoints;
+          this.waypoints = [];
+          for (var i = 0; i < wp.length; i++) {
+            this.waypoints.push(new tr.controls.pnp2.waypoint(wp[i]))
+          }
+        } catch (err) {
+
         }
       }.bind(this)
     });
   }
 
+  this.delete = function () {
+    tr.data.deleteFile({
+      app: "tr.app.pnp",
+      fileName: "program-" + this.id + ".json",
+    });
+  }
+
   this.save = function () {
+    if (this.waypoints.length == 0) {
+      return;
+    }
+
     var f = {
       id: this.id,
+      name: this.name,
       waypoints: [],
     }
 

@@ -7,9 +7,11 @@ var p = tr.controls.pnp2.program_Tools;
 p.Program_Setup = function(app) {
   app.currentProgram = 0;
   app.programs = [];
-  p.LoadPrograms(app)
-  app.robotState = p.getCurrentProgram(app).getCurrentWaypoint().positions;
-  p.updateUI(app);
+  p.loadPrograms(app, function () {
+    if (app.programs.length == 0) p.addProgram(app);
+    app.robotState = p.getCurrentProgram(app).getCurrentWaypoint().positions;
+    p.updateUI(app);
+  });
 };
 
 p.programRun = function(app) {
@@ -53,36 +55,19 @@ p.programRun = function(app) {
   };
 };
 
-p.LoadPrograms = function(app) {
-  app.programs.push(new tr.controls.pnp2.program({
-    id: 0,
-    name: "Program 0",
-    waypoints: [{
-      positions: [0, 0, 0, 0, 0],
-      speed: 1
-    }, {
-      positions: [0, .85, .46, .25, .3],
-      speed: 3
-    }, {
-      positions: [.5, .4, .8, .6, .8],
-      speed: 5
-    }]
-  }));
-
-  app.programs.push(new tr.controls.pnp2.program({
-    id: 1,
-    name: "Program 1",
-    waypoints: [{
-      positions: [0, 0, .2, .2, .4],
-      speed: 3
-    }, {
-      positions: [.2, .7, 1, .9, .7],
-      speed: 6
-    }, {
-      positions: [.5, .4, .6, .4, .8],
-      speed: 2
-    }]
-  }));
+p.loadPrograms = function(app, callback) {
+  tr.data.readDir({
+    app: "tr.app.pnp",
+    callback: function (data) {
+      if (!data.err) {
+        for(var i = 0; i < data.contents.length; i++) {
+          var p = data.contents[i];
+          app.programs.push(new tr.controls.pnp2.program(p));
+        }
+      }
+      callback();
+    }.bind(this)
+  });
 };
 
 p.addProgram = function(app) {
@@ -101,16 +86,20 @@ p.addProgram = function(app) {
     }]
   }));
 
+  app.currentProgram = app.programs.length - 1;
+  app.programs[app.currentProgram].save();
+
   p.updateUI(app);
 };
 
 p.removeProgram = function(app) {
   var i = app.currentProgram;
+  app.programs[i].delete();
   app.programs.splice(i, 1);
   if (app.programs.length == 0) {
     p.addProgram(app)
   }
-  app.currentProgram = 0;
+  app.currentProgram = app.programs.length - 1;
   p.updateUI(app);
 }
 
@@ -215,6 +204,9 @@ p.updateUI = function(app) {
 
   page.getChild('dwaypoint').text = prog.currentWaypoint;
 
+  var sel = page.getChild('progselect').element.elt;
+  sel.value = app.programs[app.currentProgram].name;
+
   p.updateSelect(app);
 };
 
@@ -222,7 +214,6 @@ p.updateSelect = function(app) {
   var page = app._app.pages[0];
   var sel = page.getChild('progselect');
   var options = sel.options;
-
 
   var opts = [];
   var update = false;
@@ -235,6 +226,8 @@ p.updateSelect = function(app) {
       update = true;
     }
   }
+
+  if (opts.length != options.length) update = true
 
   if (update) {
     page.getChild('progselect').setOptions(opts);

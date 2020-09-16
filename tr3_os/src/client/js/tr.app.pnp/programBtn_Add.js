@@ -1,9 +1,10 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
-var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.programBtn_Add = function() {
+  var p = tr.controls.pnp2.program_Tools;
+  
   return {
     type: "container",
     size: {

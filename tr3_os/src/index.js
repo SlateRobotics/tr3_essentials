@@ -103,22 +103,60 @@ io.on('connection', function (socket) {
 
     socket.on('/readFile', function (msg) {
       var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
+
+      if (!fs.existsSync(path.join(__dirname, "server/data"))) fs.mkdirSync(path.join(__dirname, "server/data"));
+      if (!fs.existsSync(path.join(__dirname, "server/data", msg.app))) fs.mkdirSync(path.join(__dirname, "server/data", msg.app));
+      if (!fs.existsSync(p)) fs.writeFileSync(p, "");
+
       fs.readFile(p, "utf-8", function (err, data) {
-        console.log(p, err, data);
         if (err) {
           socket.emit('/readFile-' + msg.id, { err: true });
         } else {
           socket.emit('/readFile-' + msg.id, { contents: data });
         }
       });
+
+    });
+
+    socket.on('/readDir', function (msg) {
+      var p = path.join(__dirname, "server/data", msg.app);
+
+      if (!fs.existsSync(path.join(__dirname, "server/data"))) fs.mkdirSync(path.join(__dirname, "server/data"));
+      if (!fs.existsSync(path.join(__dirname, "server/data", msg.app))) fs.mkdirSync(path.join(__dirname, "server/data", msg.app));
+
+      var data = [];
+
+      var fileNames = fs.readdirSync(p);
+      for (var i = 0; i < fileNames.length; i++) {
+        var d = fs.readFileSync(path.join(p, fileNames[i]));
+        try {
+          data.push(JSON.parse(d));
+        } catch (e) {
+
+        }
+      }
+
+      socket.emit('/readDir-' + msg.id, { contents: data });
+
+    });
+
+    socket.on('/deleteFile', function (msg) {
+      var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
+
+      if (!fs.existsSync(path.join(__dirname, "server/data"))) fs.mkdirSync(path.join(__dirname, "server/data"));
+      if (!fs.existsSync(path.join(__dirname, "server/data", msg.app))) fs.mkdirSync(path.join(__dirname, "server/data", msg.app));
+      if (!fs.existsSync(p)) return
+
+      fs.unlinkSync(p);
     });
 
     socket.on('/writeFile', function (msg) {
       var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
-      fs.writeFile(p, msg.contents, function (err) {
-        console.log(err);
-      });
-      console.log(p, msg.contents);
+
+      if (!fs.existsSync(path.join(__dirname, "server/data"))) fs.mkdirSync(path.join(__dirname, "server/data"));
+      if (!fs.existsSync(path.join(__dirname, "server/data", msg.app))) fs.mkdirSync(path.join(__dirname, "server/data", msg.app));
+
+      fs.writeFileSync(p, msg.contents);
     });
 
     socket.on('/forward-ik', function (msg) {

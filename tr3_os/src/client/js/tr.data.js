@@ -121,6 +121,27 @@ tr.data.getInverseIk = function (pose, callback) {
   });
 }
 
+tr.data.readDir = function (config) {
+  var id = Math.floor(Math.random() * (1000000000 + 1));
+
+  tr.data.socket.on('/readDir-' + id, function (data) {
+    config.callback(data);
+    tr.data.socket.off('/readDir-' + id);
+  });
+
+  tr.data.socket.emit('/readDir', {
+    id: id,
+    app: config.app,
+  });
+}
+
+tr.data.deleteFile = function (config) {
+  tr.data.socket.emit('/deleteFile', {
+    app: config.app,
+    fileName: config.fileName,
+  });
+}
+
 tr.data.readFile = function (config) {
   var id = Math.floor(Math.random() * (1000000000 + 1));
 
@@ -137,7 +158,6 @@ tr.data.readFile = function (config) {
 }
 
 tr.data.writeFile = function (config) {
-  console.log(config);
   tr.data.socket.emit("/writeFile", {
     app: config.app,
     fileName: config.fileName,
