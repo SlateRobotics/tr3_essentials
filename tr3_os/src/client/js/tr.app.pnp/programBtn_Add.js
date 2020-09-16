@@ -7,8 +7,8 @@ tr.controls.pnp2.programBtn_Add = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 4,
-      h: 50
+      w: 0.75/10,
+      h: 1.0
     },
     children: [{
       type: "container",

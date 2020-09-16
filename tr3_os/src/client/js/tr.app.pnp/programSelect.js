@@ -7,8 +7,8 @@ tr.controls.pnp2.programSelect = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 4,
-      h: 50
+      w: 0.25,
+      h: 1
     },
     children: [{
       type: "container",
@@ -22,7 +22,7 @@ tr.controls.pnp2.programSelect = function() {
         type: "select",
         size: {
           w: 1,
-          h: 40
+          h: 1
         },
         padding: 5,
         options: ["Did Not Load", ],

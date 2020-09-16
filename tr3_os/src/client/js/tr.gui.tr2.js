@@ -40,7 +40,7 @@ tr.gui.tr2 = {
     this.cameraPosDefault = {
       x: this.cameraRadius,
       y: 0,
-      z: 200
+      z: 100
     };
     this.cameraDif = {
       x: 74.5,
@@ -51,6 +51,11 @@ tr.gui.tr2 = {
       x: this.cameraPosDefault.x,
       y: this.cameraPosDefault.y,
       z: this.cameraPosDefault.z
+    };
+    this.cameraCenter = {
+      x: 0,
+      y: 0,
+      z: 100,
     };
     if (this.config.cameraPos) {
       this.cameraPos = this.config.cameraPos
@@ -88,10 +93,21 @@ tr.gui.tr2 = {
 
     this.zoomOut = function () {
       this.cameraRadius += 25;
+      if (this.cameraRadius >= 500) this.cameraRadius = 500;
     }
 
     this.zoomIn = function () {
       this.cameraRadius -= 25;
+      if (this.cameraRadius <= 25) this.cameraRadius = 25;
+    }
+
+    this.move = function (d) {
+      if (!d.x) d.x = 0;
+      if (!d.y) d.y = 0;
+      if (!d.z) d.z = 0;
+      this.cameraCenter.x += d.x * this.cameraRadius;
+      this.cameraCenter.y += d.y * this.cameraRadius;
+      this.cameraCenter.z += d.z * this.cameraRadius;
     }
 
     this.children.push(new tr.gui.component().setup({
@@ -128,6 +144,86 @@ tr.gui.tr2 = {
       children: [{
         type: "text",
         text: "-",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-center-forward",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: -95, y: -95 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.move({y: -0.1});
+      },
+      children: [{
+        type: "text",
+        text: "▲",
+        textFont: "noto",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-center-backward",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: -95, y: -50 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.move({y: 0.1});
+      },
+      children: [{
+        type: "text",
+        text: "▼",
+        textFont: "noto",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-center-left",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: -50, y: -95 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.move({x: -0.1});
+      },
+      children: [{
+        type: "text",
+        text: "◀",
+        textFont: "noto",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-center-right",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: -50, y: -50 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.move({x: 0.1});
+      },
+      children: [{
+        type: "text",
+        text: "▶",
+        textFont: "noto",
         align: { v: "CENTER", h: "CENTER" },
       }],
     }));
@@ -209,7 +305,9 @@ tr.gui.tr2 = {
     this.cameraPos.y = this.cameraRadius * Math.cos(lat) * Math.sin(lon);
     this.cameraPos.z = this.cameraRadius * Math.sin(lat) + 100;
 
-    this.p5.camera(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z, 0, 0, 100, 0, 0, -1);
+    this.p5.camera(this.cameraPos.x + this.cameraCenter.x, this.cameraPos.y + this.cameraCenter.y, this.cameraPos.z,
+      this.cameraCenter.x, this.cameraCenter.y, this.cameraCenter.z,
+      0, 0, -1);
 
     tr.gui.drawLink(this.links["b0"], 1.5708, 3.1415, 0, 0, 0, 0, null, this.p5);
     tr.gui.drawLink(this.links["w0"], 0, 1.5708, 0, 328.1, 0, 0, null, this.p5);
@@ -267,17 +365,12 @@ tr.gui.tr2 = {
     }
     head.draw();
 
+    this.p5.stroke("orange");
+    this.p5.translate(this.cameraCenter.x, this.cameraCenter.y, this.cameraCenter.z);
+    this.p5.sphere(4);
+    this.p5.translate(-this.cameraCenter.x, -this.cameraCenter.y, -this.cameraCenter.z);
+
     this.p5.rotateZ(3.1415);
-
-    /*this.p5.strokeWeight(2);
-    this.p5.stroke('red');
-    this.p5.line(0, 0, 0, -1000, 0, 0);
-
-    this.p5.stroke('green');
-    this.p5.line(0, 0, 0, 0, 1000, 0);
-
-    this.p5.stroke('blue');
-    this.p5.line(0, 0, 0, 0, 0, 1000);*/
 
     if (this.displayLidar) {
       this.componentConfig.drawLidar.bind(this)();
@@ -294,9 +387,6 @@ tr.gui.tr2 = {
     if (this.displayWaypoints) {
       this.componentConfig.drawWaypoints.bind(this)();
     }
-
-    //this.buttonZoomOut.position = { x: 25, y: this.size.h - 25 };
-    //this.buttonZoomOut.draw();
   },
 
   drawMap: function () {

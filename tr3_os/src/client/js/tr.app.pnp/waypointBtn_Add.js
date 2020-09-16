@@ -7,8 +7,8 @@ tr.controls.pnp2.waypointBtn_Add = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 5,
-      h: 50
+      w: 0.75/10,
+      h: 1.0
     },
     children: [{
       type: "container",

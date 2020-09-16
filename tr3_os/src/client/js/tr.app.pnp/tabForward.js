@@ -17,8 +17,8 @@ tr.controls.pnp2.tabForward = function() {
     type: "container",
     border: false,
     size: {
-      w: 1,
-      h: 120,
+      w: 1.0,
+      h: 1.0,
     },
     children: children,
   }

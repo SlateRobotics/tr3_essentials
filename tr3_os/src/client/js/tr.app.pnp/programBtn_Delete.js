@@ -7,8 +7,8 @@ tr.controls.pnp2.programBtn_Delete = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 4,
-      h: 50
+      w: 0.75/10,
+      h: 1.0
     },
     children: [{
       type: "container",
@@ -20,7 +20,7 @@ tr.controls.pnp2.programBtn_Delete = function() {
       },
       children: [{
         type: "text",
-        text: "♲", //recycle symbol
+        text: "x", //recycle symbol
         textSize: 24,
         textFont: "noto",
         align: {

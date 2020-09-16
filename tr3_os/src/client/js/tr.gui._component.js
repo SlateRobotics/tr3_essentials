@@ -11,6 +11,7 @@ tr.gui.component = function(componentConfig) {
 
     this.index = config.index || 0;
     this.id = this.config.id;
+    this.p5 = this.config.p5 || window;
     this.parent = config.parent;
     this.posType = config.posType || "static";
     this.pos = config.pos || {
@@ -157,8 +158,8 @@ tr.gui.component = function(componentConfig) {
   }
 
   this.draw = function() {
-    stroke(0);
-    fill(this.background);
+    this.p5.stroke(0);
+    this.p5.fill(this.background);
 
     if (this.config.size && this.config.size.w == "fill") {
       var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
@@ -188,9 +189,9 @@ tr.gui.component = function(componentConfig) {
 
     this.positionAbsolute = this.getAbsolutePosition();
     if (this.componentConfig.draw) {
-      push();
+      this.p5.push();
       this.componentConfig.draw.bind(this)();
-      pop();
+      this.p5.pop();
     }
 
     this.drawChildren();
@@ -214,6 +215,9 @@ tr.gui.component = function(componentConfig) {
         if (this.children[i].config.pos && this.children[i].config.pos.y < 0) {
           this.children[i].pos.y = this.size.h + this.children[i].config.pos.y;
         }
+        if (this.children[i].config.pos && this.children[i].config.pos.x < 0) {
+          this.children[i].pos.x = this.size.w + this.children[i].config.pos.x;
+        }
         this.children[i].draw();
         if (this.children[i].posType != "fixed") {
           this.translate(this.children[i].size.w, 0);
@@ -235,7 +239,7 @@ tr.gui.component = function(componentConfig) {
     this.translateState.x += x;
     this.translateState.y += y;
     this.translateState.z += z;
-    translate(x, y, z);
+    this.p5.translate(x, y, z);
   }
 
   this.getChild = function(id) {

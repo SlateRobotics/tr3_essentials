@@ -6,8 +6,8 @@ tr.app.pnp2 = function() {
   var p = c.program_Tools;
 
   var columns = [];
-  columns.push(c.columnLeft());
-  columns.push(c.columnRight());
+  columns.push(c.toolbar());
+  columns.push(c.body());
 
   tr.controls.pnp2.desiredPose = {
     position: {

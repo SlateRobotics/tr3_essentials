@@ -7,8 +7,6 @@ tr.controls.pnp2.tabInverse = function() {
 
   var children = [];
   children.push(c.inverseColL())
-  children.push(c.inverseColM())
-  children.push(c.inverseColR())
 
   return {
     type: "container",

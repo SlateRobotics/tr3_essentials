@@ -10,7 +10,7 @@ tr.controls.pnp2.tabControl = function() {
     border: false,
     size: {
       w: 1,
-      h: 1,
+      h: 0.5,
     },
     children: [{
       type: "tabControl",

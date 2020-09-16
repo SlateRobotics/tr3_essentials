@@ -2,25 +2,22 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
-tr.controls.pnp2.inverseBtn_Blnk = function() {
+tr.controls.pnp2.controls = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
-  children.push(c.render());
+  children.push(c.tabControl());
 
   return {
     type: "container",
     size: {
-      w: 1 / 5,
-      h: 35
+      w: 0.25,
+      h: "fill",
     },
+    border: true,
     children: [{
       type: "container",
-      border: false,
-      onClick: function() {
-        //Do waypoint Add
-        //tr.data.socket.emit(rostopic, value);
-      }
+      children: children,
     }]
   }
 }

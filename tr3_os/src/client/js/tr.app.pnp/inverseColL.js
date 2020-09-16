@@ -24,12 +24,11 @@ tr.controls.pnp2.inverseColL = function() {
   return {
     type: "container",
     size: {
-      w: 1 / 3,
-      h: 0.3,
+      w: 1.0,
+      h: 1.0,
     },
-    background: "rgba(255, 255, 255, 0.2)",
-    margin: 2,
-    padding: 5,
+    margin: 0,
+    padding: 10,
     children: [{
       type: "container",
       border: false,
