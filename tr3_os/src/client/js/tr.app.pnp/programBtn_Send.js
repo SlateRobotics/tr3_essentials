@@ -1,26 +1,28 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
+var p = tr.controls.pnp2.program_Tools;
 
-tr.controls.pnp2.btnSimulated = function() {
+tr.controls.pnp2.programBtn_Send = function() {
   return {
     type: "container",
     size: {
-      w: 0.5,
-      h: 30
-    },
-    background: "rgba(255, 255, 255, 0.1)",
-    onClick: function() {
-      //tr.data.socket.emit(rostopic, value);
+      w: 0.75/10,
+      h: 1.0
     },
     children: [{
       type: "container",
       border: false,
+      onClick: function() {
+        var app = this.getApp().config;
+        p.programStart(app)
+        //tr.data.socket.emit(rostopic, value);
+      },
       children: [{
         type: "text",
-        text: "Simulated",
-        textSize: 18,
-        padding: 12,
+        text: "⇧",
+        textSize: 24,
+        textFont: "noto",
         align: {
           v: "CENTER",
           h: "CENTER"

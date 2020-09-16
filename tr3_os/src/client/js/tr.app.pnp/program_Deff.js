@@ -9,7 +9,7 @@ tr.controls.pnp2.waypoint = function(config) {
   this.positions = this.config.positions || [0, 0, 0, 0, 0];
   this.speed = this.config.speed || 1;
 
-  this.pose = {
+  this.pose = config.pose || {
     position: { x: 0, y: 0, z: 0 },
     orientation: { x: 0, y: 0, z: 0, w: 0 }
   }
@@ -75,6 +75,8 @@ tr.controls.pnp2.program = function(config) {
     if (this.waypoints.length > 0) {
       this.currentWaypoint = 0;
     }
+
+    this.open();
   }
 
   this.setPositions = function(pos, app) {
@@ -82,6 +84,8 @@ tr.controls.pnp2.program = function(config) {
       this.waypoints[this.currentWaypoint].setwpPositions(pos);
       p.updateUI(app)
     }
+
+    this.save();
   }
 
   this.getCurrentWaypoint = function() {
@@ -140,6 +144,42 @@ tr.controls.pnp2.program = function(config) {
     p.updateUI(app)
 
     this.waypoints[this.currentWaypoint].setPose();
+  }
+
+  this.open = function () {
+    tr.data.readFile({
+      app: "tr.app.pnp",
+      fileName: "program-" + this.id + ".json",
+      callback: function (data) {
+        if (data.err) return;
+        var wp = JSON.parse(data.contents).waypoints;
+        this.waypoints = [];
+        for (var i = 0; i < wp.length; i++) {
+          this.waypoints.push(new tr.controls.pnp2.waypoint(wp[i]))
+        }
+      }.bind(this)
+    });
+  }
+
+  this.save = function () {
+    var f = {
+      id: this.id,
+      waypoints: [],
+    }
+
+    for (var i = 0; i < this.waypoints.length; i++) {
+      f.waypoints.push({
+        positions: this.waypoints[i].positions,
+        speed: this.waypoints[i].speed,
+        pose: this.waypoints[i].pose
+      });
+    }
+
+    tr.data.writeFile({
+      app: "tr.app.pnp",
+      fileName: "program-" + f.id + ".json",
+      contents: JSON.stringify(f),
+    });
   }
 
   this.setup();

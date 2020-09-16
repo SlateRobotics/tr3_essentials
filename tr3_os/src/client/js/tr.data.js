@@ -120,3 +120,27 @@ tr.data.getInverseIk = function (pose, callback) {
     orientation: pose.orientation
   });
 }
+
+tr.data.readFile = function (config) {
+  var id = Math.floor(Math.random() * (1000000000 + 1));
+
+  tr.data.socket.on('/readFile-' + id, function (data) {
+    config.callback(data);
+    tr.data.socket.off('/readFile-' + id);
+  });
+
+  tr.data.socket.emit('/readFile', {
+    id: id,
+    app: config.app,
+    fileName: config.fileName,
+  });
+}
+
+tr.data.writeFile = function (config) {
+  console.log(config);
+  tr.data.socket.emit("/writeFile", {
+    app: config.app,
+    fileName: config.fileName,
+    contents: config.contents
+  });
+}

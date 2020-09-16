@@ -16,6 +16,7 @@ tr.controls.pnp2.toolbar = function() {
   children.push(c.waypointBtn_Next());
   children.push(c.waypointBtn_Add());
   children.push(c.waypointBtn_Delete());
+  children.push(c.programBtn_Send());
 
   return {
     type: "container",

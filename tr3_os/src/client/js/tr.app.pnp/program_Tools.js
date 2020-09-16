@@ -256,12 +256,14 @@ p.sliderchanged = function(app) {
 };
 
 p.inverseIk = function (app, poseDelta) {
-  var pose = tr.controls.pnp2.desiredPose;
-  pose.position.x += poseDelta.x;
-  pose.position.y += poseDelta.y;
-  pose.position.z += poseDelta.z;
+  var prog = p.getCurrentProgram(app);
+  var waypoint = prog.getCurrentWaypoint();
 
-  tr.data.getInverseIk(pose, function (state, err) {
+  waypoint.pose.position.x += poseDelta.x;
+  waypoint.pose.position.y += poseDelta.y;
+  waypoint.pose.position.z += poseDelta.z;
+
+  tr.data.getInverseIk(waypoint.pose, function (state, err) {
     if (err) return;
 
     var positions = [];

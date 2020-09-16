@@ -17,7 +17,7 @@ tr.controls.pnp2.waypointDisplay = function() {
         type: "text",
         text: "0", // Current Waypoint ID
         textSize: 24,
-        textFont: "noto",
+        textFont: "roboto",
         align: {
           v: "CENTER",
           h: "CENTER"

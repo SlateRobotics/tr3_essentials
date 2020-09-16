@@ -3,6 +3,8 @@
 var http = require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
+var fs = require('fs');
+var path = require('path');
 var rosnodejs = require('rosnodejs');
 var stdMsgs = rosnodejs.require('std_msgs');
 var geometryMsgs = rosnodejs.require('geometry_msgs');
@@ -97,6 +99,26 @@ io.on('connection', function (socket) {
 
     nh.subscribe('/tr3/state', 'sensor_msgs/JointState', function (msg) {
       socket.emit('/tr3/state', msg);
+    });
+
+    socket.on('/readFile', function (msg) {
+      var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
+      fs.readFile(p, "utf-8", function (err, data) {
+        console.log(p, err, data);
+        if (err) {
+          socket.emit('/readFile-' + msg.id, { err: true });
+        } else {
+          socket.emit('/readFile-' + msg.id, { contents: data });
+        }
+      });
+    });
+
+    socket.on('/writeFile', function (msg) {
+      var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
+      fs.writeFile(p, msg.contents, function (err) {
+        console.log(err);
+      });
+      console.log(p, msg.contents);
     });
 
     socket.on('/forward-ik', function (msg) {
