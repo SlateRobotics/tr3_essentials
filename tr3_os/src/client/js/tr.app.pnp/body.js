@@ -7,7 +7,7 @@ tr.controls.pnp2.body = function() {
 
   var children = [];
   children.push(c.render());
-  children.push(c.controls());
+  children.push(c.sidebar());
 
   return {
     type: "container",

@@ -2,15 +2,18 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 
-tr.controls.pnp2.tabInverse = function() {
+tr.controls.pnp2.controlsWaypoint = function() {
   var c = tr.controls.pnp2;
 
   var children = [];
-  children.push(c.inverseColL())
 
   return {
     type: "container",
-    border: false,
-    children: children,
+    size: {
+      w: 1,
+      h: 0.5,
+    },
+    border: true,
+    children: children
   }
 }

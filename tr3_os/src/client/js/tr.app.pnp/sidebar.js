@@ -5,17 +5,16 @@ if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 tr.controls.pnp2.sidebar = function() {
   var c = tr.controls.pnp2;
 
+  var children = [];
+  children.push(c.tabControl());
+
   return {
     type: "container",
-    border: false,
+    border: true,
     size: {
-      w: 1,
-      h: 1.0,
+      w: 0.25,
+      h: "fill",
     },
-    children: [{
-      type: "tabControl",
-      labels: ["Forward", "Inverse"],
-      pages: [c.tabForward(), c.tabInverse()],
-    }]
+    children: children,
   }
 }

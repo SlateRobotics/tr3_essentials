@@ -7,13 +7,10 @@ tr.controls.pnp2.controls = function() {
 
   var children = [];
   children.push(c.tabControl());
+  children.push(c.controlsWaypoint());
 
   return {
     type: "container",
-    size: {
-      w: 0.25,
-      h: "fill",
-    },
     border: true,
     children: [{
       type: "container",

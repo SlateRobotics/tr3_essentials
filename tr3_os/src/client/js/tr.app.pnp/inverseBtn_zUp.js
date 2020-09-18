@@ -7,7 +7,7 @@ tr.controls.pnp2.inverseBtn_zUp = function() {
     type: "container",
     size: {
       w: 1 / 5,
-      h: 35
+      h: 1 / 6,
     },
     children: [{
       type: "container",

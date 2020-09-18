@@ -16,7 +16,7 @@ tr.gui.drawLink = function(link, r_x, r_y, r_z, x, y, z, animate, _p5) {
   }
 
   _p5.directionalLight(255, 255, 255, 500, -1250, -1250);
-  _p5.ambientLight(125);
+  _p5.ambientLight(150);
   _p5.ambientMaterial(40);
   _p5.model(link);
 

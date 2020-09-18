@@ -1,9 +1,9 @@
 if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.pnp2) tr.controls.pnp2 = {};
-var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.slider = function(id) {
+  var p = tr.controls.pnp2.program_Tools;
   return {
     type: "container",
     size: {
@@ -39,6 +39,8 @@ tr.controls.pnp2.slider = function(id) {
         onChange: function(val) {
           var app = this.getApp();
           var page = app.getCurrentPage();
+          var prog = p.getCurrentProgram(app.config);
+          prog.getCurrentWaypoint(app.config).setPose();
         },
 
         min: -1,

@@ -40,7 +40,7 @@ tr.app.pnp2 = function() {
         p.programRun(app);
       },
       header: {
-        text: "P.N.P v2",
+        text: "Pick-n-Place",
       },
       children: columns,
     }],

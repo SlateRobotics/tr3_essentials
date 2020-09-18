@@ -101,6 +101,10 @@ tr.gui.tr2 = {
       if (this.cameraRadius <= 25) this.cameraRadius = 25;
     }
 
+    this.toggleWaypoints = function () {
+      this.displayWaypoints = !this.displayWaypoints;
+    }
+
     this.move = function (d) {
       if (!d.x) d.x = 0;
       if (!d.y) d.y = 0;
@@ -144,6 +148,25 @@ tr.gui.tr2 = {
       children: [{
         type: "text",
         text: "-",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-toggle-waypoints",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: 55, y: -50 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.toggleWaypoints();
+      },
+      children: [{
+        type: "text",
+        text: "W",
         align: { v: "CENTER", h: "CENTER" },
       }],
     }));
@@ -333,6 +356,34 @@ tr.gui.tr2 = {
         }
       });
     }
+
+    arm.chain.push({
+      id: "g1",
+      axis: "X",
+      mesh: this.links["g1"],
+      link: {},
+      state: this.state,
+      rotate: {x: -1.5708, y: 0, z: 1.5708 },
+      translate: {x: 40, y: 70, z: 0 },
+      animate: function() {
+        this.p5.translate(0, -7);
+        this.p5.translate(0, this.state.g0 / 1.0 * 40);
+      }
+    });
+
+    arm.chain.push({
+      id: "g2",
+      axis: "X",
+      mesh: this.links["g1"],
+      link: {},
+      state: this.state,
+      rotate: {x: 0, y: 0, z: 0 },
+      translate: {x: 0, y: 80, z: 0 },
+      animate: function() {
+        this.p5.translate(0, 14);
+        this.p5.translate(0, this.state.g0 / 1.0 * -80);
+      }
+    });
 
     /*arm.chain.push([this.links["g1"], -90, 0, 90, 0, -7.5, 135, function() {
       this.p5.translate(0, -5);

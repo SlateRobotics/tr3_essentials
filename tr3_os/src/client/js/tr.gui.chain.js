@@ -15,7 +15,7 @@ tr.gui.chain = function(_p5) {
 
     this.p5.noStroke();
     this.p5.directionalLight(255, 255, 255, 500, -1250, -1250);
-    this.p5.ambientLight(125);
+    this.p5.ambientLight(150);
     this.p5.ambientMaterial(40);
 
     this.eef.x = 0;

@@ -81,7 +81,7 @@ p.addProgram = function(app) {
   app.programs.push(new tr.controls.pnp2.program({
     id: id,
     waypoints: [{
-      positions: [0, 0, 0, 0, 0],
+      positions: [0, 0, 0, 0, 0, 0],
       speed: 1
     }]
   }));
@@ -199,10 +199,16 @@ p.updateUI = function(app) {
   tr2.state.a2 = app.robotState[2];
   tr2.state.a3 = app.robotState[3];
   tr2.state.a4 = app.robotState[4];
+  tr2.state.g0 = app.robotState[5];
 
   tr2.waypoints = prog.waypoints;
 
   page.getChild('dwaypoint').text = prog.currentWaypoint;
+  if (page.getChild("a0slider")) page.getChild("a0slider").element.value(tr2.state.a0)
+  if (page.getChild("a1slider")) page.getChild("a1slider").element.value(tr2.state.a1)
+  if (page.getChild("a2slider")) page.getChild("a2slider").element.value(tr2.state.a2)
+  if (page.getChild("a3slider")) page.getChild("a3slider").element.value(tr2.state.a3)
+  if (page.getChild("a4slider")) page.getChild("a4slider").element.value(tr2.state.a4)
 
   var sel = page.getChild('progselect').element.elt;
   sel.value = app.programs[app.currentProgram].name;
@@ -244,6 +250,8 @@ p.sliderchanged = function(app) {
   pos_array[3] = (page.getChild("a3slider").element.value() * 2 * Math.PI);
   pos_array[4] = (page.getChild("a4slider").element.value() * 2 * Math.PI);
 
+  pos_array.push(p.getCurrentProgram(app).getCurrentWaypoint(app).getPosition("g0"));
+
   p.getCurrentProgram(app).setPositions(pos_array, app);
 
 };
@@ -265,6 +273,8 @@ p.inverseIk = function (app, poseDelta) {
     for (var i = 0; i < aids.length; i++) {
       positions.push(tr.data.getState(aids[i], state).position);
     }
+
+    positions.push(p.getCurrentProgram(app).getCurrentWaypoint(app).getPosition("g0"));
 
     p.getCurrentProgram(app).setPositions(positions, app);
     p.getCurrentProgram(app).getCurrentWaypoint().setPose();

@@ -14,8 +14,8 @@ tr.controls.pnp2.tabControl = function() {
     },
     children: [{
       type: "tabControl",
-      labels: ["Forward", "Inverse"],
-      pages: [c.tabForward(), c.tabInverse()],
+      labels: ["Inverse", "Forward"],
+      pages: [c.tabInverse(), c.tabForward()],
     }]
   }
 }

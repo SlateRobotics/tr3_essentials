@@ -4,29 +4,45 @@ if (!tr.controls.pnp2) tr.controls.pnp2 = {};
 var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypoint = function(config) {
-  this.config = config;
-  if (!this.config) this.config = {};
-  this.positions = this.config.positions || [0, 0, 0, 0, 0];
-  this.speed = this.config.speed || 1;
+  config = config || {};
+  this.positions = config.positions || [0, 0, 0, 0, 0, 0];
+  this.speed = config.speed || 1;
 
   this.pose = config.pose || {
     position: { x: 0, y: 0, z: 0 },
     orientation: { x: 0, y: 0, z: 0, w: 0 }
   }
 
-  this.config.positions = this.positions;
-  this.config.speed = this.speed;
-
   this.setup = function () {
     this.setPose();
   }
 
-  this.incrementPosition = function(idx, i) {
-    this.positions[idx] += i;
+  this.setPositions = function (pos) {
+    this.positions = pos;
   }
 
-  this.setwpPositions = function(pos) {
-    this.positions = pos;
+  this.getPosition = function (aid) {
+    var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
+    var idx = aids.findIndex(function (o) {
+      return o == aid;
+    });
+    return this.positions[idx];
+  }
+
+  this.setPosition = function (aid, pos) {
+    var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
+    var idx = aids.findIndex(function (o) {
+      return o == aid;
+    });
+
+    var _positions = Object.assign([], this.positions);
+    _positions[idx] = pos;
+
+    this.positions = Object.assign([], _positions);
+  }
+
+  this.incrementPosition = function(idx, i) {
+    this.positions[idx] += i;
   }
 
   this.incrementDuration = function(i) {
@@ -91,7 +107,7 @@ tr.controls.pnp2.program = function(config) {
 
   this.setPositions = function(pos, app) {
     if (this.waypoints[this.currentWaypoint]) {
-      this.waypoints[this.currentWaypoint].setwpPositions(pos);
+      this.waypoints[this.currentWaypoint].setPositions(pos);
       p.updateUI(app)
     }
 
