@@ -82,7 +82,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: a0
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: a0
@@ -91,7 +91,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: a1
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: a1
@@ -100,7 +100,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: a2
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: a2
@@ -109,7 +109,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: a3
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: a3
@@ -118,7 +118,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: a4
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: a4
@@ -127,7 +127,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: g0
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: g0
@@ -136,7 +136,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: h0
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: h0
@@ -145,7 +145,7 @@ tr3:
         position:
           type: effort_controllers/JointPositionController
           joint: h1
-          pid: {p: 9.0, i: 10.0, d: 0.2, i_clamp: 1.0}
+          pid: {p: 25.0, i: 0.0, d: 0.0, i_clamp: 1.0}
         effort:
           type: effort_controllers/JointEffortController
           joint: h1

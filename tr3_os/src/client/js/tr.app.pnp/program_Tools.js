@@ -163,6 +163,10 @@ p.programRun = function(app) {
 
     for (var i = 0; i < app.robotState.length; i++) {
       app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
+      if (app.send) {
+        var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
+        tr.data.socket.emit("/tr3/joints/" + aids[i] + "/control/position", app.robotState[i]);
+      }
     }
 
     p.updateUI(app);

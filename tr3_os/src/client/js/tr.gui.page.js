@@ -94,7 +94,7 @@ tr.gui.page = function(config) {
     if (!p) p = this;
     if (!p.children) p.children = [];
     for (var i = 0; i < p.children.length; i++) {
-      if (p.children[i].p5) {
+      if (p.children[i].p5 && p.children[i].container) {
         p.children[i].container.style.display = "none";
       } else if (p.children[i].element) {
         p.children[i].element.hide();

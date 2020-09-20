@@ -20,7 +20,7 @@ tr.controls.pnp2.inverseBtn_gOpen = function() {
       },
       children: [{
         type: "text",
-        text: "▲", // Add symbol
+        text: "◀▶", // Add symbol
         textSize: 12,
         textFont: "noto",
         align: {

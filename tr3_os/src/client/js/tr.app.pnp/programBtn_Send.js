@@ -15,6 +15,7 @@ tr.controls.pnp2.programBtn_Send = function() {
       border: false,
       onClick: function() {
         var app = this.getApp().config;
+        app.send = true;
         p.programStart(app)
         //tr.data.socket.emit(rostopic, value);
       },

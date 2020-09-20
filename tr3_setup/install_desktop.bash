@@ -34,6 +34,7 @@ mkdir ~/ros_ws/src
 cd ~/ros_ws/src
 echo "source ~/ros_ws/devel/setup.bash" >> ~/.bashrc
 git clone https://github.com/slaterobotics/tr3_essentials
+git clone https://github.com/roboticsgroup/roboticsgroup_gazebo_plugins
 cd ~/ros_ws
 catkin_make
 source ~/.bashrc

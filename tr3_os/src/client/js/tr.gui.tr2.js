@@ -364,10 +364,10 @@ tr.gui.tr2 = {
       link: {},
       state: this.state,
       rotate: {x: -1.5708, y: 0, z: 1.5708 },
-      translate: {x: 40, y: 70, z: 0 },
+      translate: {x: 0, y: 70, z: 0 },
       animate: function() {
         this.p5.translate(0, -7);
-        this.p5.translate(0, this.state.g0 / 1.0 * 40);
+        this.p5.translate(0, -this.state.g0 / 1.0 * 40);
       }
     });
 
@@ -378,10 +378,10 @@ tr.gui.tr2 = {
       link: {},
       state: this.state,
       rotate: {x: 0, y: 0, z: 0 },
-      translate: {x: 0, y: 80, z: 0 },
+      translate: {x: 0, y: 0, z: 0 },
       animate: function() {
         this.p5.translate(0, 14);
-        this.p5.translate(0, this.state.g0 / 1.0 * -80);
+        this.p5.translate(0, -this.state.g0 / 1.0 * -80);
       }
     });
 
