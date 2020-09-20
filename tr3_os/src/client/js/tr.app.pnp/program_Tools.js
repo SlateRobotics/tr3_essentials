@@ -121,6 +121,8 @@ p.programStart = function(app) {
   prog.currentWaypoint = 0;
   var wp = prog.getCurrentWaypoint().positions;
   app.waypointStartPos = Object.assign([], wp);
+  app.waypointWaitStart = 0;
+  app.waypointWaitDuration = 0;
   if (prog.waypoints.length > 2) {
     prog.currentWaypoint += 1;
     app.programMode = 1;
@@ -161,17 +163,19 @@ p.programRun = function(app) {
       durationComplete = 1.0;
     }
 
-    for (var i = 0; i < app.robotState.length; i++) {
-      app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
-      if (app.send) {
-        var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
-        tr.data.socket.emit("/tr3/joints/" + aids[i] + "/control/position", app.robotState[i]);
+    if (duration <= wpDuration) {
+      for (var i = 0; i < app.robotState.length; i++) {
+        app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
+        if (app.send) {
+          var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
+          tr.data.socket.emit("/tr3/joints/" + aids[i] + "/control/position", app.robotState[i]);
+        }
       }
     }
 
     p.updateUI(app);
 
-    if (duration >= wpDuration) {
+    if (duration >= wpDuration + wp.wait) {
       if (prog.waypoints.length - 1 <= prog.currentWaypoint) {
         app.programMode = 0;
       } else {
@@ -191,13 +195,13 @@ p.programRun = function(app) {
 
 p.updateUI = function(app) {
   var prog = p.getCurrentProgram(app);
-  var positions = prog.getCurrentWaypoint().positions;
-  var speed = prog.getCurrentWaypoint().speed;
+  var waypoint = prog.getCurrentWaypoint();
+  var positions = waypoint.positions;
+  var speed = waypoint.speed;
 
   var page = app._app.getCurrentPage();
   var tr2 = page.getChild('tr');
-  //console.log(tr2);
-  //  console.log(app.robotState);
+
   tr2.state.a0 = app.robotState[0];
   tr2.state.a1 = app.robotState[1];
   tr2.state.a2 = app.robotState[2];
@@ -216,6 +220,9 @@ p.updateUI = function(app) {
 
   var sel = page.getChild('progselect').element.elt;
   sel.value = app.programs[app.currentProgram].name;
+
+  page.getChild("lbl-wp-duration").text = waypoint.speed.toFixed(1);
+  page.getChild("lbl-wp-wait").text = waypoint.wait.toFixed(1);
 
   p.updateSelect(app);
 };

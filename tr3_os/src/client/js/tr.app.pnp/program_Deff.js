@@ -6,7 +6,8 @@ var p = tr.controls.pnp2.program_Tools;
 tr.controls.pnp2.waypoint = function(config) {
   config = config || {};
   this.positions = config.positions || [0, 0, 0, 0, 0, 0];
-  this.speed = config.speed || 1;
+  this.speed = config.speed || 1.0;
+  this.wait = config.wait || 0.4;
 
   this.pose = config.pose || {
     position: { x: 0, y: 0, z: 0 },
@@ -196,6 +197,7 @@ tr.controls.pnp2.program = function(config) {
       f.waypoints.push({
         positions: this.waypoints[i].positions,
         speed: this.waypoints[i].speed,
+        wait: this.waypoints[i].wait,
         pose: this.waypoints[i].pose
       });
     }

@@ -7,6 +7,7 @@ tr.controls.pnp2.sidebar = function() {
 
   var children = [];
   children.push(c.tabControl());
+  children.push(c.controlsWaypoint());
 
   return {
     type: "container",
