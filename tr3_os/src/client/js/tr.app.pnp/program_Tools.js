@@ -81,7 +81,7 @@ p.addProgram = function(app) {
   app.programs.push(new tr.controls.pnp2.program({
     id: id,
     waypoints: [{
-      positions: [0, 0, 0, 0, 0, 0],
+      positions: [0, 0, 0, 0, 0, 1],
       speed: 1
     }]
   }));

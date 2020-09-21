@@ -5,7 +5,7 @@ var p = tr.controls.pnp2.program_Tools;
 
 tr.controls.pnp2.waypoint = function(config) {
   config = config || {};
-  this.positions = config.positions || [0, 0, 0, 0, 0, 0];
+  this.positions = config.positions || [0, 0, 0, 0, 0, 1];
   this.speed = config.speed || 1.0;
   this.wait = config.wait || 0.4;
 

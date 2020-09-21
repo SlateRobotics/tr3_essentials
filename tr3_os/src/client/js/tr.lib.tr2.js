@@ -161,7 +161,6 @@ tr.lib.tr2 = function() {
       id: "a3",
       meshId: "a4",
       axis: "Z",
-      flip: true,
       rotate: {
         x: 0,
         y: 3.1415,
@@ -172,7 +171,7 @@ tr.lib.tr2 = function() {
         y: 300,
         z: 0
       },
-      offset: 0.698132,
+      offset: -0.698132,
     }));
 
     this.arm.push(new tr.lib.link({
