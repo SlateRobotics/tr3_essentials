@@ -10,7 +10,7 @@ tr.controls.pnp2.toolbar = function() {
   children.push(c.programBtn_Add());
   children.push(c.programBtn_Delete());
   children.push(c.programBtn_Play());
-  children.push(c.programBtn_Pause());
+  children.push(c.programBtn_Stop());
   children.push(c.waypointBtn_Previous());
   children.push(c.waypointDisplay());
   children.push(c.waypointBtn_Next());

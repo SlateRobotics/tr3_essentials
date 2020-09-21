@@ -117,6 +117,10 @@ p.getCurrentProgram = function(app) {
 };
 
 p.programStart = function(app) {
+  if (app.send) {
+    tr.data.socket.emit("/tr3/stop", false);
+  }
+
   var prog = p.getCurrentProgram(app);
   prog.currentWaypoint = 0;
   var wp = prog.getCurrentWaypoint().positions;
@@ -143,6 +147,7 @@ p.programStartFrom = function(app) {
 
 p.programStop = function(app) {
   app.programMode = 0;
+  tr.data.socket.emit("/tr3/stop", true);
 };
 
 p.programRun = function(app) {
