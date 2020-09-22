@@ -36,6 +36,8 @@ signal.signal(signal.SIGINT, signal_handler)
 class TR3:
     _msgs = tr3_network.Network()
 
+    tr3_config_path = None
+
     _state = None
     state_change = None
 
@@ -83,13 +85,13 @@ class TR3:
     def setupConfig(self):
         dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-        tr3_config_path = os.path.join(dir, 'tr3_config.yaml')
+        self.tr3_config_path = os.path.join(dir, 'tr3_config.yaml')
         tr3_config_default_path = os.path.join(dir, 'tr3_config_default.yaml')
 
         if os.path.isfile(tr3_config_path) == False:
             with open(tr3_config_default_path, 'r') as stream:
                 config = yaml.safe_load(stream)
-                with io.open(tr3_config_path, "w+", encoding="utf8") as f:
+                with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
                     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
 
         with open(tr3_config_path, 'r') as stream:
