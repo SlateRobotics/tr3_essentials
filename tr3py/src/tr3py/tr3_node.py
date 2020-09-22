@@ -524,16 +524,37 @@ class TR3_Node:
         self.tr3.step()
 
     def publish_pid(self, event):
-        tr3_pid_a0_pub.publish(self.tr3.a0._pid)
-        tr3_pid_a1_pub.publish(self.tr3.a1._pid)
-        tr3_pid_a2_pub.publish(self.tr3.a2._pid)
-        tr3_pid_a3_pub.publish(self.tr3.a3._pid)
-        tr3_pid_a4_pub.publish(self.tr3.a4._pid)
-        tr3_pid_g0_pub.publish(self.tr3.g0._pid)
-        tr3_pid_h0_pub.publish(self.tr3.h0._pid)
-        tr3_pid_h1_pub.publish(self.tr3.h1._pid)
-        tr3_pid_b0_pub.publish(self.tr3.b0._pid)
-        tr3_pid_b1_pub.publish(self.tr3.b1._pid)
+        m = Float32MultiArray()
+
+        m.data = self.tr3.a0._pid
+        self.tr3_pid_a0_pub.publish(m)
+
+        m.data = self.tr3.a1._pid
+        self.tr3_pid_a1_pub.publish(m)
+
+        m.data = self.tr3.a2._pid
+        self.tr3_pid_a2_pub.publish(m)
+
+        m.data = self.tr3.a3._pid
+        self.tr3_pid_a3_pub.publish(m)
+
+        m.data = self.tr3.a4._pid
+        self.tr3_pid_a4_pub.publish(m)
+
+        m.data = self.tr3.g0._pid
+        self.tr3_pid_g0_pub.publish(m)
+
+        m.data = self.tr3.h0._pid
+        self.tr3_pid_h0_pub.publish(m)
+
+        m.data = self.tr3.h1._pid
+        self.tr3_pid_h1_pub.publish(m)
+
+        m.data = self.tr3.b0._pid
+        self.tr3_pid_b0_pub.publish(m)
+
+        m.data = self.tr3.b1._pid
+        self.tr3_pid_b1_pub.publish(m)
 
     def spin(self):
         self.tr3.spin()
