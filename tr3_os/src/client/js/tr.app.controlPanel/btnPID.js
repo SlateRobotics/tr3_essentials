@@ -2,10 +2,9 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.btnPID = function(id) {
+tr.controls.controlPanel.btnPID = function(id, type, lbl) {
   return {
     type: "container",
-    background: "rgb(150, 150, 150)",
     size: {
       w: 1 / 18,
       h: 20
@@ -14,19 +13,31 @@ tr.controls.controlPanel.btnPID = function(id) {
       var app = this.getApp();
       var page = app.getCurrentPage();
 
-      var p = page.getChild(id + "slider-p").element.value();
-      var i = page.getChild(id + "slider-i").element.value();
-      var d = page.getChild(id + "slider-d").element.value();
+      var inc = 0;
+      if (lbl == "▶") {
+        inc += 0.1;
+      } else if (lbl == "◀") {
+        inc -= 0.1;
+      }
 
-      tr.data.socket.emit("/tr3/joints/" + id + "/pid", [p, i, d]);
+      if (type == "P") {
+        tr.data.joints[id].pid[0] += inc;
+      } else if (type == "I") {
+        tr.data.joints[id].pid[1] += inc;
+      } else if (type == "D") {
+        tr.data.joints[id].pid[2] += inc;
+      }
+
+      tr.data.socket.emit("/tr3/joints/" + id + "/pid", tr.data.joints[id].pid);
     },
     children: [{
       type: "container",
       border: false,
       children: [{
         type: "text",
-        text: "->",
+        text: lbl,
         textSize: 14,
+        textFont: "noto",
         align: {
           v: "CENTER",
           h: "CENTER"

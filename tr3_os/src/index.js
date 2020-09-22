@@ -107,6 +107,14 @@ io.on('connection', function (socket) {
       socket.emit('/tr3/state', msg);
     });
 
+    var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
+    for (var i = 0; i < aids.length; i++) {
+      let aid = aids[i];
+      nh.subscribe("/tr3/joints/" + aid + "/pid", "std_msgs/Float32MultiArray", function (msg) {
+        socket.emit("/tr3/joints/" + aid + "/pid", msg.data);
+      }.bind(aid));
+    }
+
     socket.on('/readFile', function (msg) {
       var p = path.join(__dirname, "server/data", msg.app, msg.fileName);
 

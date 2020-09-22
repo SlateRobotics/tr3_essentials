@@ -4,5 +4,19 @@ if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
 tr.controls.controlPanel.configRow = function(id) {
   var c = tr.controls.controlPanel;
-  return [c.labelID(id), c.btnMotorDir(id), c.btnResetPos(id), c.btnCalibrate(id), c.txtP(id), c.sliderP(id), c.txtI(id), c.sliderI(id), c.txtD(id), c.sliderD(id), c.btnPID(id)];
+  var children = [];
+  children.push(c.labelID(id, 3/18));
+  children.push(c.btnMotorDir(id));
+  children.push(c.btnResetPos(id));
+  children.push(c.btnCalibrate(id));
+  children.push(c.btnPID(id, "P", "◀"))
+  children.push(c.txtPID(id, "P"));
+  children.push(c.btnPID(id, "P", "▶"))
+  children.push(c.btnPID(id, "I", "◀"))
+  children.push(c.txtPID(id, "I"));
+  children.push(c.btnPID(id, "I", "▶"))
+  children.push(c.btnPID(id, "D", "◀"))
+  children.push(c.txtPID(id, "D"));
+  children.push(c.btnPID(id, "D", "▶"))
+  return children;
 }
