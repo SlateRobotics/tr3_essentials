@@ -1,9 +1,12 @@
-#!/usr/bin/env python
+.updatePID()#!/usr/bin/env python
 
 import sys
 import time
 import signal
 import math
+import os
+import io
+import yaml
 import tr3_network
 from tr3_joint import Joint
 
@@ -57,12 +60,50 @@ class TR3:
         self.p2 = Joint(self, "p2")
         self._msgs.state_change = self.handle_state_change
 
+        self.setupConfig()
+
         print("TR3 waiting for state")
         while self._state == None:
             self.step()
 
         self.powerup()
         print("TR3 ready")
+
+        self.b0.updatePID()
+        self.b1.updatePID()
+        self.a0.updatePID()
+        self.a1.updatePID()
+        self.a2.updatePID()
+        self.a3.updatePID()
+        self.a4.updatePID()
+        self.g0.updatePID()
+        self.h0.updatePID()
+        self.h1.updatePID()
+
+    def setupConfig(self):
+        dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+        tr3_config_path = os.path.join(dir, 'tr3_config.yaml')
+        tr3_config_default_path = os.path.join(dir, 'tr3_config_default.yaml')
+
+        if os.path.isfile(tr3_config_path) == False:
+            with open(tr3_config_default_path, 'r') as stream:
+                config = yaml.safe_load(stream)
+                with io.open(tr3_config_path, "w+", encoding="utf8") as f:
+                    yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+
+        with open(tr3_config_path, 'r') as stream:
+            config = yaml.safe_load(stream)
+            self.a0._pid = config['tr3']['joints']['a0']['pid']
+            self.a1._pid = config['tr3']['joints']['a1']['pid']
+            self.a2._pid = config['tr3']['joints']['a2']['pid']
+            self.a3._pid = config['tr3']['joints']['a3']['pid']
+            self.a4._pid = config['tr3']['joints']['a4']['pid']
+            self.g0._pid = config['tr3']['joints']['g0']['pid']
+            self.h0._pid = config['tr3']['joints']['h0']['pid']
+            self.h1._pid = config['tr3']['joints']['h1']['pid']
+            self.b0._pid = config['tr3']['joints']['b0']['pid']
+            self.b1._pid = config['tr3']['joints']['b1']['pid']
 
     def handle_state_change(self, state):
         if self.state_change != None:

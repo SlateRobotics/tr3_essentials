@@ -33,6 +33,17 @@ class TR3_Node:
     tr3_state_b0_pub = None
     tr3_state_b1_pub = None
 
+    tr3_pid_a0_pub = None
+    tr3_pid_a1_pub = None
+    tr3_pid_a2_pub = None
+    tr3_pid_a3_pub = None
+    tr3_pid_a4_pub = None
+    tr3_pid_g0_pub = None
+    tr3_pid_h0_pub = None
+    tr3_pid_h1_pub = None
+    tr3_pid_b0_pub = None
+    tr3_pid_b1_pub = None
+
     append_states = False
 
     def __init__(self, tr3 = None, init_node = True):
@@ -135,7 +146,20 @@ class TR3_Node:
         self.tr3_state_b0_pub = rospy.Publisher("/tr3/joints/b0/state", ActuatorState, queue_size=1)
         self.tr3_state_b1_pub = rospy.Publisher("/tr3/joints/b1/state", ActuatorState, queue_size=1)
 
+        self.tr3_pid_a0_pub = rospy.Publisher("/tr3/joints/a0/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_a1_pub = rospy.Publisher("/tr3/joints/a1/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_a2_pub = rospy.Publisher("/tr3/joints/a2/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_a3_pub = rospy.Publisher("/tr3/joints/a3/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_a4_pub = rospy.Publisher("/tr3/joints/a4/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_g0_pub = rospy.Publisher("/tr3/joints/g0/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_h0_pub = rospy.Publisher("/tr3/joints/h0/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_h1_pub = rospy.Publisher("/tr3/joints/h1/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_b0_pub = rospy.Publisher("/tr3/joints/b0/pid", Float32MultiArray, queue_size=1)
+        self.tr3_pid_b1_pub = rospy.Publisher("/tr3/joints/b1/pid", Float32MultiArray, queue_size=1)
+
         self.tr3.state_change = self.tr3_state_change
+
+        rospy.Timer(rospy.Duration(1), self.publish_pid)
 
     def shutdown_tr3(self, d):
         b = bool(d)
@@ -499,8 +523,21 @@ class TR3_Node:
     def step(self):
         self.tr3.step()
 
+    def publish_pid(self, event):
+        tr3_pid_a0_pub.publish(self.tr3.a0._pid)
+        tr3_pid_a1_pub.publish(self.tr3.a1._pid)
+        tr3_pid_a2_pub.publish(self.tr3.a2._pid)
+        tr3_pid_a3_pub.publish(self.tr3.a3._pid)
+        tr3_pid_a4_pub.publish(self.tr3.a4._pid)
+        tr3_pid_g0_pub.publish(self.tr3.g0._pid)
+        tr3_pid_h0_pub.publish(self.tr3.h0._pid)
+        tr3_pid_h1_pub.publish(self.tr3.h1._pid)
+        tr3_pid_b0_pub.publish(self.tr3.b0._pid)
+        tr3_pid_b1_pub.publish(self.tr3.b1._pid)
+
     def spin(self):
         self.tr3.spin()
+
 
 if __name__ == '__main__':
     tr3_node = TR3_Node()
