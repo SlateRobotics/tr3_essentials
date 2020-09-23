@@ -3,6 +3,8 @@
 import time
 import os
 import math
+import yaml
+import io
 import tr3_network
 
 CMD_UPDATE_FIRMWARE_BEGIN = 0x01
@@ -151,7 +153,7 @@ class Joint:
             d = self._pid[2]
 
         self._pid = [p, i, d]
-        self._savePID()
+        self._tr3.flagSavePID = True
 
         packet = tr3_network.Packet()
         packet.address = self._id
@@ -163,13 +165,6 @@ class Joint:
         self._tr3._msgs.add(packet)
         self._tr3.step()
 
-    def _savePID(self):
-        with open(self._tr3.tr3_config_path, 'r') as stream:
-            config = yaml.safe_load(stream)
-            config['tr3']['joints'][self._id]['pid'] = self._pid
-
-            with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
-                yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
 
     def updateFirmware(self, file_path):
     	packet = tr3_network.Packet()

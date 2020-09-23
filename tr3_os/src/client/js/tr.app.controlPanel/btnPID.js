@@ -28,7 +28,7 @@ tr.controls.controlPanel.btnPID = function(id, type, lbl) {
         tr.data.joints[id].pid[2] += inc;
       }
 
-      tr.data.socket.emit("/tr3/joints/" + id + "/pid", tr.data.joints[id].pid);
+      tr.data.socket.emit("/tr3/joints/" + id + "/pid/set", tr.data.joints[id].pid);
     },
     children: [{
       type: "container",

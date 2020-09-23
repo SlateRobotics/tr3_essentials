@@ -57,6 +57,7 @@ tr.controls.pnp2.waypoint = function(config) {
     return new tr.controls.pnp2.waypoint({
       positions: this.positions,
       speed: this.speed,
+      wait: this.wait,
       pose: {
         position: this.pose.position,
         orientation: this.pose.orientation,

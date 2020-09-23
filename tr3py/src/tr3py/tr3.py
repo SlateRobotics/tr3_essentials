@@ -37,6 +37,7 @@ class TR3:
     _msgs = tr3_network.Network()
 
     tr3_config_path = None
+    flagSavePID = False
 
     _state = None
     state_change = None
@@ -88,13 +89,13 @@ class TR3:
         self.tr3_config_path = os.path.join(dir, 'tr3_config.yaml')
         tr3_config_default_path = os.path.join(dir, 'tr3_config_default.yaml')
 
-        if os.path.isfile(tr3_config_path) == False:
+        if os.path.isfile(self.tr3_config_path) == False:
             with open(tr3_config_default_path, 'r') as stream:
                 config = yaml.safe_load(stream)
                 with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
                     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
 
-        with open(tr3_config_path, 'r') as stream:
+        with open(self.tr3_config_path, 'r') as stream:
             config = yaml.safe_load(stream)
             self.a0._pid = config['tr3']['joints']['a0']['pid']
             self.a1._pid = config['tr3']['joints']['a1']['pid']
@@ -106,6 +107,27 @@ class TR3:
             self.h1._pid = config['tr3']['joints']['h1']['pid']
             self.b0._pid = config['tr3']['joints']['b0']['pid']
             self.b1._pid = config['tr3']['joints']['b1']['pid']
+
+    def savePID(self):
+        with open(self.tr3_config_path, 'r') as stream:
+            config = yaml.safe_load(stream)
+            try:
+                config['tr3']['joints']['a0']['pid'] = self.a0._pid
+                config['tr3']['joints']['a1']['pid'] = self.a1._pid
+                config['tr3']['joints']['a2']['pid'] = self.a2._pid
+                config['tr3']['joints']['a3']['pid'] = self.a3._pid
+                config['tr3']['joints']['a4']['pid'] = self.a4._pid
+                config['tr3']['joints']['g0']['pid'] = self.g0._pid
+                config['tr3']['joints']['h0']['pid'] = self.h0._pid
+                config['tr3']['joints']['h1']['pid'] = self.h1._pid
+                config['tr3']['joints']['b0']['pid'] = self.b0._pid
+                config['tr3']['joints']['b1']['pid'] = self.b1._pid
+
+                with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
+                    yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+            except:
+                print("An exception occurred saving PID:", config)
+
 
     def handle_state_change(self, state):
         if self.state_change != None:
@@ -198,6 +220,10 @@ class TR3:
 
         self._msgs.step()
         self._state = self._msgs.state()
+
+        if self.flagSavePID == True:
+            self.savePID()
+            self.flagSavePID = False
 
         if self._state == None:
             return
