@@ -196,8 +196,23 @@ class Controller {
     }
 
     void buildPosVelMap () {
-      float p_err = posGoal - state.position;
-      float v_avg = p_err / (float)posDuration * 1000.0;
+      float posInitial = state.position;
+      float posEnd = posGoal;
+      
+      double d = formatAngle(posInitial) - formatAngle(posEnd);
+      if (d > PI) {
+        posEnd = formatAngle(posEnd);
+        posEnd += TAU;
+      } else if (d < -PI) {
+        posInitial = formatAngle(posInitial);
+        posInitial += TAU;
+      } else {
+        posEnd = formatAngle(posEnd);
+        posInitial = formatAngle(posInitial);
+      }
+      
+      float posDiff = posEnd - posInitial;
+      float v_avg = posDiff / (float)posDuration * 1000.0;
       float t_inc = (float)posDuration / (float)posVelMapSize / 1000.0;
       
       for (int i = 0; i < posVelMapSize; i++) {
@@ -422,16 +437,33 @@ class Controller {
     void step_servo () {
       led.pulse(LED_MAGENTA);
       pidPos = state.position;
+      pidGoal = posGoal;
 
       if (ACTUATOR_ID == "g0") {
         motor.executePreparedCommand();
         return;
       }
+      
+      double d = formatAngle(pidPos) - formatAngle(posGoal);
+      if (d > PI) {
+        pidGoal = formatAngle(pidGoal);
+        posGoal += TAU;
+      } else if (d < -PI) {
+        pidPos = formatAngle(pidPos);
+        pidPos += TAU;
+      } else {
+        pidGoal = formatAngle(pidGoal);
+        pidPos = formatAngle(pidPos);
+      }
 
       long t = millis() - posStart;
-      if (t < posDuration) {
+      if (t < posDuration && abs(d) > 0.1) {
         float t_inc = (float)posDuration / (float)posVelMapSize;
         int idx = floor(t / t_inc);
+
+        if (idx >= posVelMapSize) {
+          return;
+        }
         
         pidGoal = posVelMap[idx];
         pidPos = state.velocity;
@@ -444,26 +476,8 @@ class Controller {
           speed = -100;
         }
         motor.step(speed);
-        
-        return;
-      } else {
-        pid_vel.clear();
-      }
-
-      // ignore if within threshold of goal -- good 'nuff
-      if (abs(pidPos - pidGoal) >= pidThreshold) {
-        double d = formatAngle(pidPos) - formatAngle(pidGoal);
-        if (d > PI) {
-          pidGoal = formatAngle(pidGoal);
-          pidGoal += TAU;
-        } else if (d < -PI) {
-          pidPos = formatAngle(pidPos);
-          pidPos += TAU;
-        } else {
-          pidGoal = formatAngle(pidGoal);
-          pidPos = formatAngle(pidPos);
-        }
-
+        pid.clear();
+      } else if (abs(pidPos - pidGoal) >= pidThreshold) {
         pid.Compute();
         int speed = pidOut * 100.0;
         if (speed > 100) {
@@ -472,15 +486,9 @@ class Controller {
           speed = -100;
         }
         motor.step(speed);
-
-        Serial.print("GOAL: ");
-        Serial.print(pidGoal, 6);
-        Serial.print(", POS: ");
-        Serial.print(pidPos, 6);
-        Serial.print(", EFF: ");
-        Serial.println(speed);
       } else {
         pid.clear();
+        pid_vel.clear();
         motor.stop();
       }
     }
@@ -556,6 +564,8 @@ class Controller {
 
     void step_stop () {
       led.pulse(LED_RED);
+      pid_vel.clear();
+      pid.clear();
       motor.stop();
     }
 
@@ -633,8 +643,8 @@ class Controller {
       } else {
         posGoal = formatAngle(pos);
         posDuration = dur;
-        posStart = millis();
         buildPosVelMap();
+        posStart = millis();
         pidGoal = formatAngle(pos);
       }
 
