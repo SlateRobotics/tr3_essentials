@@ -69,7 +69,12 @@ class Controller {
     double pidOut = 0;
     double pidGoal = 0;
     double pidThreshold = 0.001;
-    double pidMaxSpeed = 100;
+
+    float posGoal = 0;
+    long posStart = 0;
+    long posDuration = 0;
+    const static int posVelMapSize = 128;
+    float posVelMap[posVelMapSize];
 
     static const int velocityReadSize = 20;
     float velocityReads[velocityReadSize];
@@ -187,6 +192,22 @@ class Controller {
         return formatAngle(x);
       } else {
         return x;
+      }
+    }
+
+    void buildPosVelMap () {
+      float p_err = posGoal - state.position;
+      float v_avg = p_err / (float)posDuration * 1000.0;
+      float t_inc = (float)posDuration / (float)posVelMapSize / 1000.0;
+      
+      for (int i = 0; i < posVelMapSize; i++) {
+        if ((float)(i + 1) / (float)posVelMapSize < 0.25) {
+          posVelMap[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
+        } else if ((float)(i - 1) / (float)posVelMapSize > 0.75) {
+          posVelMap[i] = (float)(posVelMapSize - i - 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
+        } else {
+          posVelMap[i] = 1.333 * v_avg;
+        }
       }
     }
 
@@ -407,6 +428,28 @@ class Controller {
         return;
       }
 
+      long t = millis() - posStart;
+      if (t < posDuration) {
+        float t_inc = (float)posDuration / (float)posVelMapSize;
+        int idx = floor(t / t_inc);
+        
+        pidGoal = posVelMap[idx];
+        pidPos = state.velocity;
+        pid_vel.Compute();
+
+        int speed = pidOut * 100.0;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
+        }
+        motor.step(speed);
+        
+        return;
+      } else {
+        pid_vel.clear();
+      }
+
       // ignore if within threshold of goal -- good 'nuff
       if (abs(pidPos - pidGoal) >= pidThreshold) {
         double d = formatAngle(pidPos) - formatAngle(pidGoal);
@@ -423,10 +466,10 @@ class Controller {
 
         pid.Compute();
         int speed = pidOut * 100.0;
-        if (speed > pidMaxSpeed) {
-          speed = pidMaxSpeed;
-        } else if (speed < -pidMaxSpeed) {
-          speed = -pidMaxSpeed;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
         }
         motor.step(speed);
 
@@ -437,6 +480,7 @@ class Controller {
         Serial.print(", EFF: ");
         Serial.println(speed);
       } else {
+        pid.clear();
         motor.stop();
       }
     }
@@ -459,10 +503,10 @@ class Controller {
         Serial.println(pidOut);
 
         int speed = pidOut * 100.0;
-        if (speed > pidMaxSpeed) {
-          speed = pidMaxSpeed;
-        } else if (speed < -pidMaxSpeed) {
-          speed = -pidMaxSpeed;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
         }
         motor.step(speed);
       } else {
@@ -563,7 +607,6 @@ class Controller {
     void cmd_setMode (NetworkPacket packet) {
       mode = packet.parameters[0];
       if (mode == MODE_SERVO) {
-        pidMaxSpeed = 100;
         pidGoal = (double)state.position;
       } else if (mode == MODE_VELOCITY) {
         pidGoal = 0;
@@ -572,18 +615,26 @@ class Controller {
 
     void cmd_setPosition (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
-      pidMaxSpeed = floor(100.0 * packet.parameters[2] / 255.0);
+      int dur = packet.parameters[2] + packet.parameters[3] * 256;
       double pos = param / 65535.0 * TAU;
 
       if (ACTUATOR_ID == "g0") {
         if (abs(pos) < 0.1) {
-          motor.prepareCommand(100, 1000);
+          if (state.position != 0) {
+            motor.prepareCommand(100, 1000);
+          }
           state.position = 0;
         } else {
-          motor.prepareCommand(-100, 1000);
+          if (state.position != 1) {
+            motor.prepareCommand(-100, 1000);
+          }
           state.position = 1;
         }
       } else {
+        posGoal = formatAngle(pos);
+        posDuration = dur;
+        posStart = millis();
+        buildPosVelMap();
         pidGoal = formatAngle(pos);
       }
 
