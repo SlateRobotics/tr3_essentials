@@ -76,13 +76,11 @@ class Networking {
       }
       
       uint16_t _len;
-      //Serial.println(millis());
       for (int i = 0; i < strlen(res); i++) {
         c = res[i];
         if (c == ':') {
           bufIdx = 0;
         } else if (c == ';' && packetIdx > 0) {
-          //Serial.println(millis());
           networkPacket = NetworkPacket(packet, _len);
           controller->parseCmd(networkPacket);
           packetIdx = 0;

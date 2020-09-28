@@ -99,6 +99,13 @@ class Controller {
     MPU9250 imu = MPU9250(Wire,0x68);
 
     void computeState () {
+      if (ACTUATOR_ID == "g0") {
+        state.rotations = 0;
+        state.effort = 0;
+        state.torque = 0;
+        return;
+      }
+      
       double positionDrive = encoderDrive.getAngleRadians();
       double positionOutput = encoderOutput.getAngleRadians();
 
@@ -139,7 +146,7 @@ class Controller {
         storage.commit();
         prevLapOutput = lapOutput;
       }
-
+      
       state.position = positionOutput;
       state.rotations = encoderOutput.getRotations();
       state.effort = motor.getEffort();
@@ -373,6 +380,11 @@ class Controller {
 
     void step_backdrive () {
       led.pulse(LED_YELLOW);
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
+      
       if (abs(state.torque) < 4) {
         motor.step(0);
       } else {
@@ -389,6 +401,11 @@ class Controller {
     void step_servo () {
       led.pulse(LED_MAGENTA);
       pidPos = state.position;
+
+      if (ACTUATOR_ID == "g0") {
+        motor.executePreparedCommand();
+        return;
+      }
 
       // ignore if within threshold of goal -- good 'nuff
       if (abs(pidPos - pidGoal) >= pidThreshold) {
@@ -428,6 +445,10 @@ class Controller {
       led.pulse(LED_MAGENTA);
       pidPos = state.velocity;
 
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
+
       if (abs(pidGoal) > 0.01) {
         pid_vel.Compute();
 
@@ -452,6 +473,10 @@ class Controller {
 
     void step_calibrate() {
       led.pulse(LED_GREEN);
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
 
       long duration = 30000;
       if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
@@ -549,18 +574,31 @@ class Controller {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
       pidMaxSpeed = floor(100.0 * packet.parameters[2] / 255.0);
       double pos = param / 65535.0 * TAU;
-      Serial.println(pos);
-      pidGoal = formatAngle(pos);
+
+      if (ACTUATOR_ID == "g0") {
+        if (abs(pos) < 0.1) {
+          motor.prepareCommand(100, 1000);
+          state.position = 0;
+        } else {
+          motor.prepareCommand(-100, 1000);
+          state.position = 1;
+        }
+      } else {
+        pidGoal = formatAngle(pos);
+      }
+
+      if (mode != MODE_STOP) {
+        mode = MODE_SERVO;
+      }
     }
 
     void cmd_setVelocity (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
       pidGoal = (param / 100.0) - 10.0;
-      Serial.print(packet.parameters[0]);
-      Serial.print(",");
-      Serial.print(packet.parameters[1]);
-      Serial.print(":");
-      Serial.println(pidGoal);
+      
+      if (mode != MODE_STOP) {
+        mode = MODE_VELOCITY;
+      }
     }
 
     void cmd_resetPosition () {
@@ -610,6 +648,10 @@ class Controller {
       }
 
       motor.prepareCommand(motorStep, motorDuration);
+      
+      if (mode != MODE_STOP) {
+        mode = MODE_ROTATE;
+      }
     }
 
     void cmd_release () {

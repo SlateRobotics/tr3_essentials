@@ -1,4 +1,4 @@
-#define ACTUATOR_ID "b0"
+#define ACTUATOR_ID "g0"
 
 #define TR2_AN_SSID "TR2_AN_111222333"
 #define TR2_AN_PASS "MATHI78741"
