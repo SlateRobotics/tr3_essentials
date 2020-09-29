@@ -69,7 +69,12 @@ class Controller {
     double pidOut = 0;
     double pidGoal = 0;
     double pidThreshold = 0.001;
-    double pidMaxSpeed = 100;
+
+    float posGoal = 0;
+    long posStart = 0;
+    long posDuration = 0;
+    const static int posVelMapSize = 128;
+    float posVelMap[posVelMapSize];
 
     static const int velocityReadSize = 20;
     float velocityReads[velocityReadSize];
@@ -99,6 +104,13 @@ class Controller {
     MPU9250 imu = MPU9250(Wire,0x68);
 
     void computeState () {
+      if (ACTUATOR_ID == "g0") {
+        state.rotations = 0;
+        state.effort = 0;
+        state.torque = 0;
+        return;
+      }
+      
       double positionDrive = encoderDrive.getAngleRadians();
       double positionOutput = encoderOutput.getAngleRadians();
 
@@ -139,7 +151,7 @@ class Controller {
         storage.commit();
         prevLapOutput = lapOutput;
       }
-
+      
       state.position = positionOutput;
       state.rotations = encoderOutput.getRotations();
       state.effort = motor.getEffort();
@@ -180,6 +192,37 @@ class Controller {
         return formatAngle(x);
       } else {
         return x;
+      }
+    }
+
+    void buildPosVelMap () {
+      float posInitial = state.position;
+      float posEnd = posGoal;
+      
+      double d = formatAngle(posInitial) - formatAngle(posEnd);
+      if (d > PI) {
+        posEnd = formatAngle(posEnd);
+        posEnd += TAU;
+      } else if (d < -PI) {
+        posInitial = formatAngle(posInitial);
+        posInitial += TAU;
+      } else {
+        posEnd = formatAngle(posEnd);
+        posInitial = formatAngle(posInitial);
+      }
+      
+      float posDiff = posEnd - posInitial;
+      float v_avg = posDiff / (float)posDuration * 1000.0;
+      float t_inc = (float)posDuration / (float)posVelMapSize / 1000.0;
+      
+      for (int i = 0; i < posVelMapSize; i++) {
+        if ((float)(i + 1) / (float)posVelMapSize < 0.25) {
+          posVelMap[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
+        } else if ((float)(i - 1) / (float)posVelMapSize > 0.75) {
+          posVelMap[i] = (float)(posVelMapSize - i - 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
+        } else {
+          posVelMap[i] = 1.333 * v_avg;
+        }
       }
     }
 
@@ -373,6 +416,11 @@ class Controller {
 
     void step_backdrive () {
       led.pulse(LED_YELLOW);
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
+      
       if (abs(state.torque) < 4) {
         motor.step(0);
       } else {
@@ -389,37 +437,58 @@ class Controller {
     void step_servo () {
       led.pulse(LED_MAGENTA);
       pidPos = state.position;
+      pidGoal = posGoal;
 
-      // ignore if within threshold of goal -- good 'nuff
-      if (abs(pidPos - pidGoal) >= pidThreshold) {
-        double d = formatAngle(pidPos) - formatAngle(pidGoal);
-        if (d > PI) {
-          pidGoal = formatAngle(pidGoal);
-          pidGoal += TAU;
-        } else if (d < -PI) {
-          pidPos = formatAngle(pidPos);
-          pidPos += TAU;
-        } else {
-          pidGoal = formatAngle(pidGoal);
-          pidPos = formatAngle(pidPos);
+      if (ACTUATOR_ID == "g0") {
+        motor.executePreparedCommand();
+        return;
+      }
+      
+      double d = formatAngle(pidPos) - formatAngle(posGoal);
+      if (d > PI) {
+        pidGoal = formatAngle(pidGoal);
+        posGoal += TAU;
+      } else if (d < -PI) {
+        pidPos = formatAngle(pidPos);
+        pidPos += TAU;
+      } else {
+        pidGoal = formatAngle(pidGoal);
+        pidPos = formatAngle(pidPos);
+      }
+
+      long t = millis() - posStart;
+      if (t < posDuration && abs(d) > 0.1) {
+        float t_inc = (float)posDuration / (float)posVelMapSize;
+        int idx = floor(t / t_inc);
+
+        if (idx >= posVelMapSize) {
+          return;
         }
+        
+        pidGoal = posVelMap[idx];
+        pidPos = state.velocity;
+        pid_vel.Compute();
 
-        pid.Compute();
         int speed = pidOut * 100.0;
-        if (speed > pidMaxSpeed) {
-          speed = pidMaxSpeed;
-        } else if (speed < -pidMaxSpeed) {
-          speed = -pidMaxSpeed;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
         }
         motor.step(speed);
-
-        Serial.print("GOAL: ");
-        Serial.print(pidGoal, 6);
-        Serial.print(", POS: ");
-        Serial.print(pidPos, 6);
-        Serial.print(", EFF: ");
-        Serial.println(speed);
+        pid.clear();
+      } else if (abs(pidPos - pidGoal) >= pidThreshold) {
+        pid.Compute();
+        int speed = pidOut * 100.0;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
+        }
+        motor.step(speed);
       } else {
+        pid.clear();
+        pid_vel.clear();
         motor.stop();
       }
     }
@@ -427,6 +496,10 @@ class Controller {
     void step_velocity () {
       led.pulse(LED_MAGENTA);
       pidPos = state.velocity;
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
 
       if (abs(pidGoal) > 0.01) {
         pid_vel.Compute();
@@ -438,10 +511,10 @@ class Controller {
         Serial.println(pidOut);
 
         int speed = pidOut * 100.0;
-        if (speed > pidMaxSpeed) {
-          speed = pidMaxSpeed;
-        } else if (speed < -pidMaxSpeed) {
-          speed = -pidMaxSpeed;
+        if (speed > 100) {
+          speed = 100;
+        } else if (speed < -100) {
+          speed = -100;
         }
         motor.step(speed);
       } else {
@@ -452,6 +525,10 @@ class Controller {
 
     void step_calibrate() {
       led.pulse(LED_GREEN);
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
 
       long duration = 30000;
       if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
@@ -487,6 +564,8 @@ class Controller {
 
     void step_stop () {
       led.pulse(LED_RED);
+      pid_vel.clear();
+      pid.clear();
       motor.stop();
     }
 
@@ -538,7 +617,6 @@ class Controller {
     void cmd_setMode (NetworkPacket packet) {
       mode = packet.parameters[0];
       if (mode == MODE_SERVO) {
-        pidMaxSpeed = 100;
         pidGoal = (double)state.position;
       } else if (mode == MODE_VELOCITY) {
         pidGoal = 0;
@@ -547,20 +625,41 @@ class Controller {
 
     void cmd_setPosition (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
-      pidMaxSpeed = floor(100.0 * packet.parameters[2] / 255.0);
+      int dur = packet.parameters[2] + packet.parameters[3] * 256;
       double pos = param / 65535.0 * TAU;
-      Serial.println(pos);
-      pidGoal = formatAngle(pos);
+
+      if (ACTUATOR_ID == "g0") {
+        if (abs(pos) < 0.1) {
+          if (state.position != 0) {
+            motor.prepareCommand(100, 1000);
+          }
+          state.position = 0;
+        } else {
+          if (state.position != 1) {
+            motor.prepareCommand(-100, 1000);
+          }
+          state.position = 1;
+        }
+      } else {
+        posGoal = formatAngle(pos);
+        posDuration = dur;
+        buildPosVelMap();
+        posStart = millis();
+        pidGoal = formatAngle(pos);
+      }
+
+      if (mode != MODE_STOP) {
+        mode = MODE_SERVO;
+      }
     }
 
     void cmd_setVelocity (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
       pidGoal = (param / 100.0) - 10.0;
-      Serial.print(packet.parameters[0]);
-      Serial.print(",");
-      Serial.print(packet.parameters[1]);
-      Serial.print(":");
-      Serial.println(pidGoal);
+      
+      if (mode != MODE_STOP) {
+        mode = MODE_VELOCITY;
+      }
     }
 
     void cmd_resetPosition () {
@@ -610,6 +709,10 @@ class Controller {
       }
 
       motor.prepareCommand(motorStep, motorDuration);
+      
+      if (mode != MODE_STOP) {
+        mode = MODE_ROTATE;
+      }
     }
 
     void cmd_release () {
