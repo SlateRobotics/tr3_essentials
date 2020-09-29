@@ -42,7 +42,7 @@ class Joint:
     def state(self):
         return self._state
 
-    def setPosition(self, pos, speed = 100):
+    def setPosition(self, pos, dur = 0):
         x = pos / (math.pi * 2) * 65535
 
         packet = tr3_network.Packet()
@@ -50,7 +50,8 @@ class Joint:
         packet.cmd = CMD_SET_POS
         packet.addParam(int(math.floor(x % 256)))
         packet.addParam(int(math.floor(x / 256)))
-        packet.addParam(int(math.floor(speed / 100.0 * 255.0)))
+        packet.addParam(int(math.floor(dur % 256)))
+        packet.addParam(int(math.floor(dur / 256)))
 
         self._tr3._msgs.add(packet)
         self._tr3.step()
