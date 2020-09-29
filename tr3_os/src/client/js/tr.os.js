@@ -60,12 +60,18 @@ function draw() {
   getSelectedApp().draw();
 }
 
+var lastPressEvent = '';
 function mousePressed() {
+  if (event.type == 'mousedown' && lastPressEvent == 'touchstart') return;
   getSelectedApp().mousePressed();
+  lastPressEvent = event.type;
 }
 
+var lastReleaseEvent = '';
 function mouseReleased() {
+  if (event.type == 'mouseup' && lastReleaseEvent == 'touchend') return;
   getSelectedApp().mouseReleased();
+  lastReleaseEvent = event.type;
 }
 
 function mouseClicked() {
@@ -73,6 +79,7 @@ function mouseClicked() {
 }
 
 function mouseDragged() {
+  console.log(event.type)
   getSelectedApp().mouseDragged();
 }
 

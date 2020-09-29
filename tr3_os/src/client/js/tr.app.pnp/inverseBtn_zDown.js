@@ -15,7 +15,7 @@ tr.controls.pnp2.inverseBtn_zDown = function() {
       onClick: function() {
         var app = this.getApp().config;
         var p = tr.controls.pnp2.program_Tools;
-        p.inverseIk(app, { x: 0, y: 0, z: -0.05 });
+        p.inverseIk(app, { x: 0, y: 0, z: -0.025 });
       },
       children: [{
         type: "text",
