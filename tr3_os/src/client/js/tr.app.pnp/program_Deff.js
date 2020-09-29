@@ -9,6 +9,8 @@ tr.controls.pnp2.waypoint = function(config) {
   this.speed = config.speed || 1.0;
   this.wait = config.wait || 0.4;
 
+  this.joints = ["a0", "a1", "a2", "a3", "a4", "g0"];
+
   this.pose = config.pose || {
     position: { x: 0, y: 0, z: 0 },
     orientation: { x: 0, y: 0, z: 0, w: 0 }
@@ -23,16 +25,14 @@ tr.controls.pnp2.waypoint = function(config) {
   }
 
   this.getPosition = function (aid) {
-    var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
-    var idx = aids.findIndex(function (o) {
+    var idx = this.joints.findIndex(function (o) {
       return o == aid;
     });
     return this.positions[idx];
   }
 
   this.setPosition = function (aid, pos) {
-    var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
-    var idx = aids.findIndex(function (o) {
+    var idx = this.joints.findIndex(function (o) {
       return o == aid;
     });
 
@@ -50,6 +50,12 @@ tr.controls.pnp2.waypoint = function(config) {
     this.speed += i;
     if (this.speed < 0) {
       this.speed = 0;
+    }
+  }
+
+  this.send = function () {
+    for (var i = 0; i < this.positions.length; i++) {
+      tr.data.socket.emit("/tr3/joints/" + this.joints[i] + "/control/position", {position: this.positions[i], duration: this.speed});
     }
   }
 

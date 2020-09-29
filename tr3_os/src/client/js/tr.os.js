@@ -79,7 +79,6 @@ function mouseClicked() {
 }
 
 function mouseDragged() {
-  console.log(event.type)
   getSelectedApp().mouseDragged();
 }
 

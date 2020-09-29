@@ -39,7 +39,7 @@ tr.controls.controlPanel.slider = function(id) {
             tr.data.socket.emit("/tr3/joints/" + id + "/control/effort", val);
           } else if (select.element.value() == "SERVO") {
             val = sliderVal * Math.PI * 2.0;
-            tr.data.socket.emit("/tr3/joints/" + id + "/control/position", val);
+            tr.data.socket.emit("/tr3/joints/" + id + "/control/position", {position: val, duration: 0});
           } else if (select.element.value() == "VELOCITY") {
             val = sliderVal;
             tr.data.socket.emit("/tr3/joints/" + id + "/control/velocity", val);

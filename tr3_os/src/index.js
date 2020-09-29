@@ -34,16 +34,16 @@ var rostopics = [
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
   { name: "/move_base/cancel", type: "actionlib_msgs/GoalID"},
   { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"},
-  { name: "/tr3/joints/a0/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a1/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a2/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a3/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a4/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/g0/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/h0/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/h1/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/b0/control/position", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/b1/control/position", type: "std_msgs/Float64"},
+  { name: "/tr3/joints/a0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/a1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/a2/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/a3/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/a4/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/g0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/h0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/h1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/b0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
+  { name: "/tr3/joints/b1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
   { name: "/tr3/joints/a0/control/effort", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a1/control/effort", type: "std_msgs/Float64"},
   { name: "/tr3/joints/a2/control/effort", type: "std_msgs/Float64"},
@@ -294,6 +294,9 @@ io.on('connection', function (socket) {
           rt.publish(d)
         } else if (rt._type == "actionlib_msgs/GoalID") {
           var d = new actionlibMsgs.msg.GoalID(data);
+          rt.publish(d)
+        } else if (rt._type == "tr3_msgs/ActuatorPositionCommand") {
+          var d = new tr3Msgs.msg.ActuatorPositionCommand(data);
           rt.publish(d)
         } else {
           rt.publish({ data: data });

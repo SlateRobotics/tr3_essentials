@@ -13,28 +13,28 @@ tr.controls.frv.btnHead = function(lbl) {
       var h1 = tr.data.getState("h1").position;
 
       if (lbl == "▲") {
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 + 0.1, duration: 0});
       } else if (lbl == "▼") {
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 - 0.1, duration: 0});
       } else if (lbl == "▶") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 - 0.1, duration: 0});
       } else if (lbl == "◀") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 + 0.1, duration: 0});
       } else if (lbl == "◤") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 + 0.1, duration: 0});
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 + 0.1, duration: 0});
       } else if (lbl == "◥") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 + 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 - 0.1, duration: 0});
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 + 0.1, duration: 0});
       } else if (lbl == "◣") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 + 0.1);
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 + 0.1, duration: 0});
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 - 0.1, duration: 0});
       } else if (lbl == "◢") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", h0 - 0.1);
-        tr.data.socket.emit("/tr3/joints/h1/control/position", h1 - 0.1);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: h0 - 0.1, duration: 0});
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: h1 - 0.1, duration: 0});
       } else if (lbl = "●") {
-        tr.data.socket.emit("/tr3/joints/h0/control/position", 0);
-        tr.data.socket.emit("/tr3/joints/h1/control/position", 0);
+        tr.data.socket.emit("/tr3/joints/h0/control/position", {position: 0, duration: 0});
+        tr.data.socket.emit("/tr3/joints/h1/control/position", {position: 0, duration: 0});
       }
     },
     children: [{

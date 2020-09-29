@@ -14,47 +14,6 @@ p.Program_Setup = function(app) {
   });
 };
 
-p.programRun = function(app) {
-  if (app.programMode == 1) {
-    var prog = p.getCurrentProgram(app);
-    var wp = prog.getCurrentWaypoint();
-    var pos = wp.positions;
-    var wpDuration = wp.speed; // seconds
-
-    var startPos = app.waypointStartPos;
-
-    var time = new Date();
-    var duration = (time - app.waypointStart) / 1000.0;
-    var durationComplete = (duration / wpDuration)
-
-    if (wpDuration == 0) {
-      durationComplete = 1.0;
-    }
-
-    for (var i = 0; i < app.robotState.length; i++) {
-      app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
-    }
-
-    p.updateUI(app);
-
-    if (duration >= wpDuration) {
-      if (prog.waypoints.length - 1 <= prog.currentWaypoint) {
-        p.programMode = 0;
-      } else {
-        p.waypointStart = new Date();
-        p.waypointStartPos = Object.assign([], pos);
-        prog.currentWaypoint += 1;
-      }
-    }
-  } else {
-    var pos = p.getCurrentProgram(app).getCurrentWaypoint().positions;
-    app.waypointStart = new Date();
-    app.waypointStartPos = Object.assign([], pos);
-    app.robotState = Object.assign([], pos);
-    p.updateUI(app);
-  };
-};
-
 p.loadPrograms = function(app, callback) {
   tr.data.readDir({
     app: "tr.app.pnp",
@@ -131,6 +90,10 @@ p.programStart = function(app) {
     prog.currentWaypoint += 1;
     app.programMode = 1;
   }
+
+  if(app.send) {
+    prog.getCurrentWaypoint().send();
+  }
 };
 
 p.programStartFrom = function(app) {
@@ -142,6 +105,10 @@ p.programStartFrom = function(app) {
     app.programMode = 1
   } else {
     app.programMode = 0;
+  }
+
+  if(app.send) {
+    prog.getCurrentWaypoint().send();
   }
 };
 
@@ -171,10 +138,6 @@ p.programRun = function(app) {
     if (duration <= wpDuration) {
       for (var i = 0; i < app.robotState.length; i++) {
         app.robotState[i] = (pos[i] - startPos[i]) * durationComplete + startPos[i];
-        if (app.send) {
-          var aids = ["a0", "a1", "a2", "a3", "a4", "g0"];
-          tr.data.socket.emit("/tr3/joints/" + aids[i] + "/control/position", app.robotState[i]);
-        }
       }
     }
 
@@ -187,6 +150,10 @@ p.programRun = function(app) {
         app.waypointStart = new Date();
         app.waypointStartPos = Object.assign([], pos);
         prog.currentWaypoint += 1;
+
+        if(app.send) {
+          prog.getCurrentWaypoint().send();
+        }
       }
     }
   } else {
