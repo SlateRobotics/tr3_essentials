@@ -42,6 +42,8 @@ class TR3:
     _state = None
     state_change = None
 
+    joints = ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]
+
     mode_servo = 0x10
     mode_backdrive = 0x11
     mode_rotate = 0x12
