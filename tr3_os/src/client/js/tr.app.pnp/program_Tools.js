@@ -261,5 +261,16 @@ p.inverseIk = function (app, poseDelta) {
 
     p.getCurrentProgram(app).setPositions(positions, app);
     p.getCurrentProgram(app).getCurrentWaypoint().setPose();
+
+    if (p.getCurrentProgram(app).currentWaypoint > 0) {
+      var wp2_idx =  p.getCurrentProgram(app).currentWaypoint - 1;
+      var wp2 = p.getCurrentProgram(app).waypoints[wp2_idx];
+      p.getCurrentProgram(app).getCurrentWaypoint().computeDuration(wp2);
+    }
+
+    if (p.getCurrentProgram(app).currentWaypoint < p.getCurrentProgram(app).waypoints.length - 1) {
+      var wp2_idx =  p.getCurrentProgram(app).currentWaypoint + 1;
+      p.getCurrentProgram(app).waypoints[wp2_idx].computeDuration(p.getCurrentProgram(app).getCurrentWaypoint());
+    }
   });
 }

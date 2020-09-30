@@ -55,8 +55,24 @@ tr.controls.pnp2.waypoint = function(config) {
 
   this.send = function () {
     for (var i = 0; i < this.positions.length; i++) {
-      tr.data.socket.emit("/tr3/joints/" + this.joints[i] + "/control/position", {position: this.positions[i], duration: this.speed});
+      tr.data.socket.emit("/tr3/joints/" + this.joints[i] + "/control/position", {position: this.positions[i], duration: Math.floor(this.speed * 1000)});
     }
+  }
+
+  this.computeDuration = function (wp) {
+    var a0 = Math.abs(this.positions[0] - wp.positions[0]) / 0.942;
+    var a1 = Math.abs(this.positions[1] - wp.positions[1]) / 0.942;
+    var a2 = Math.abs(this.positions[2] - wp.positions[2]) / 0.942;
+    var a3 = Math.abs(this.positions[3] - wp.positions[3]) / 0.279;
+    var a4 = Math.abs(this.positions[4] - wp.positions[4]) / 0.279;
+
+    var dur = a0;
+    if (a1 > dur) dur = a1;
+    if (a2 > dur) dur = a2;
+    if (a3 > dur) dur = a3;
+    if (a4 > dur) dur = a4;
+
+    this.speed = dur;
   }
 
   this.clone = function () {
