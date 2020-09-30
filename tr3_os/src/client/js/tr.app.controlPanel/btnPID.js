@@ -7,7 +7,7 @@ tr.controls.controlPanel.btnPID = function(id, type, lbl) {
     type: "container",
     size: {
       w: 1 / 18,
-      h: 20
+      h: 35
     },
     onClick: function() {
       var app = this.getApp();

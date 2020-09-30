@@ -7,7 +7,7 @@ tr.controls.controlPanel.selectMode = function(id) {
     type: "container",
     size: {
       w: 1 / 9,
-      h: 20
+      h: 35
     },
 
     children: [{

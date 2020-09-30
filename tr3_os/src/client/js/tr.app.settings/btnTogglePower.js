@@ -1,14 +1,10 @@
-if (!tr) tr = {};
-if (!tr.controls) tr.controls = {};
-if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
-
-tr.controls.controlPanel.btnTogglePower = function() {
+tr.controls.settings.btnTogglePower = function() {
   return {
     id: "container-toggle-power",
     type: "container",
     size: {
-      w: 3 / 9,
-      h: 120
+      w: 0.5,
+      h: 75
     },
     background: "green",
     onDraw: function () {

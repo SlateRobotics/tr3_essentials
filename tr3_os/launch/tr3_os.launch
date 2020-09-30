@@ -1,5 +1,4 @@
 <launch>
-  <param name="tr3_os_build" command="rosrun tr3_os src/scripts/build.js" />
   <node pkg="tr3_os" name="index" type="index.js" output="screen" />
   <node respawn="true" pkg="web_video_server" type="web_video_server" name="web_video_server_node">
     <param name="port" value="8081" />

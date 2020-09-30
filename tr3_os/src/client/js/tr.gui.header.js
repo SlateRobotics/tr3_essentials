@@ -21,14 +21,13 @@ tr.gui.header = function(config) {
   }
 
   this.closeButton = {
-    pos: {
-      x: 0,
-      y: 0
-    },
-    size: {
-      w: 0,
-      h: 0
-    }
+    pos: { x: 0, y: 0 },
+    size: { w: 0, h: 0 }
+  };
+
+  this.stopButton = {
+    pos: { x: 0, y: 0 },
+    size: { w: 0, h: 0 }
   };
 
   this.draw = function() {
@@ -38,24 +37,81 @@ tr.gui.header = function(config) {
     textAlign(LEFT, CENTER);
     text(this.text, this.padding, this.size.h / 2.0 + 3);
 
-    this.closeButton.size.w = 30;
+    this.drawCloseButton();
+    this.drawStopButton();
+  }
+
+  this.drawCloseButton = function () {
+    this.closeButton.size.w = this.size.h;
     this.closeButton.size.h = this.closeButton.size.w;
-    this.closeButton.pos.x = this.size.w - this.padding - this.closeButton.size.w;
-    this.closeButton.pos.y = this.padding;
+    this.closeButton.pos.x = this.size.w - this.closeButton.size.w;
+    this.closeButton.pos.y = 0;
 
     fill("red");
-    stroke("red");
+    stroke("black");
     rect(this.closeButton.pos.x, this.closeButton.pos.y, this.closeButton.size.w, this.closeButton.size.h);
 
     fill(255);
     stroke(255);
     textAlign(CENTER, CENTER);
+    textSize(40);
+
+    fill(255);
+    stroke(255);
+    text("X", this.closeButton.pos.x + this.closeButton.size.w / 2.0, this.closeButton.pos.y + this.closeButton.size.h / 2.0 - 2);
+  }
+
+  this.drawStopButton = function () {
+    this.stopButton.size.w = this.size.h;
+    this.stopButton.size.h = this.stopButton.size.w;
+    this.stopButton.pos.x = this.closeButton.pos.x - this.stopButton.size.w - 5;
+    this.stopButton.pos.y = 0;
+
+    noFill();
+    noStroke();
+
+    rect(this.stopButton.pos.x, this.stopButton.pos.y, this.stopButton.size.w, this.stopButton.size.h);
+
+    fill(255);
+    stroke(255);
+    textAlign(CENTER, CENTER);
     textSize(20);
-    text("X", this.size.w - this.padding - this.closeButton.size.w / 2.0, this.padding + this.closeButton.size.w / 2.0);
+    var t = [this.stopButton.pos.x + this.stopButton.size.w / 2.0, this.stopButton.pos.y + this.stopButton.size.h / 2.0];
+
+    if (tr.data.stopped == false) {
+      translate(t[0], t[1]);
+      rotate(PI/8);
+      fill("white");
+      this.polygon(0, 0, 22, 8);
+      fill("red");
+      this.polygon(0, 0, 20, 8);
+      rotate(-PI/8);
+      translate(-t[0], -t[1]);
+    } else {
+      translate(t[0], t[1]);
+      rotate(PI/8);
+      fill("white");
+      circle(0, 0, 44);
+      fill("green");
+      circle(0, 0, 40);
+      rotate(-PI/8);
+      translate(-t[0], -t[1]);
+    }
+  }
+
+  this.polygon = function (x, y, radius, npoints) {
+    let angle = TWO_PI / npoints;
+    beginShape();
+    for (let a = 0; a < TWO_PI; a += angle) {
+      let sx = x + cos(a) * radius;
+      let sy = y + sin(a) * radius;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
   }
 
   this.mouseClicked = function() {
-    this.mousePressed();
+    //this.mousePressed();
   }
 
   this.mousePressed = function() {
@@ -67,6 +123,21 @@ tr.gui.header = function(config) {
     if (x1 && x2 && y1 && y2) {
       this.parent.app.close();
       this.parent.reset();
+    }
+
+    x1 = mouseX > this.stopButton.pos.x;
+    x2 = mouseX < this.stopButton.pos.x + this.stopButton.size.w;
+    y1 = mouseY > this.stopButton.pos.y;
+    y2 = mouseY < this.stopButton.pos.y + this.stopButton.size.h;
+
+    if (x1 && x2 && y1 && y2) {
+      if (tr.data.stopped == false) {
+        tr.data.stopped = true;
+        tr.data.socket.emit("/tr3/stop", true);
+      } else {
+        tr.data.stopped = false;
+        tr.data.socket.emit("/tr3/stop", false);
+      }
     }
   }
 

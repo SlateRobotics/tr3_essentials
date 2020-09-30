@@ -18,11 +18,6 @@ tr.controls.controlPanel.tabControl = function() {
   children.push.apply(children, c.controlRow("b0"));
   children.push.apply(children, c.controlRow("b1"));
 
-  children.push(c.spacer());
-  children.push(c.btnToglStop());
-  children.push(c.playbackBlock());
-  children.push(c.playbackDisplay());
-
   return {
     type: "container",
     size: {

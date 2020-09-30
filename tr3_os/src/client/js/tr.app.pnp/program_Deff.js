@@ -60,11 +60,11 @@ tr.controls.pnp2.waypoint = function(config) {
   }
 
   this.computeDuration = function (wp) {
-    var a0 = Math.abs(this.positions[0] - wp.positions[0]) / 0.942;
-    var a1 = Math.abs(this.positions[1] - wp.positions[1]) / 0.942;
-    var a2 = Math.abs(this.positions[2] - wp.positions[2]) / 0.942;
-    var a3 = Math.abs(this.positions[3] - wp.positions[3]) / 0.279;
-    var a4 = Math.abs(this.positions[4] - wp.positions[4]) / 0.279;
+    var a0 = Math.abs(this.positions[0] - wp.positions[0]) / 0.500;
+    var a1 = Math.abs(this.positions[1] - wp.positions[1]) / 0.500;
+    var a2 = Math.abs(this.positions[2] - wp.positions[2]) / 0.500;
+    var a3 = Math.abs(this.positions[3] - wp.positions[3]) / 0.250;
+    var a4 = Math.abs(this.positions[4] - wp.positions[4]) / 0.250;
 
     var dur = a0;
     if (a1 > dur) dur = a1;

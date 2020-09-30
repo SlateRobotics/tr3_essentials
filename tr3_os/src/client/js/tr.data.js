@@ -23,6 +23,7 @@ tr.data.joints = {
   b1: { pid: [0, 0, 0] }
 }
 
+tr.data.stopped = false;
 tr.data.nav = {};
 
 tr.data.depth = [];

@@ -7,7 +7,7 @@ tr.controls.controlPanel.slider = function(id) {
     type: "container",
     size: {
       w: 5 / 9,
-      h: 20
+      h: 35
     },
     children: [{
       type: "container",

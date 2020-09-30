@@ -8,7 +8,7 @@ tr.controls.controlPanel.btnResetPos = function(id) {
     background: "rgb(150, 150, 150)",
     size: {
       w: 0.111,
-      h: 20
+      h: 35
     },
     onClick: function() {
       tr.data.socket.emit("/tr3/joints/" + id + "/reset", true);

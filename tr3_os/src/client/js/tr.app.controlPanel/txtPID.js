@@ -7,7 +7,7 @@ tr.controls.controlPanel.txtPID = function(id, type) {
     type: "container",
     size: {
       w: 1 / 18,
-      h: 20
+      h: 35
     },
     children: [{
       type: "container",

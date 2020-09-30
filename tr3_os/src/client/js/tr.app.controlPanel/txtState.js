@@ -7,7 +7,7 @@ tr.controls.controlPanel.txtState = function(id) {
     type: "container",
     size: {
       w: 0.111,
-      h: 20
+      h: 35
     },
     children: [{
       type: "container",
