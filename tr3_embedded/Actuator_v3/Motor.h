@@ -19,7 +19,7 @@ class Motor {
       if (motorSpeed > maxSpeed) {
         motorSpeed = maxSpeed;
       }
-      
+
       int pinStrength = int(255.0 * (motorSpeed / 100.0));
       ledcWrite(0, pinStrength);
     }
