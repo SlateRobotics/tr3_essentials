@@ -77,6 +77,7 @@ class Controller {
 
     long velTrajectoryStart = 0;
     long velTrajectoryDuration = 0;
+    double velTrajectoryPosStart = 0;
     const static int velTrajectorySize = 128;
     float velTrajectory[velTrajectorySize];
 
@@ -212,23 +213,24 @@ class Controller {
     }
 
     void planVelTrajectory () {
-      double posInitial = (double)state.position;
-      double posEnd = pidPosSetpoint;
-      formatPosition(&posInitial, &posEnd);
+      velTrajectoryPosStart = (double)state.position;
+      formatPosition(&velTrajectoryPosStart, &pidPosSetpoint);
 
-      float v_rat = 1.05; // increase vel to account for controller lag
+      float v_rat = 1.25; // increase vel to account for controller lag
       
-      float posDiff = posEnd - posInitial;
+      float posDiff = pidPosSetpoint - velTrajectoryPosStart;
       float v_avg = posDiff / (float)velTrajectoryDuration * 1000.0 * v_rat;
       float t_inc = (float)velTrajectoryDuration / (float)velTrajectorySize / 1000.0;
       
       for (int i = 0; i < velTrajectorySize; i++) {
+        velTrajectory[i] = v_avg;
         if ((float)(i + 1) / (float)velTrajectorySize < 0.25) {
-          velTrajectory[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
+          //velTrajectory[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
         } else if ((float)(i - 1) / (float)velTrajectorySize > 0.75) {
-          velTrajectory[i] = (float)(velTrajectorySize - i - 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
+          //velTrajectory[i] = (float)(velTrajectorySize - i - 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
+          //velTrajectory[i] = 1.333 * v_avg;
         } else {
-          velTrajectory[i] = 1.333 * v_avg;
+          //velTrajectory[i] = 1.333 * v_avg;
         }
       }
     }
@@ -297,7 +299,7 @@ class Controller {
         double p_vel = storage.readFloat(EEADDR_PID_I);
         double i_vel = storage.readFloat(EEADDR_PID_D);
         pidPos.SetTunings(p_pos, 0.0, 0.0);
-        pidPos.SetTunings(p_vel, i_vel, 0.0);
+        pidVel.SetTunings(p_vel, i_vel, 0.0);
       } else {
         storage.configure();
       }
@@ -458,13 +460,11 @@ class Controller {
       pidPosInput = state.position;
       formatPosition(&pidPosInput, &pidPosSetpoint);
 
-      // if we have an active trajectory plan, grab velocity from that
-      // if not, compute velocity from position PID controller
       long velTrajectoryComplete = millis() - velTrajectoryStart;
-      if (velTrajectoryComplete < velTrajectoryDuration) {
+      if (velTrajectoryComplete < velTrajectoryDuration && abs(pidPosSetpoint - pidPosInput) > 0.1) {
         float velTrajectoryResolution = (float)velTrajectoryDuration / (float)velTrajectorySize;
         int velTrajectoryIdx = floor(velTrajectoryComplete / velTrajectoryResolution);
-        if (velTrajectoryIdx < velTrajectorySize) {
+        if (velTrajectoryIdx < velTrajectorySize && velTrajectoryIdx >= 0) {
           pidVelSetpoint = velTrajectory[velTrajectoryIdx];
         }
       } else {
@@ -486,6 +486,19 @@ class Controller {
       if (abs(pidVelSetpoint) > 0.01) {
         pidVelInput = state.velocity;
         pidVel.Compute();
+
+        Serial.print(millis() - velTrajectoryStart);
+        Serial.print(", ");
+        Serial.print(pidPosInput);
+        Serial.print(", ");
+        Serial.print(pidPosSetpoint);
+        Serial.print(", ");
+        Serial.print(pidVelInput);
+        Serial.print(", ");
+        Serial.print(pidVelSetpoint);
+        Serial.print(", ");
+        Serial.println(pidPwrSetpoint);
+        
         motor.step(pidPwrSetpoint * 100.0);
       } else {
         motor.stop();
@@ -616,6 +629,9 @@ class Controller {
         velTrajectoryDuration = dur;
         planVelTrajectory();
         velTrajectoryStart = millis();
+
+        pidPos.clear();
+        pidVel.clear();
       }
 
       if (mode != MODE_STOP) {
@@ -626,6 +642,8 @@ class Controller {
     void cmd_setVelocity (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
       pidVelSetpoint = (param / 100.0) - 10.0;
+
+      pidVel.clear();
       
       if (mode != MODE_STOP) {
         mode = MODE_VELOCITY;
@@ -684,7 +702,7 @@ class Controller {
     }
 
     void cmd_release () {
-      mode = modePrev;
+      mode = MODE_ROTATE;
     }
 
     void cmd_stop () {
