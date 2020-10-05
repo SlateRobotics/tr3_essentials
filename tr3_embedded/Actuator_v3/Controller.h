@@ -65,16 +65,20 @@ class Controller {
     int mode = MODE_ROTATE;
     int modePrev = MODE_ROTATE;
 
-    double pidPos = 0;
-    double pidOut = 0;
-    double pidGoal = 0;
-    double pidThreshold = 0.001;
+    double pidPosInput = 0.0;
+    double pidPosSetpoint = 0.0;
+    PID pidPos = PID(&pidPosInput, &pidVelSetpoint, &pidPosSetpoint, 1.0, 0.0, 0.0, DIRECT);
 
-    float posGoal = 0;
-    long posStart = 0;
-    long posDuration = 0;
-    const static int posVelMapSize = 128;
-    float posVelMap[posVelMapSize];
+    double pidVelInput = 0.0;
+    double pidVelSetpoint = 0.0;
+    PID pidVel = PID(&pidVelInput, &pidPwrSetpoint, &pidVelSetpoint, 0.1, 1.0, 0.0, DIRECT);
+
+    double pidPwrSetpoint = 0.0;
+
+    long velTrajectoryStart = 0;
+    long velTrajectoryDuration = 0;
+    const static int velTrajectorySize = 128;
+    float velTrajectory[velTrajectorySize];
 
     static const int velocityReadSize = 16;
     float velocityReads[velocityReadSize];
@@ -94,8 +98,6 @@ class Controller {
     Encoder encoderOutput = Encoder(PIN_ENO_CS, PIN_ENO_CLK, PIN_ENO_DO);
     LED led;
     Motor motor = Motor(PIN_MTR_PWM, PIN_MTR_IN1, PIN_MTR_IN2);
-    PID pid = PID(&pidPos, &pidOut, &pidGoal, 9.0, 5.0, 0.2, DIRECT);
-    PID pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.0, 1.0, 0.0, DIRECT);
     Storage storage;
 
     Regression regression;
@@ -195,38 +197,39 @@ class Controller {
       }
     }
 
-    void buildPosVelMap () {
-      float posInitial = state.position;
-      float posEnd = posGoal;
-      
-      double d = formatAngle(posInitial) - formatAngle(posEnd);
+    void formatPosition (double* input, double* setpoint) {
+      double d = formatAngle(*input) - formatAngle(*setpoint);
       if (d > PI) {
-        posEnd = formatAngle(posEnd);
-        posEnd += TAU;
+        *setpoint = formatAngle(*setpoint);
+        *setpoint += TAU;
       } else if (d < -PI) {
-        posInitial = formatAngle(posInitial);
-        posInitial += TAU;
+        *input = formatAngle(*input);
+        *input += TAU;
       } else {
-        posEnd = formatAngle(posEnd);
-        posInitial = formatAngle(posInitial);
+        *setpoint = formatAngle(*setpoint);
+        *input = formatAngle(*input);
       }
+    }
+
+    void planVelTrajectory () {
+      double posInitial = (double)state.position;
+      double posEnd = pidPosSetpoint;
+      formatPosition(&posInitial, &posEnd);
 
       float v_rat = 1.05; // increase vel to account for controller lag
       
       float posDiff = posEnd - posInitial;
-      float v_avg = posDiff / (float)posDuration * 1000.0 * v_rat;
-      float t_inc = (float)posDuration / (float)posVelMapSize / 1000.0;
+      float v_avg = posDiff / (float)velTrajectoryDuration * 1000.0 * v_rat;
+      float t_inc = (float)velTrajectoryDuration / (float)velTrajectorySize / 1000.0;
       
-      for (int i = 0; i < posVelMapSize; i++) {
-        if ((float)(i + 1) / (float)posVelMapSize < 0.25) {
-          posVelMap[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
-        } else if ((float)(i - 1) / (float)posVelMapSize > 0.75) {
-          posVelMap[i] = (float)(posVelMapSize - i - 1) * ((1.333 * v_avg) / ((float)posVelMapSize * 0.25));
+      for (int i = 0; i < velTrajectorySize; i++) {
+        if ((float)(i + 1) / (float)velTrajectorySize < 0.25) {
+          velTrajectory[i] = (float)(i + 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
+        } else if ((float)(i - 1) / (float)velTrajectorySize > 0.75) {
+          velTrajectory[i] = (float)(velTrajectorySize - i - 1) * ((1.333 * v_avg) / ((float)velTrajectorySize * 0.25));
         } else {
-          posVelMap[i] = 1.333 * v_avg;
+          velTrajectory[i] = 1.333 * v_avg;
         }
-
-        
       }
     }
 
@@ -290,10 +293,11 @@ class Controller {
 
         regression.setOffset(storage.readFloat(EEADDR_REG_OFFSET));
 
-        double p = storage.readFloat(EEADDR_PID_P);
-        double i = storage.readFloat(EEADDR_PID_I);
-        double d = storage.readFloat(EEADDR_PID_D);
-        pid.SetTunings(p, i, d);
+        double p_pos = storage.readFloat(EEADDR_PID_P);
+        double p_vel = storage.readFloat(EEADDR_PID_I);
+        double i_vel = storage.readFloat(EEADDR_PID_D);
+        pidPos.SetTunings(p_pos, 0.0, 0.0);
+        pidPos.SetTunings(p_vel, i_vel, 0.0);
       } else {
         storage.configure();
       }
@@ -330,25 +334,14 @@ class Controller {
       setUpImu();
       step_imu();
       fanOff();
-      pid.SetMode(AUTOMATIC);
-      pid.SetOutputLimits(-1, 1);
-
-      if (ACTUATOR_ID == "a0") {
-        pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.3, 2.0, 0.0, DIRECT);
-      } else if (ACTUATOR_ID == "a1") {
-        pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.6, 4.0, 0.0, DIRECT);
-      } else if (ACTUATOR_ID == "a2") {
-        pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.3, 2.0, 0.0, DIRECT);
-      } else if (ACTUATOR_ID == "a3") {
-        pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.6, 4.0, 0.0, DIRECT);
-      } else if (ACTUATOR_ID == "a4") {
-        pid_vel = PID(&pidPos, &pidOut, &pidGoal, 0.3, 2.0, 0.0, DIRECT);
-      }
       
-      pid_vel.SetMode(AUTOMATIC);
-      pid_vel.SetOutputLimits(-1, 1);
-      pid_vel.SetIThresh(1.0);
-      pid_vel.DisableIClamp();
+      pidPos.SetMode(AUTOMATIC);
+      pidPos.SetOutputLimits(-1, 1);
+      
+      pidVel.SetMode(AUTOMATIC);
+      pidVel.SetOutputLimits(-1, 1);
+      pidVel.SetIThresh(1.0);
+      pidVel.DisableIClamp();
     }
 
     ControllerState* getState () {
@@ -456,142 +449,45 @@ class Controller {
 
     void step_servo () {
       led.pulse(LED_MAGENTA);
-      pidPos = state.position;
-      pidGoal = posGoal;
 
       if (ACTUATOR_ID == "g0") {
         motor.executePreparedCommand();
         return;
       }
       
-      double d = formatAngle(pidPos) - formatAngle(posGoal);
-      if (d > PI) {
-        pidGoal = formatAngle(pidGoal);
-        pidGoal += TAU;
-      } else if (d < -PI) {
-        pidPos = formatAngle(pidPos);
-        pidPos += TAU;
-      } else {
-        pidGoal = formatAngle(pidGoal);
-        pidPos = formatAngle(pidPos);
-      }
+      pidPosInput = state.position;
+      formatPosition(&pidPosInput, &pidPosSetpoint);
 
-      float vote_vel = 0;
-      float vote_vel_w = 0;
-      float vote_pos = 0;
-      float vote_pos_w = 0;
-
-      long t = millis() - posStart;
-      float err = abs(pidPos - pidGoal);
-      float t_remain = posDuration - t;
-      float blur_start = 250;
-      if (t < posDuration && abs(d) > 0.01) {
-        if (t_remain > blur_start) {
-          vote_vel_w = 1.0;
-          vote_pos_w = 0.0;
-        } else {
-          vote_vel_w = t_remain / blur_start;
-          vote_pos_w = 1.0 - t_remain / blur_start;
+      // if we have an active trajectory plan, grab velocity from that
+      // if not, compute velocity from position PID controller
+      long velTrajectoryComplete = millis() - velTrajectoryStart;
+      if (velTrajectoryComplete < velTrajectoryDuration) {
+        float velTrajectoryResolution = (float)velTrajectoryDuration / (float)velTrajectorySize;
+        int velTrajectoryIdx = floor(velTrajectoryComplete / velTrajectoryResolution);
+        if (velTrajectoryIdx < velTrajectorySize) {
+          pidVelSetpoint = velTrajectory[velTrajectoryIdx];
         }
       } else {
-        vote_vel_w = 0.0;
-        vote_pos_w = 1.0;
+        pidPos.Compute();
       }
 
-      if (vote_vel_w > 0) {
-        float t_inc = (float)posDuration / (float)posVelMapSize;
-        int idx = floor(t / t_inc);
-
-        if (idx < posVelMapSize) {
-          pidGoal = posVelMap[idx];
-        }
-        
-        pidPos = state.velocity;
-        pid_vel.Compute();
-
-        int speed = pidOut * 100.0;
-        if (speed > 100) {
-          speed = 100;
-        } else if (speed < -100) {
-          speed = -100;
-        }
-
-        Serial.print("g: ");
-        Serial.print(pidGoal);
-        Serial.print(", v: ");
-        Serial.print(pidPos);
-        Serial.print(", p: ");
-        Serial.print(state.position);
-        Serial.print(", w: ");
-        Serial.print(vote_vel_w);
-        Serial.print(", w: ");
-        Serial.print(vote_pos_w);
-        Serial.print(", t: ");
-        Serial.println(t);
-
-        vote_vel = speed;
-      }
-      
-      pidPos = state.position;
-      pidGoal = posGoal;
-      d = formatAngle(pidPos) - formatAngle(posGoal);
-      if (d > PI) {
-        pidGoal = formatAngle(pidGoal);
-        pidGoal += TAU;
-      } else if (d < -PI) {
-        pidPos = formatAngle(pidPos);
-        pidPos += TAU;
-      } else {
-        pidGoal = formatAngle(pidGoal);
-        pidPos = formatAngle(pidPos);
-      }
-      
-      if (vote_pos_w > 0 && abs(pidPos - pidGoal) >= pidThreshold) {
-        pid.Compute();
-        int speed = pidOut * 100.0;
-        if (speed > 100) {
-          speed = 100;
-        } else if (speed < -100) {
-          speed = -100;
-        }
-
-        vote_pos = speed;
-      }
-
-      float s = vote_vel * vote_vel_w + vote_pos * vote_pos_w;
-      if (abs(s) > 0) {
-        motor.step(s);
-      } else {
-        motor.stop();
-      }
+      step_velocity(false);
     }
 
-    void step_velocity () {
-      led.pulse(LED_GREEN);
-      pidPos = state.velocity;
+    void step_velocity (bool pulseLED = true) {
+      if (pulseLED == true) {
+        led.pulse(LED_GREEN);
+      }
 
       if (ACTUATOR_ID == "g0") {
         return;
       }
-
-      if (abs(pidGoal) > 0.01) {
-        pid_vel.Compute();
-
-        Serial.print(pidPos);
-        Serial.print(", ");
-        Serial.print(pidGoal);
-        Serial.print(", ");
-        Serial.println(pidOut);
-
-        int speed = pidOut * 100.0;
-        if (speed > 100) {
-          speed = 100;
-        } else if (speed < -100) {
-          speed = -100;
-        }
-        motor.step(speed);
+      
+      if (abs(pidVelSetpoint) > 0.01) {
+        pidVelInput = state.velocity;
+        pidVel.Compute();
+        motor.step(pidPwrSetpoint * 100.0);
       } else {
-        pid_vel.clear();
         motor.stop();
       }
     }
@@ -637,8 +533,8 @@ class Controller {
 
     void step_stop () {
       led.pulse(LED_RED);
-      pid_vel.clear();
-      pid.clear();
+      pidVel.clear();
+      pidPos.clear();
       motor.stop();
     }
 
@@ -690,9 +586,9 @@ class Controller {
     void cmd_setMode (NetworkPacket packet) {
       mode = packet.parameters[0];
       if (mode == MODE_SERVO) {
-        pidGoal = (double)state.position;
+        pidPosSetpoint = (double)state.position;
       } else if (mode == MODE_VELOCITY) {
-        pidGoal = 0;
+        pidVelSetpoint = 0;
       }
     }
 
@@ -716,13 +612,10 @@ class Controller {
           storage.writeFloat(EEADDR_ENC_O_POS, 1.0);
         }
       } else {
-        posGoal = formatAngle(pos);
-        posDuration = dur;
-        buildPosVelMap();
-        posStart = millis();
-        pidGoal = formatAngle(pos);
-        pid_vel.clear();
-        pid.clear();
+        pidPosSetpoint = formatAngle(pos);
+        velTrajectoryDuration = dur;
+        planVelTrajectory();
+        velTrajectoryStart = millis();
       }
 
       if (mode != MODE_STOP) {
@@ -732,7 +625,7 @@ class Controller {
 
     void cmd_setVelocity (NetworkPacket packet) {
       int param = packet.parameters[0] + packet.parameters[1] * 256;
-      pidGoal = (param / 100.0) - 10.0;
+      pidVelSetpoint = (param / 100.0) - 10.0;
       
       if (mode != MODE_STOP) {
         mode = MODE_VELOCITY;
@@ -747,10 +640,8 @@ class Controller {
       encoderOutput.addPosition(-pos);
       encoderDrive.addPosition(-pos);
 
-      pidGoal = 0;
-      pidOut = 0;
-      pidPos = 0;
-      pid.clear();
+      pidPos.clear();
+      pidVel.clear();
 
       uint16_t encO_offset = encoderOutput.getOffset();
       uint16_t encD_offset = encoderDrive.getOffset();
@@ -842,13 +733,14 @@ class Controller {
     }
 
     void cmd_updatePid(NetworkPacket packet) {
-      double p = packet.parameters[0] / 10.0;
-      double i = packet.parameters[1] / 10.0;
-      double d = packet.parameters[2] / 10.0;
-      pid.SetTunings(p, i, d);
-      storage.writeFloat(EEADDR_PID_P, p);
-      storage.writeFloat(EEADDR_PID_I, i);
-      storage.writeFloat(EEADDR_PID_D, d);
+      double p_pos = packet.parameters[0] / 10.0;
+      double p_vel = packet.parameters[1] / 10.0;
+      double i_vel = packet.parameters[2] / 10.0;
+      pidPos.SetTunings(p_pos, 0.0, 0.0);
+      pidVel.SetTunings(p_vel, i_vel, 0.0);
+      storage.writeFloat(EEADDR_PID_P, p_pos);
+      storage.writeFloat(EEADDR_PID_I, p_vel);
+      storage.writeFloat(EEADDR_PID_D, i_vel);
       storage.commit();
     }
 };
