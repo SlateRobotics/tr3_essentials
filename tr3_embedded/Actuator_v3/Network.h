@@ -22,10 +22,15 @@ class Networking {
 
     void connectWifi() {
       WiFi.begin(ssid, pass);
-    
+
+      int count = 0;
       while (WiFi.status() != WL_CONNECTED) {
         delay(2000);
         Serial.println("Connecting to WiFi..");
+
+        if (count++ > 5) {          
+          ESP.restart();
+        }
       }
       
       Serial.println("WiFi connected");

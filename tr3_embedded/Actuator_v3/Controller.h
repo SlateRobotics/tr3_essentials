@@ -117,8 +117,8 @@ class Controller {
       double positionDrive = encoderDrive.getAngleRadians();
       double positionOutput = encoderOutput.getAngleRadians();
 
-      float f1 = regression.filter1(positionOutput);
-      float f2 = regression.filter2(positionOutput);
+      //float f1 = regression.filter1(positionOutput);
+      //float f2 = regression.filter2(positionOutput);
 
       double positionDiff = atan2(sin(positionOutput-positionDrive), cos(positionOutput-positionDrive));
       double positionDiffFiltered = positionDiff;// - f1 - f2;
@@ -158,7 +158,7 @@ class Controller {
       state.position = positionOutput;
       state.rotations = encoderOutput.getRotations();
       state.effort = motor.getEffort();
-      state.torque = positionDiffFiltered * SEA_SPRING_RATE;
+      state.torque = positionDiffFiltered * 220.0;
 
       long timeDiff = encoderOutput.getPrevPositionTS(0) - encoderOutput.getPrevPositionTS(1);
       double dif = encoderOutput.getPrevPosition(0) - encoderOutput.getPrevPosition(1);
@@ -419,6 +419,7 @@ class Controller {
       state.gyro[1] = imu.getGyroY_rads();
       state.gyro[2] = imu.getGyroZ_rads();
       state.mag[0] = imu.getMagX_uT();
+      
       state.mag[1] = imu.getMagY_uT();
       state.mag[2] = imu.getMagZ_uT();
       state.temp = imu.getTemperature_C();
@@ -436,15 +437,23 @@ class Controller {
         return;
       }
       
-      if (abs(state.torque) < 4) {
+      if (abs(state.torque) < 2) {
         motor.step(0);
       } else {
-        int m = state.torque * 15;
+        int m = state.torque * 7.5;
+
+        if (ACTUATOR_ID == "b0") {
+          m = m * 3.0;
+        } else if (ACTUATOR_ID == "b1") {
+          m = m * -3.0;
+        }
+        
         if (m < -100) {
           m = -100;
         } else if (m > 100) {
           m = 100;
         }
+        
         motor.step(m);
       }
     }
@@ -460,16 +469,24 @@ class Controller {
       pidPosInput = state.position;
       formatPosition(&pidPosInput, &pidPosSetpoint);
 
-      long velTrajectoryComplete = millis() - velTrajectoryStart;
-      if (velTrajectoryComplete < velTrajectoryDuration && abs(pidPosSetpoint - pidPosInput) > 0.1) {
-        float velTrajectoryResolution = (float)velTrajectoryDuration / (float)velTrajectorySize;
-        int velTrajectoryIdx = floor(velTrajectoryComplete / velTrajectoryResolution);
-        if (velTrajectoryIdx < velTrajectorySize && velTrajectoryIdx >= 0) {
-          pidVelSetpoint = velTrajectory[velTrajectoryIdx];
-        }
-      } else {
+      float acceleration = 0.25; // rad / sec
+
+      long dur_elapsed = millis() - velTrajectoryStart;
+      long dur_remain = velTrajectoryDuration - dur_elapsed;
+
+      float dist_total = pidPosSetpoint - velTrajectoryPosStart;
+      float dist_remain = pidPosSetpoint - pidPosInput;
+      
+      float break_dist = (state.velocity * state.velocity) / (acceleration * 2.0);
+      
+      if (dur_remain < 200 || abs(dist_remain) < break_dist) {
         pidPos.Compute();
+      } else {
+        float vel_req = dist_remain / (float)dur_remain * 1000.0;
+        pidVelSetpoint = vel_req;
       }
+
+      pidVelSetpoint = constrain(pidVelSetpoint, -0.75, 0.75);
 
       step_velocity(false);
     }
@@ -482,25 +499,13 @@ class Controller {
       if (ACTUATOR_ID == "g0") {
         return;
       }
-      
+
       if (abs(pidVelSetpoint) > 0.01) {
         pidVelInput = state.velocity;
         pidVel.Compute();
-
-        Serial.print(millis() - velTrajectoryStart);
-        Serial.print(", ");
-        Serial.print(pidPosInput);
-        Serial.print(", ");
-        Serial.print(pidPosSetpoint);
-        Serial.print(", ");
-        Serial.print(pidVelInput);
-        Serial.print(", ");
-        Serial.print(pidVelSetpoint);
-        Serial.print(", ");
-        Serial.println(pidPwrSetpoint);
-        
         motor.step(pidPwrSetpoint * 100.0);
       } else {
+        pidVel.clear();
         motor.stop();
       }
     }
@@ -611,14 +616,14 @@ class Controller {
       double pos = param / 65535.0 * TAU;
 
       if (ACTUATOR_ID == "g0") {
-        if (abs(pos) < 0.1) {
-          if (state.position != 0) {
+        if (abs(pos) < 0.5 ) {
+          if (state.position > 0.5) {
             motor.prepareCommand(100, 1750);
           }
           state.position = 0;
           storage.writeFloat(EEADDR_ENC_O_POS, 0.0);
         } else {
-          if (state.position != 1) {
+          if (state.position < 0.5) {
             motor.prepareCommand(-100, 1750);
           }
           state.position = 1;
@@ -654,9 +659,12 @@ class Controller {
       float positionOutput = encoderOutput.getAngleRadians();
       regression.addOffset(positionOutput);
 
-      float pos = encoderOutput.getPosition();
-      encoderOutput.addPosition(-pos);
-      encoderDrive.addPosition(-pos);
+      //float pos = encoderOutput.getPosition();
+      //encoderOutput.addPosition(-pos);
+      //encoderDrive.addPosition(-pos);
+      
+      encoderOutput.resetPos();
+      encoderDrive.resetPos();
 
       pidPos.clear();
       pidVel.clear();
@@ -665,7 +673,7 @@ class Controller {
       uint16_t encD_offset = encoderDrive.getOffset();
       storage.writeUInt16(EEADDR_ENC_O_OFFSET, encO_offset);
       storage.writeUInt16(EEADDR_ENC_D_OFFSET, encD_offset);
-
+      
       storage.writeFloat(EEADDR_REG_C1_1, regression.coefficients1[0]);
       storage.writeFloat(EEADDR_REG_C1_2, regression.coefficients1[1]);
       storage.writeFloat(EEADDR_REG_C1_3, regression.coefficients1[2]);
@@ -721,7 +729,7 @@ class Controller {
       encoderDrive.resetPos();
 
       if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
-      SEA_SPRING_RATE = 882;
+      SEA_SPRING_RATE = 220;
       } else {
       SEA_SPRING_RATE = 300;
       }

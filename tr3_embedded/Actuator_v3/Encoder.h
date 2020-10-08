@@ -15,6 +15,8 @@ class Encoder {
     double ratio = 1.0;
     uint16_t offset = 0;
 
+    double inl = 0.0139626; // integral non-linearity
+
     int rotations = 0;
 
     void formatPosition() {
@@ -148,9 +150,15 @@ class Encoder {
       pos = 0;
       prevPosition[1] = prevPosition[0];
     }
+
+    double getErrorEstimate() {
+      double angle = (double)prevPosition[0] / (double)encoderResolution * PI * 2.0;
+      return inl * sin(-angle + PI);
+    }
     
     double getAngleRadians() {
-      return pos / (ratio * encoderResolution) * TAU;
+      double err_estimate = getErrorEstimate();
+      return pos / (ratio * encoderResolution) * TAU - err_estimate;
     }
 
     int getRotations () {
