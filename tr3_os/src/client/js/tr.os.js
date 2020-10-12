@@ -28,10 +28,21 @@ document.onclick = function () {
   }
 }
 
+window.onload = function () {
+  resizeCanvas();
+}
+
+var canvasWidth = 640;
+var canvasHeight = 480;
+
 function setup() {
   tr.data.setup();
 
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  canvasWidth = windowWidth;
+  canvasHeight = windowHeight;
+  if (canvasWidth < 640) canvasWidth = 640;
+  if (canvasHeight < 480) canvasHeight = 480;
+  createCanvas(canvasWidth, canvasHeight, WEBGL);
 
   // for some stupid reason this is necessary to get certain font sizes to load correctly
   textFont(tr.fonts.roboto);
@@ -61,7 +72,7 @@ function setup() {
 }
 
 function draw() {
-  translate(-windowWidth / 2.0, -windowHeight / 2.0);
+  translate(-canvasWidth / 2.0, -canvasHeight / 2.0);
   getSelectedApp().draw();
 }
 
@@ -80,7 +91,11 @@ function mouseReleased() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight)
+  canvasWidth = windowWidth;
+  canvasHeight = windowHeight;
+  if (canvasWidth < 640) canvasWidth = 640;
+  if (canvasHeight < 480) canvasHeight = 480;
+  resizeCanvas(canvasWidth, canvasHeight)
 }
 
 function mouseClicked() {

@@ -31,9 +31,9 @@ var desktop = {
   draw: function() {
     background('rgb(34,34,34)');
 
-    this.menuX = (windowWidth - 400) - 20;
-    this.menuY = ((windowHeight - 400) / 2);
-    this.imageBackground.resize(windowWidth, windowHeight);
+    this.menuX = (canvasWidth - 400) - 20;
+    this.menuY = ((canvasHeight - 400) / 2);
+    this.imageBackground.resize(canvasWidth, canvasHeight);
     image(this.imageBackground, 0, 0);
 
     this.computeDrag();
@@ -120,8 +120,8 @@ var desktop = {
       this.appClick();
     }
 
-    var m = this.menuTransX % windowWidth;
-    var p = -m / windowWidth;
+    var m = this.menuTransX % canvasWidth;
+    var p = -m / canvasWidth;
     var n = 0;
 
     if (p > 0.25 && -this.menuTransX - -this.menuTransXStart > 0) {
@@ -132,14 +132,14 @@ var desktop = {
       n = -1;
     }
 
-    var pageNum = floor(this.menuTransX / windowWidth) - n;
+    var pageNum = floor(this.menuTransX / canvasWidth) - n;
     if (pageNum > 0) {
       pageNum = 0;
     } else if (pageNum < -floor((this.apps.length - 1) / (this.menuRows * this.menuCols))) {
       pageNum = -floor((this.apps.length - 1) / (this.menuRows * this.menuCols));
     }
 
-    this.menuTransXTarget = pageNum * windowWidth;
+    this.menuTransXTarget = pageNum * canvasWidth;
     this.menuTransXTargetStep = abs(this.menuTransXTarget - this.menuTransX) / 10.0;
   },
 

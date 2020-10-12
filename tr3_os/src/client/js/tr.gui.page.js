@@ -28,11 +28,11 @@ tr.gui.page = function(config) {
     this.onDraw = config.onDraw;
 
     if (this.size.w <= 1) {
-      this.size.w = this.size.w * windowWidth;
+      this.size.w = this.size.w * canvasWidth;
     }
 
     if (this.size.h <= 1) {
-      this.size.h = this.size.h * windowHeight;
+      this.size.h = this.size.h * canvasHeight;
     }
 
     if (this.config.header) {
@@ -75,11 +75,11 @@ tr.gui.page = function(config) {
 
   this.computeSize = function () {
     if (this.config.size.w <= 1) {
-      this.size.w = this.config.size.w * windowWidth;
+      this.size.w = this.config.size.w * canvasWidth;
     }
 
     if (this.config.size.h <= 1) {
-      this.size.h = this.config.size.h * windowHeight;
+      this.size.h = this.config.size.h * canvasHeight;
     }
   },
 
@@ -123,13 +123,15 @@ tr.gui.page = function(config) {
         this.children[i].draw();
         this.translate(this.children[i].size.w, 0);
         shift.x += this.children[i].size.w;
-      } else {
+      } else if (i > 0) {
         this.translate(-shift.x, this.children[i - 1].size.h);
         shift.x = 0;
         shift.y += this.children[i - 1].size.h;
         this.children[i].draw();
         this.translate(0, this.children[i].size.h);
         shift.y += this.children[i].size.h;
+      } else {
+        this.children[i].draw();
       }
     }
     this.translate(-shift.x, -shift.y);

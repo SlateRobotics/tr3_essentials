@@ -4,14 +4,16 @@ if (!tr.gui) tr.gui = {};
 tr.gui.header = function(config) {
   this.id = config.id || "header";
   this.visible = true;
+  this.config = Object.assign({}, config);
   this.pos = {
       x: 0,
       y: 0
-    },
-    this.size = config.size || {
-      w: 1,
-      h: 50
     };
+  this.size = config.size || {
+    w: 1,
+    h: 50
+  };
+  this.config.size = Object.assign({}, this.size);
   this.text = config.text || "New App";
   this.padding = config.padding || 10;
   this.parent = config.parent;
@@ -30,7 +32,27 @@ tr.gui.header = function(config) {
     size: { w: 0, h: 0 }
   };
 
+  this.computeSize = function () {
+    if (this.config.size.w == "fill") {
+      var p = this.parent.translateState;
+      this.size.w = this.parent.size.w - p.x;
+    } else if (this.config.size.w <= 1) {
+      var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
+      this.size.w = this.config.size.w * parentWidth;
+    }
+
+    if (this.config.size.h == "fill") {
+      var p = this.parent.translateState;
+      this.size.h = this.parent.size.h - p.y;
+    } else if (this.config.size.h <= 1) {
+      var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0);
+      this.size.h = this.config.size.h * parentHeight;
+    }
+  }
+
   this.draw = function() {
+    this.computeSize();
+
     noStroke();
     fill(255);
     textSize(28)
