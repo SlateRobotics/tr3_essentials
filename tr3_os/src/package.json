@@ -6,6 +6,7 @@
   "dependencies": {
     "@aas395/numjs": "^0.16.3",
     "body-parser": "^1.19.0",
+    "chrome-killer": "^2.2.1",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "quaternion-to-euler": "^0.5.0",

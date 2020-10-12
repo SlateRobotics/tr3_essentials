@@ -18,6 +18,8 @@ tr.gui.component = function(componentConfig) {
       x: 0,
       y: 0
     };
+    this.config.pos = Object.assign({}, this.pos);
+
     this.positionAbsolute = {
       x: undefined,
       y: undefined
@@ -61,57 +63,9 @@ tr.gui.component = function(componentConfig) {
       this.componentConfig.defaults.bind(this)();
     }
 
-    var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
-    var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
-
     this.size = Object.assign({}, this.size);
-    if (this.size.w == "fill") {
-      var offset = 0;
-      var shift = {
-        x: 0,
-        y: 0
-      };
-
-      for (var i = 0; i < this.parent.children.length; i++) {
-        if (shift.x + this.parent.children[i].size.w <= this.parent.size.w) {
-          shift.x += this.parent.children[i].size.w;
-          offset += shift.x;
-        } else {
-          shift.x = this.parent.children[i].size.w;
-          shift.y += this.parent.children[i - 1].size.h;
-          offset = shift.x;
-        }
-      }
-      this.size.w = parentWidth - offset;
-    } else if (this.size.w <= 1) {
-      this.size.w = this.size.w * parentWidth;
-    }
-
-    if (this.size.h == "fill") {
-      var offset = 0;
-      var shift = {
-        x: 0,
-        y: 0
-      }
-
-      for (var i = 0; i < this.parent.children.length; i++) {
-        if (shift.x + this.parent.children[i].size.w <= this.parent.size.w) {
-          shift.x += this.parent.children[i].size.w;
-        } else {
-          shift.x = this.parent.children[i].size.w;
-          shift.y += this.parent.children[i - 1].size.h;
-          offset = shift.y;
-        }
-      }
-
-      if (shift.x >= parentWidth) {
-        offset = this.parent.children[this.parent.children.length - 1].size.h;
-      }
-
-      this.size.h = parentHeight - offset;
-    } else if (this.size.h <= 1) {
-      this.size.h = this.size.h * parentHeight;
-    }
+    this.config.size = Object.assign({}, this.size);
+    this.computeSize();
 
     if (!this.config.children) {
       this.config.children = [];
@@ -157,19 +111,29 @@ tr.gui.component = function(componentConfig) {
     this.setup(this.config);
   }
 
+  this.computeSize = function () {
+    if (this.config.size.w == "fill") {
+      var p = this.parent.translateState;
+      this.size.w = this.parent.size.w - p.x;
+    } else if (this.config.size.w <= 1) {
+      var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
+      this.size.w = this.config.size.w * parentWidth;
+    }
+
+    if (this.config.size.h == "fill") {
+      var p = this.parent.translateState;
+      this.size.h = this.parent.size.h - p.y;
+    } else if (this.config.size.h <= 1) {
+      var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0);
+      this.size.h = this.config.size.h * parentHeight;
+    }
+  }
+
   this.draw = function() {
     this.p5.stroke(0);
     this.p5.fill(this.background);
 
-    if (this.config.size && this.config.size.w == "fill") {
-      var parentWidth = (this.parent.size.w - this.parent.margin * 2.0 - this.parent.padding * 2.0);
-      this.size.w = parentWidth - this.parent.translateState.x;
-    }
-
-    if (this.config.size && this.config.size.h == "fill") {
-      var parentHeight = (this.parent.size.h - this.parent.margin * 2.0 - this.parent.padding * 2.0)
-      this.size.h = parentHeight - this.parent.translateState.y;
-    }
+    this.computeSize();
 
     var s = {};
     s.w = this.size.w - this.margin * 2.0;
@@ -212,10 +176,10 @@ tr.gui.component = function(componentConfig) {
     }
     for (var i = 0; i < this.children.length; i++) {
       if (shift.x + this.children[i].size.w <= this.size.w) {
-        if (this.children[i].config.pos && this.children[i].config.pos.y < 0) {
+        if (this.children[i].config.pos.y < 0) {
           this.children[i].pos.y = this.size.h + this.children[i].config.pos.y;
         }
-        if (this.children[i].config.pos && this.children[i].config.pos.x < 0) {
+        if (this.children[i].config.pos.x < 0) {
           this.children[i].pos.x = this.size.w + this.children[i].config.pos.x;
         }
         this.children[i].draw();

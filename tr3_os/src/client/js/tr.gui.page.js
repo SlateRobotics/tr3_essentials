@@ -13,6 +13,8 @@ tr.gui.page = function(config) {
       w: 1.0,
       h: 1.0
     };
+    this.config.size = Object.assign({}, this.size);
+
     this.margin = 0;
     this.padding = 0;
     this.header = {};
@@ -26,23 +28,17 @@ tr.gui.page = function(config) {
     this.onDraw = config.onDraw;
 
     if (this.size.w <= 1) {
-      this.size.w = this.size.w * canvasWidth;
+      this.size.w = this.size.w * windowWidth;
     }
 
     if (this.size.h <= 1) {
-      this.size.h = this.size.h * canvasHeight;
+      this.size.h = this.size.h * windowHeight;
     }
-
-    var bodySize = {
-      w: this.size.w,
-      h: this.size.h
-    };
 
     if (this.config.header) {
       this.config.header.id = "header";
       this.config.header.parent = this;
       this.children.push(new tr.gui.header(this.config.header));
-      bodySize.h -= this.children[0].size.h;
     }
 
     var container = new tr.gui.component(tr.gui.container);
@@ -50,9 +46,9 @@ tr.gui.page = function(config) {
       id: "body",
       parent: this,
       size: {
-        w: bodySize.w,
-        h: bodySize.h
-      }
+        w: 1.0,
+        h: "fill"
+      },
     });
     this.children.push(container);
 
@@ -77,8 +73,21 @@ tr.gui.page = function(config) {
     this.setup(this.config);
   }
 
+  this.computeSize = function () {
+    if (this.config.size.w <= 1) {
+      this.size.w = this.config.size.w * windowWidth;
+    }
+
+    if (this.config.size.h <= 1) {
+      this.size.h = this.config.size.h * windowHeight;
+    }
+  },
+
   this.draw = function() {
     background(this.background);
+
+    this.computeSize();
+
     this.drawChildren();
 
     if (this.onDraw) {

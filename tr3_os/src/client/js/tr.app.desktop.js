@@ -10,8 +10,8 @@ var desktop = {
   menuWidth: 400,
   menuHeight: 400,
   menuMargin: 20,
-  menuX: (864 - 400) - 20,
-  menuY: ((480 - 400) / 2),
+  menuX: 0,
+  menuY: 0,
 
   menuTransX: 0,
   menuTransXTarget: 0,
@@ -30,7 +30,10 @@ var desktop = {
 
   draw: function() {
     background('rgb(34,34,34)');
-    this.imageBackground.resize(canvasWidth, canvasHeight);
+
+    this.menuX = (windowWidth - 400) - 20;
+    this.menuY = ((windowHeight - 400) / 2);
+    this.imageBackground.resize(windowWidth, windowHeight);
     image(this.imageBackground, 0, 0);
 
     this.computeDrag();
@@ -117,8 +120,8 @@ var desktop = {
       this.appClick();
     }
 
-    var m = this.menuTransX % canvasWidth;
-    var p = -m / canvasWidth;
+    var m = this.menuTransX % windowWidth;
+    var p = -m / windowWidth;
     var n = 0;
 
     if (p > 0.25 && -this.menuTransX - -this.menuTransXStart > 0) {
@@ -129,14 +132,14 @@ var desktop = {
       n = -1;
     }
 
-    var pageNum = floor(this.menuTransX / canvasWidth) - n;
+    var pageNum = floor(this.menuTransX / windowWidth) - n;
     if (pageNum > 0) {
       pageNum = 0;
     } else if (pageNum < -floor((this.apps.length - 1) / (this.menuRows * this.menuCols))) {
       pageNum = -floor((this.apps.length - 1) / (this.menuRows * this.menuCols));
     }
 
-    this.menuTransXTarget = pageNum * canvasWidth;
+    this.menuTransXTarget = pageNum * windowWidth;
     this.menuTransXTargetStep = abs(this.menuTransXTarget - this.menuTransX) / 10.0;
   },
 
