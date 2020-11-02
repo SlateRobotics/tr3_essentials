@@ -63,7 +63,8 @@ class Encoder {
     int readPosition() {
       unsigned int dataOut = 0;
       digitalWrite(PIN_CS, LOW);
-      delayMicroseconds(1);
+      delayMicroseconds(1
+      );
     
       for(int x = 0; x < 12; x++){
         digitalWrite(PIN_CLOCK, LOW);
@@ -137,7 +138,7 @@ class Encoder {
       formatPosition();
     }
 
-    double getPrevPosition(int i) {
+    double getPrevPosition(int i = 0) {
       return prevPosition[i];
     }
 

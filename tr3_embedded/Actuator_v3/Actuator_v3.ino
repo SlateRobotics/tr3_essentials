@@ -1,4 +1,4 @@
-#define ACTUATOR_ID "a3"
+#define ACTUATOR_ID "a2"
 
 #define TR2_AN_SSID "TR2_AN_111222333"
 #define TR2_AN_PASS "MATHI78741"
@@ -30,7 +30,6 @@ void loop() {
   if (timer.ready()) {
     ControllerState* state = controller.getState();
     //Serial.println(state->toString());
-    //controller.printData();
     networking.step(ACTUATOR_ID, state);
   }
 

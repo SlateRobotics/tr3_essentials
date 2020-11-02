@@ -12,7 +12,7 @@ class Motor {
     int lastPreparedCommand[2] = {0, 0};
     int motorDirection = 0;
     unsigned long flagExecuteExpiration = millis();
-    int minSpeed = 10;
+    int minSpeed = 5;
     int maxSpeed = 100;
     int effort = 0;
     void setPinSpeed() {
@@ -38,6 +38,7 @@ class Motor {
     
     void setUp() {
       ledcSetup(0, 20000, 8);
+      //ledcSetup(0, 2000, 8);
       ledcAttachPin(pinEnable, 0);
       pinMode(pinDrive1, OUTPUT);
       pinMode(pinDrive2, OUTPUT);
@@ -96,7 +97,7 @@ class Motor {
     }
     
     void step(int s = 100) {
-      effort = 100;
+      effort = s;
       if (s > 0) {
         forward(abs(s));
       } else if (s < 0) {

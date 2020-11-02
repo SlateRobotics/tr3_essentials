@@ -11,11 +11,16 @@ class ControllerState {
     int rotations = 0;
     float effort = 0.0; // -100 -> 100
     float velocity = 0.0; // Radians per second
+    float acceleration = 0.0;
     float torque = 0.0; // Newton-Meters
     float accel[3] = {0, 0, 0}; // x, y, z (meter/sec^2)
     float gyro[3] = {0, 0, 0}; // x, y, z (rad/sec)
     float mag[3] = {0, 0, 0}; // x, y, z (uT, microtesla)
     float temp = 0.0; // celsius
+
+    void compute () {
+      
+    }
   
     String toString() {
       String result = "";

@@ -71,7 +71,11 @@ class Controller {
 
     double pidVelInput = 0.0;
     double pidVelSetpoint = 0.0;
-    PID pidVel = PID(&pidVelInput, &pidPwrSetpoint, &pidVelSetpoint, 0.1, 1.0, 0.0, DIRECT);
+    PID pidVel = PID(&pidVelInput, &pidTrqSetpoint, &pidVelSetpoint, 0.1, 1.0, 0.0, DIRECT);
+
+    double pidTrqInput = 0.0;
+    double pidTrqSetpoint = 0.0;
+    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.3, 0.2, 0.0, DIRECT);
 
     double pidPwrSetpoint = 0.0;
 
@@ -125,8 +129,6 @@ class Controller {
 
       bool upDrive = encoderDrive.isUp();
       if (prevUpDrive != upDrive) {
-        Serial.print("updating eeprom, encoder drive up: ");
-        Serial.println(upDrive);
         storage.writeBool(EEADDR_ENC_D_UP, upDrive);
         storage.commit();
         prevUpDrive = upDrive;
@@ -141,8 +143,6 @@ class Controller {
 
       bool upOutput = encoderOutput.isUp();
       if (prevUpOutput != upOutput) {
-        Serial.print("updating eeprom, encoder output up: ");
-        Serial.println(upOutput);
         storage.writeBool(EEADDR_ENC_O_UP, upOutput);
         storage.commit();
         prevUpOutput = upOutput;
@@ -158,7 +158,22 @@ class Controller {
       state.position = positionOutput;
       state.rotations = encoderOutput.getRotations();
       state.effort = motor.getEffort();
-      state.torque = positionDiffFiltered * 220.0;
+
+      float t = positionDrive * 1.0;
+      if (t > PI) {
+        t -= TAU;
+      }
+
+      float deadzone = 0.000;
+      if (abs(t) < deadzone) {
+        t = 0;
+      } else if (t >= deadzone) {
+        t -= deadzone;
+      } else if (t <= -deadzone) {
+        t += deadzone;
+      }
+      
+      state.torque = t * -100.0;
 
       long timeDiff = encoderOutput.getPrevPositionTS(0) - encoderOutput.getPrevPositionTS(1);
       double dif = encoderOutput.getPrevPosition(0) - encoderOutput.getPrevPosition(1);
@@ -179,6 +194,7 @@ class Controller {
       }
       velocityReads[0] = vel;
 
+      state.acceleration = (velSum / velocityReadSize) - state.velocity;
       state.velocity = velSum / velocityReadSize;
 
       if (imuTimer.ready()) {
@@ -341,9 +357,14 @@ class Controller {
       pidPos.SetOutputLimits(-1, 1);
       
       pidVel.SetMode(AUTOMATIC);
-      pidVel.SetOutputLimits(-1, 1);
-      pidVel.SetIThresh(1.0);
+      pidVel.SetOutputLimits(-40, 40);
+      pidVel.SetIThresh(40.0);
       pidVel.DisableIClamp();
+      
+      pidTrq.SetMode(AUTOMATIC);
+      pidTrq.SetOutputLimits(-1, 1);
+      pidTrq.SetIThresh(1.0);
+      pidTrq.DisableIClamp();
     }
 
     ControllerState* getState () {
@@ -398,7 +419,7 @@ class Controller {
       } else if (mode == MODE_ROTATE) {
         step_rotate();
       } else if (mode == MODE_BACKDRIVE) {
-        step_backdrive();
+        step_torque();
       } else if (mode == MODE_SERVO) {
         step_servo();
       } else if (mode == MODE_VELOCITY) {
@@ -408,6 +429,21 @@ class Controller {
       } else {
         step_stop();
       }
+
+      float p = encoderDrive.getAngleRadians();
+      if (p > PI) {
+        p -= TAU;
+      }
+
+      Serial.print(encoderDrive.getPrevPosition());
+      Serial.print(", ");
+      Serial.print(p, 8);
+      Serial.print(", ");
+      Serial.print(state.torque);
+      Serial.print(", ");
+      Serial.print(pidTrqSetpoint);
+      Serial.print(", ");
+      Serial.println(pidPwrSetpoint);
     }
 
     void step_imu () {
@@ -429,35 +465,7 @@ class Controller {
       led.pulse(LED_CYAN);
       motor.executePreparedCommand();
     }
-
-    void step_backdrive () {
-      led.pulse(LED_YELLOW);
-
-      if (ACTUATOR_ID == "g0") {
-        return;
-      }
-      
-      if (abs(state.torque) < 2) {
-        motor.step(0);
-      } else {
-        int m = state.torque * 7.5;
-
-        if (ACTUATOR_ID == "b0") {
-          m = m * 3.0;
-        } else if (ACTUATOR_ID == "b1") {
-          m = m * -3.0;
-        }
-        
-        if (m < -100) {
-          m = -100;
-        } else if (m > 100) {
-          m = 100;
-        }
-        
-        motor.step(m);
-      }
-    }
-
+    
     void step_servo () {
       led.pulse(LED_MAGENTA);
 
@@ -500,14 +508,24 @@ class Controller {
         return;
       }
 
-      if (abs(pidVelSetpoint) > 0.01) {
-        pidVelInput = state.velocity;
-        pidVel.Compute();
-        motor.step(pidPwrSetpoint * 100.0);
-      } else {
-        pidVel.clear();
-        motor.stop();
+      pidVelInput = state.velocity;
+      pidVel.Compute();
+
+      step_torque(false);
+    }
+
+    void step_torque (bool pulseLED = true) {
+      if (pulseLED == true) {
+        led.pulse(LED_YELLOW);
       }
+
+      if (ACTUATOR_ID == "g0") {
+        return;
+      }
+
+      pidTrqInput = state.torque;
+      pidTrq.Compute();
+      motor.step(pidPwrSetpoint * 100.0);
     }
 
     void step_calibrate() {
@@ -607,6 +625,8 @@ class Controller {
         pidPosSetpoint = (double)state.position;
       } else if (mode == MODE_VELOCITY) {
         pidVelSetpoint = 0;
+      } else if (mode == MODE_BACKDRIVE) {
+        pidTrqSetpoint = 0;
       }
     }
 
@@ -649,6 +669,8 @@ class Controller {
       pidVelSetpoint = (param / 100.0) - 10.0;
 
       pidVel.clear();
+
+       
       
       if (mode != MODE_STOP) {
         mode = MODE_VELOCITY;
