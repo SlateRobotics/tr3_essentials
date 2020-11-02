@@ -3,9 +3,10 @@ tr.controls.settings.btnTogglePower = function() {
     id: "container-toggle-power",
     type: "container",
     size: {
-      w: 0.5,
-      h: 75
+      w: 1,
+      h: 125
     },
+    margin: 15,
     background: "green",
     onDraw: function () {
       var p0 = tr.data.getState("p0");

@@ -10,8 +10,8 @@ var desktop = {
   menuWidth: 400,
   menuHeight: 400,
   menuMargin: 20,
-  menuX: (864 - 400) - 20,
-  menuY: ((480 - 400) / 2),
+  menuX: 0,
+  menuY: 0,
 
   menuTransX: 0,
   menuTransXTarget: 0,
@@ -30,6 +30,9 @@ var desktop = {
 
   draw: function() {
     background('rgb(34,34,34)');
+
+    this.menuX = (canvasWidth - 400) - 20;
+    this.menuY = ((canvasHeight - 400) / 2);
     this.imageBackground.resize(canvasWidth, canvasHeight);
     image(this.imageBackground, 0, 0);
 

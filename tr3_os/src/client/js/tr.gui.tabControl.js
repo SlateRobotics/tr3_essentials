@@ -15,10 +15,6 @@ tr.gui.tabControl = {
       parent: this,
       margin: this.margin,
       padding: this.padding,
-      size: {
-        w: 1,
-        h: 1
-      },
       children: [buttons, page]
     });
     this.children.push(container);

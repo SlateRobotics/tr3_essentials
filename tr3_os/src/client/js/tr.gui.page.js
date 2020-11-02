@@ -13,6 +13,8 @@ tr.gui.page = function(config) {
       w: 1.0,
       h: 1.0
     };
+    this.config.size = Object.assign({}, this.size);
+
     this.margin = 0;
     this.padding = 0;
     this.header = {};
@@ -33,16 +35,10 @@ tr.gui.page = function(config) {
       this.size.h = this.size.h * canvasHeight;
     }
 
-    var bodySize = {
-      w: this.size.w,
-      h: this.size.h
-    };
-
     if (this.config.header) {
       this.config.header.id = "header";
       this.config.header.parent = this;
       this.children.push(new tr.gui.header(this.config.header));
-      bodySize.h -= this.children[0].size.h;
     }
 
     var container = new tr.gui.component(tr.gui.container);
@@ -50,9 +46,9 @@ tr.gui.page = function(config) {
       id: "body",
       parent: this,
       size: {
-        w: bodySize.w,
-        h: bodySize.h
-      }
+        w: 1.0,
+        h: "fill"
+      },
     });
     this.children.push(container);
 
@@ -77,8 +73,21 @@ tr.gui.page = function(config) {
     this.setup(this.config);
   }
 
+  this.computeSize = function () {
+    if (this.config.size.w <= 1) {
+      this.size.w = this.config.size.w * canvasWidth;
+    }
+
+    if (this.config.size.h <= 1) {
+      this.size.h = this.config.size.h * canvasHeight;
+    }
+  },
+
   this.draw = function() {
     background(this.background);
+
+    this.computeSize();
+
     this.drawChildren();
 
     if (this.onDraw) {
@@ -114,13 +123,15 @@ tr.gui.page = function(config) {
         this.children[i].draw();
         this.translate(this.children[i].size.w, 0);
         shift.x += this.children[i].size.w;
-      } else {
+      } else if (i > 0) {
         this.translate(-shift.x, this.children[i - 1].size.h);
         shift.x = 0;
         shift.y += this.children[i - 1].size.h;
         this.children[i].draw();
         this.translate(0, this.children[i].size.h);
         shift.y += this.children[i].size.h;
+      } else {
+        this.children[i].draw();
       }
     }
     this.translate(-shift.x, -shift.y);

@@ -1,6 +1,3 @@
-var canvasWidth = 864;
-var canvasHeight = 480;
-
 var appSelected = -1;
 
 tr.fonts = {};
@@ -23,9 +20,28 @@ function preload() {
   tr.links.h1 = loadModel("/stl/xt-hd-b.stl");
 }
 
+var documentFullScreen = false;
+document.onclick = function () {
+  if (!documentFullScreen) {
+    document.documentElement.requestFullscreen();
+    documentFullScreen = true;
+  }
+}
+
+window.onload = function () {
+  resizeCanvas();
+}
+
+var canvasWidth = 640;
+var canvasHeight = 480;
+
 function setup() {
   tr.data.setup();
 
+  canvasWidth = windowWidth;
+  canvasHeight = windowHeight;
+  if (canvasWidth < 640) canvasWidth = 640;
+  if (canvasHeight < 480) canvasHeight = 480;
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
   // for some stupid reason this is necessary to get certain font sizes to load correctly
@@ -72,6 +88,14 @@ function mouseReleased() {
   if (event.type == 'mouseup' && lastReleaseEvent == 'touchend') return;
   getSelectedApp().mouseReleased();
   lastReleaseEvent = event.type;
+}
+
+function windowResized() {
+  canvasWidth = windowWidth;
+  canvasHeight = windowHeight;
+  if (canvasWidth < 640) canvasWidth = 640;
+  if (canvasHeight < 480) canvasHeight = 480;
+  resizeCanvas(canvasWidth, canvasHeight)
 }
 
 function mouseClicked() {

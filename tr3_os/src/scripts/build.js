@@ -5,9 +5,9 @@ var fs = require('fs');
 
 var buildFileName = "tr.build.js";
 
-var build = "";
-
 function buildIt () {
+  var build = "";
+
   function buildFiles (root, files) {
     files.forEach(function (file) {
       var stat = fs.statSync(path.join(root, file));
@@ -15,7 +15,7 @@ function buildIt () {
         var dir_files = fs.readdirSync(path.join(root, file));
         buildFiles(path.join(root, file), dir_files);
       } else {
-        if (path.join(root, file).includes("tr.") && file != buildFileName) {
+        if (path.join(root, file).includes("tr.") && !file.endsWith(buildFileName)) {
           build += fs.readFileSync(path.join(root, file), 'utf8');
         }
       }
