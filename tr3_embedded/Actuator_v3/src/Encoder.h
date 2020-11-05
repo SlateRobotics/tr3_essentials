@@ -1,6 +1,8 @@
 #ifndef EMS22A_H
 #define EMS22A_H
 
+#include "Storage.h"
+
 class Encoder {
   private:
     int PIN_CLOCK;
@@ -8,16 +10,30 @@ class Encoder {
     int PIN_CS;
 
     uint16_t encoderResolution = 4096;
-    static const int prevPositionN = 2;
+
+    static const int prevPositionN = 16;
     double prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
+
+    static const int prevVelocityN = 4;
+    double prevVelocity[prevVelocityN];
+    long prevVelocityTS[prevVelocityN];
+
     double pos = 0;
+    double velocity = 0;
+    double acceleration = 0;
+
     double ratio = 1.0;
     uint16_t offset = 0;
 
     double inl = 0.0139626; // integral non-linearity
 
     int rotations = 0;
+
+    bool prevUp = false;
+    float prevLap = 0.0;
+    bool flagUp = false;
+    bool flagLap = false;
 
     void formatPosition() {
       double maxPos = ratio * (double)encoderResolution;
@@ -31,6 +47,11 @@ class Encoder {
     }
   
   public:
+    int EEADDR_ENC_OFFSET = -1;
+    int EEADDR_ENC_UP = -1;
+    int EEADDR_ENC_LAP = -1;
+    Storage* storage;
+
     Encoder(int pCs, int pClock, int pData) {
       PIN_CS = pCs;
       PIN_CLOCK = pClock;
@@ -55,6 +76,39 @@ class Encoder {
       readPosition();
       pos = prevPosition[0];
     }
+
+    void configure () {
+        readPosition();
+        int encOffset = storage->readUInt16(EEADDR_ENC_OFFSET);
+        double encLap = storage->readDouble(EEADDR_ENC_LAP);
+        bool encUp = storage->readBool(EEADDR_ENC_UP);
+
+        if (encUp == true && isUp() == false) {
+          encLap += 1;
+        } else if (encUp == false && isUp() == true) {
+          encLap -= 1;
+        }
+
+        setOffset(encOffset);
+        reconstruct(encLap);
+    }
+    
+    void step() {
+      readPosition();
+      writeChanges();
+    }
+
+    void writeChanges() {
+      if (upChanged()) {
+        storage->writeBool(EEADDR_ENC_UP, isUp());
+        storage->commit();
+      }
+
+      if (lapChanged()) {
+        storage->writeDouble(EEADDR_ENC_LAP, getLap());
+        storage->commit();
+      }
+    }
     
     void setOffset(uint16_t o) {
       offset = o;
@@ -75,13 +129,9 @@ class Encoder {
       }
     
       digitalWrite(PIN_CS, HIGH);
-      
-      prevPosition[1] = prevPosition[0];
-      prevPosition[0] = dataOut;
-
-      prevPositionTS[1] = prevPositionTS[0];
-      prevPositionTS[0] = millis();
       delayMicroseconds(1);
+
+      recordPosition(dataOut);
       
       int16_t dif = prevPosition[0] - prevPosition[1];
       if (dif < -encoderResolution / 2) {
@@ -90,14 +140,84 @@ class Encoder {
         dif = dif - encoderResolution;
       }
 
+      long timeDiff = getPrevPositionTS(0) - getPrevPositionTS(1);
+      double posDiff = dif / (getRatio() * getEncoderResolution()) * TAU;
+      float vel = posDiff / (timeDiff / 1000.0);
+      recordVelocity(vel);
+
       pos += dif;
       formatPosition();
       
       return dataOut;
     }
-    
-    void step() {
-      readPosition();
+
+    bool lapChanged () {
+      if (flagLap) {
+        flagLap = false;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    bool upChanged () {
+      if (flagUp) {
+        flagUp = false;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    void checkLap () {
+      double lap = getLap();
+      if (abs(prevLap - lap) > 0.01) {
+        flagLap = true;
+        prevLap = lap;
+      }
+    }
+
+    void checkUp () {
+      bool up = isUp();
+      if (prevUp != up) {
+        flagUp = true;
+        prevUp = up;
+      }
+    }
+
+    void recordPosition (unsigned int data) {
+      for (int i = prevPositionN - 1; i > 0; i--) {
+        prevPosition[i] = prevPosition[i - 1];
+        prevPositionTS[i] = prevPositionTS[i - 1];
+      }
+
+      prevPosition[0] = data;
+      prevPositionTS[0] = millis();
+    }
+
+    void recordVelocity (double vel) {
+      double velSum = vel;
+
+      for (int i = prevVelocityN - 1; i > 0; i--) {
+        velSum += prevVelocity[i];
+        prevVelocity[i] = prevVelocity[i - 1];
+        prevVelocityTS[i] = prevVelocityTS[i - 1];
+      }
+
+      double newVel = velSum / (double)prevPositionN;
+      acceleration = newVel - velocity;
+      velocity = newVel;
+
+      prevVelocity[0] = vel;
+      prevVelocityTS[0] = millis();
+    }
+
+    double getAcceleration () {
+      return acceleration;
+    }
+
+    double getVelocity () {
+      return velocity;
     }
 
     bool isUp() {
@@ -131,6 +251,9 @@ class Encoder {
       
       pos = lap * encoderResolution + ((double)prevPosition[0] - (double)offset);
       formatPosition();
+
+      prevUp = isUp();
+      prevLap = getLap();
     }
 
     void addPosition (double o) {

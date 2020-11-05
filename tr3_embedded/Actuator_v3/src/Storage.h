@@ -5,26 +5,19 @@
 
 #define EEADDR_EE_SET_1 0
 #define EEADDR_EE_SET_2 1
-#define EEADDR_ENC_O_OFFSET 2
-#define EEADDR_ENC_D_OFFSET 4
+#define EEADDR_ENC_OUT_OFFSET 2
+#define EEADDR_ENC_TRQ_OFFSET 4
 #define EEADDR_MTR_FLIP 6
 #define EEADDR_SEA_SPRING_RATE 7
-#define EEADDR_ENC_O_UP 9
-#define EEADDR_ENC_O_POS 10
-#define EEADDR_ENC_O_LAP 55
-#define EEADDR_ENC_D_UP 18
-#define EEADDR_ENC_D_POS 19
-#define EEADDR_ENC_D_LAP 63
-#define EEADDR_REG_C1_1 27
-#define EEADDR_REG_C1_2 31
-#define EEADDR_REG_C1_3 35
-#define EEADDR_REG_C2_1 39
-#define EEADDR_REG_C2_2 43
-#define EEADDR_REG_C2_3 47
-#define EEADDR_REG_OFFSET 51
-#define EEADDR_PID_P 71
-#define EEADDR_PID_I 75
-#define EEADDR_PID_D 79
+#define EEADDR_ENC_OUT_UP 9
+#define EEADDR_ENC_OUT_POS 10
+#define EEADDR_ENC_OUT_LAP 55
+#define EEADDR_ENC_TRQ_UP 18
+#define EEADDR_ENC_TRQ_POS 19
+#define EEADDR_ENC_TRQ_LAP 63
+#define EEADDR_PID_POS_P 71
+#define EEADDR_PID_VEL_P 75
+#define EEADDR_PID_VEL_I 79
 
 #define EE_SET_1 0x51
 #define EE_SET_2 0x22
@@ -35,21 +28,21 @@ class Storage {
   private:
 
   public:
-    bool setUp() {
+    bool begin() {
       return EEPROM.begin(EEPROM_SIZE);
     }
 
     void configure () {
       writeUInt8(EEADDR_EE_SET_1, EE_SET_1);
       writeUInt8(EEADDR_EE_SET_2, EE_SET_2);
-      writeUInt16(EEADDR_ENC_O_OFFSET, 0);
-      writeUInt16(EEADDR_ENC_D_OFFSET, 0);
+      writeUInt16(EEADDR_ENC_OUT_OFFSET, 0);
+      writeUInt16(EEADDR_ENC_TRQ_OFFSET, 0);
       writeBool(EEADDR_MTR_FLIP, false);
-      writeUInt16(EEADDR_SEA_SPRING_RATE, 882);
-      writeBool(EEADDR_ENC_O_UP, false);
-      writeFloat(EEADDR_ENC_O_POS, 0.0);
-      writeBool(EEADDR_ENC_D_UP, false);
-      writeFloat(EEADDR_ENC_D_POS, 0.0);
+      writeUInt16(EEADDR_SEA_SPRING_RATE, 75);
+      writeBool(EEADDR_ENC_OUT_UP, false);
+      writeFloat(EEADDR_ENC_OUT_POS, 0.0);
+      writeBool(EEADDR_ENC_TRQ_UP, false);
+      writeFloat(EEADDR_ENC_TRQ_POS, 0.0);
       commit();
     }
 

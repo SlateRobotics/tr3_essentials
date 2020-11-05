@@ -1,8 +1,4 @@
-#define ACTUATOR_ID "a2"
-
-#define TR2_AN_SSID "TR2_AN_111222333"
-#define TR2_AN_PASS "MATHI78741"
-
+#include "Config.h"
 #include "Controller.h"
 #include "Network.h"
 #include "Timer.h"
@@ -29,7 +25,6 @@ void setup() {
 void loop() { 
   if (timer.ready()) {
     ControllerState* state = controller.getState();
-    //Serial.println(state->toString());
     networking.step(ACTUATOR_ID, state);
   }
 

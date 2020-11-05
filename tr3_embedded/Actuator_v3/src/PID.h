@@ -9,8 +9,6 @@
 #define P_ON_M 0
 #define P_ON_E 1
 
-#include "Arduino.h"
-
 class PID {
   private:
     double dispKp;
