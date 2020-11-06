@@ -23,17 +23,15 @@ class Controller {
 
     double pidPosInput = 0.0;
     double pidPosSetpoint = 0.0;
-    PID pidPos = PID(&pidPosInput, &pidVelSetpoint, &pidPosSetpoint, 1.0, 0.0, 0.0, DIRECT);
-
     double pidVelInput = 0.0;
     double pidVelSetpoint = 0.0;
-    PID pidVel = PID(&pidVelInput, &pidTrqSetpoint, &pidVelSetpoint, 0.1, 1.0, 0.0, DIRECT);
-
     double pidTrqInput = 0.0;
     double pidTrqSetpoint = 0.0;
-    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.4, 0.5, 0.0, DIRECT);
-
     double pidPwrSetpoint = 0.0;
+
+    PID pidPos = PID(&pidPosInput, &pidVelSetpoint, &pidPosSetpoint, 8.500, 0.000, 0.000, DIRECT);
+    PID pidVel = PID(&pidVelInput, &pidTrqSetpoint, &pidVelSetpoint, 4.000, 4.000, 0.000, DIRECT);
+    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.300, 0.050, 0.000, DIRECT);
 
     long velTrajectoryStart = 0;
     long velTrajectoryDuration = 0;

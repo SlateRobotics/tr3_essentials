@@ -47,8 +47,8 @@
 
 #define PIN_FAN 2
 
-#define VELOCITY_MIN -1.75
-#define VELOCITY_MAX 1.75
+#define VELOCITY_MIN -0.942
+#define VELOCITY_MAX 0.942
 
 #define TORQUE_MIN -40.0
 #define TORQUE_MAX 40.0

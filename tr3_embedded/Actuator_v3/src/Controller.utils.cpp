@@ -16,7 +16,7 @@ void Controller::computeState () {
 
     float torque = encoderTorque.getAngleRadians();
     if (torque > PI) { torque -= TAU; }
-    state.torque = torque * -75.0;
+    state.torque = torque * -350.0;
 
     if (imuTimer.ready()) {
         step_imu();

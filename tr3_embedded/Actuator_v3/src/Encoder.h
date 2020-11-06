@@ -11,6 +11,10 @@ class Encoder {
 
     uint16_t encoderResolution = 4096;
 
+    static const int prevAngleN = 4;
+    double prevAngle[prevAngleN];
+    long prevAngleTS[prevAngleN];
+
     static const int prevPositionN = 16;
     double prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
@@ -148,6 +152,9 @@ class Encoder {
       pos += dif;
       formatPosition();
       
+      double a = getAngleRadians();
+      recordAngle();
+      
       return dataOut;
     }
 
@@ -184,7 +191,7 @@ class Encoder {
         prevUp = up;
       }
     }
-
+ 
     void recordPosition (unsigned int data) {
       for (int i = prevPositionN - 1; i > 0; i--) {
         prevPosition[i] = prevPosition[i - 1];
@@ -199,12 +206,12 @@ class Encoder {
       double velSum = vel;
 
       for (int i = prevVelocityN - 1; i > 0; i--) {
-        velSum += prevVelocity[i];
         prevVelocity[i] = prevVelocity[i - 1];
         prevVelocityTS[i] = prevVelocityTS[i - 1];
+        velSum += prevVelocity[i];
       }
 
-      double newVel = velSum / (double)prevPositionN;
+      double newVel = velSum / (double)prevVelocityN;
       acceleration = newVel - velocity;
       velocity = newVel;
 
@@ -281,8 +288,28 @@ class Encoder {
     }
     
     double getAngleRadians() {
+      return prevAngle[0];
+    }
+
+    void recordAngle () {
       double err_estimate = getErrorEstimate();
-      return pos / (ratio * encoderResolution) * TAU - err_estimate;
+      double a = pos / (ratio * encoderResolution) * TAU - err_estimate;
+      
+      for (int i = prevAngleN - 1; i > 0; i--) {
+        prevAngle[i] = prevAngle[i - 1];
+        prevAngleTS[i] = prevAngleTS[i - 1];
+      }
+
+      prevAngle[0] = a;
+      prevAngleTS[0] = millis();
+    }
+
+    double getAverageAngle() {
+      double sum = 0;
+      for (int i = 0; i < prevAngleN; i++) {
+        sum += prevAngle[i];
+      }
+      return sum / (double)prevAngleN;
     }
 
     int getRotations () {

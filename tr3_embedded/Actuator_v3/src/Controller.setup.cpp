@@ -30,7 +30,7 @@ void Controller::setUp () {
     
     pidTrq.SetMode(AUTOMATIC);
     pidTrq.SetOutputLimits(-1, 1);
-    pidTrq.SetIThresh(1.0);
+    pidTrq.SetIThresh(0.5);
     pidTrq.DisableIClamp();
 
     setUpConfig();

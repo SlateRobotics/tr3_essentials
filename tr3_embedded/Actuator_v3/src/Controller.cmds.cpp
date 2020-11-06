@@ -76,9 +76,6 @@ void Controller::cmd_setPosition (NetworkPacket packet) {
         velTrajectoryDuration = dur;
         planVelTrajectory();
         velTrajectoryStart = millis();
-
-        pidPos.clear();
-        pidVel.clear();
     }
 
     if (mode != MODE_STOP) {
