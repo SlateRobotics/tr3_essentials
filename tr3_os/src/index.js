@@ -12,7 +12,6 @@ var actionlibMsgs = rosnodejs.require('actionlib_msgs');
 var tr3Msgs = rosnodejs.require('tr3_msgs');
 var qte = require('quaternion-to-euler');
 var nj = require('@aas395/numjs');
-var chromeKiller = require('chrome-killer');
 
 var app = express();
 
