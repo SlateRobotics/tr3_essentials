@@ -9,8 +9,6 @@
 #define P_ON_M 0
 #define P_ON_E 1
 
-#include "Arduino.h"
-
 class PID {
   private:
     double dispKp;
@@ -61,46 +59,36 @@ class PID {
     
     bool Compute () {
       if (!inAuto) return false;
-      unsigned long now = millis();
-      unsigned long timeChange = (now - lastTime);
-      if (timeChange >= SampleTime) {
-        double input = *myInput;
-        double setpoint = *mySetpoint;
-        double error = *mySetpoint - input;
-        double dInput = abs(PI - abs(abs(input - lastInput) - PI));
-        double output;
-    
-        outputSum += (ki * error);
-    
-        if (disableIClamp == false && abs(error) > iClamp) {
-          outputSum = 0;
-        }
-    
-        if (outputSum > iThresh) {
-          outputSum = iThresh;
-        } else if (outputSum < -iThresh) {
-          outputSum = -iThresh;
-        }
-    
-        double derivative = kd * dInput;
-        if (error < 0) {
-          derivative *= -1;
-        }
-    
-        output = kp * error;
-        output += outputSum;
-        output -= derivative;
-        
-        if (output > outMax) output = outMax;
-        else if (output < outMin) output = outMin;
-        *myOutput = output;
-    
-        lastSetpoint = setpoint;
-        lastInput = input;
-        lastTime = now;
-        return true;
+      double input = *myInput;
+      double setpoint = *mySetpoint;
+      double error = *mySetpoint - input;
+      double dInput = input - lastInput;
+      double output;
+  
+      outputSum += (ki * error);
+  
+      if (disableIClamp == false && abs(error) > iClamp) {
+        outputSum = 0;
       }
-      else return false;
+  
+      if (outputSum > iThresh) {
+        outputSum = iThresh;
+      } else if (outputSum < -iThresh) {
+        outputSum = -iThresh;
+      }
+  
+      output = kp * error;
+      output += outputSum;
+      output -= kd * dInput;
+      
+      if (output > outMax) output = outMax;
+      else if (output < outMin) output = outMin;
+      *myOutput = output;
+  
+      lastSetpoint = setpoint;
+      lastInput = input;
+      lastTime = millis();
+      return true;
     }
 
     void SetMode(int Mode) {
