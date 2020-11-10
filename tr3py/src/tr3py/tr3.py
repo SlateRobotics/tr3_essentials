@@ -74,16 +74,10 @@ class TR3:
         self.powerup()
         print("TR3 ready")
 
-        self.b0.updatePID()
-        self.b1.updatePID()
-        self.a0.updatePID()
-        self.a1.updatePID()
-        self.a2.updatePID()
-        self.a3.updatePID()
-        self.a4.updatePID()
-        self.g0.updatePID()
-        self.h0.updatePID()
-        self.h1.updatePID()
+        for j in self.joints:
+            getattr(self, j).updatePID_pos()
+            getattr(self, j).updatePID_vel()
+            getattr(self, j).updatePID_trq()
 
     def setupConfig(self):
         dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -99,31 +93,19 @@ class TR3:
 
         with open(self.tr3_config_path, 'r') as stream:
             config = yaml.safe_load(stream)
-            self.a0._pid = config['tr3']['joints']['a0']['pid']
-            self.a1._pid = config['tr3']['joints']['a1']['pid']
-            self.a2._pid = config['tr3']['joints']['a2']['pid']
-            self.a3._pid = config['tr3']['joints']['a3']['pid']
-            self.a4._pid = config['tr3']['joints']['a4']['pid']
-            self.g0._pid = config['tr3']['joints']['g0']['pid']
-            self.h0._pid = config['tr3']['joints']['h0']['pid']
-            self.h1._pid = config['tr3']['joints']['h1']['pid']
-            self.b0._pid = config['tr3']['joints']['b0']['pid']
-            self.b1._pid = config['tr3']['joints']['b1']['pid']
+            for j in self.joints:
+                setattr(self, j + '._pid_pos', config['tr3']['joints'][j]['pid_pos'])
+                setattr(self, j + '._pid_vel', config['tr3']['joints'][j]['pid_vel'])
+                setattr(self, j + '._pid_trq', config['tr3']['joints'][j]['pid_trq'])
 
     def savePID(self):
         with open(self.tr3_config_path, 'r') as stream:
             config = yaml.safe_load(stream)
             try:
-                config['tr3']['joints']['a0']['pid'] = self.a0._pid
-                config['tr3']['joints']['a1']['pid'] = self.a1._pid
-                config['tr3']['joints']['a2']['pid'] = self.a2._pid
-                config['tr3']['joints']['a3']['pid'] = self.a3._pid
-                config['tr3']['joints']['a4']['pid'] = self.a4._pid
-                config['tr3']['joints']['g0']['pid'] = self.g0._pid
-                config['tr3']['joints']['h0']['pid'] = self.h0._pid
-                config['tr3']['joints']['h1']['pid'] = self.h1._pid
-                config['tr3']['joints']['b0']['pid'] = self.b0._pid
-                config['tr3']['joints']['b1']['pid'] = self.b1._pid
+                for j in self.joints:
+                    config['tr3']['joints'][j]['pid_pos'] = getattr(self, j + '._pid_pos')
+                    config['tr3']['joints'][j]['pid_vel'] = getattr(self, j + '._pid_vel')
+                    config['tr3']['joints'][j]['pid_trq'] = getattr(self, j + '._pid_trq')
 
                 with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
                     yaml.dump(config, f, default_flow_style=False, allow_unicode=True)

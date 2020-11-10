@@ -51,16 +51,19 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/pid/set", Float32MultiArray, getattr(self, "pid_" + j))
             rospy.Subscriber("/tr3/joints/" + j + "/stop", Bool, getattr(self, "stop_" + j))
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/position\", ActuatorPositionCommand, self.pos_" + j + ")")
+            exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/velocity\", Float64, self.vel_" + j + ")")
             rospy.Subscriber("/tr3/joints/" + j + "/control/effort", Float64, getattr(self, "effort_" + j))
 
             setattr(self, "tr3_state_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/state", ActuatorState, queue_size=1))
-            setattr(self, "tr3_pid_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_pos", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_vel_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_vel", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_trq_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_trq", Float32MultiArray, queue_size=1))
 
         self.tr3_odom_pub = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
         self.tr3_state_pub = rospy.Publisher("/tr3/state", JointState, queue_size=1)
         self.tr3.state_change = self.tr3_state_change
 
-        rospy.Timer(rospy.Duration(1), self.publish_pid)
+        rospy.Timer(rospy.Duration(0.1), self.publish_pid)
 
     def shutdown(self, d):
         if bool(d) == True:
@@ -96,6 +99,9 @@ class TR3_Node:
                 self.tr3.release()
             else:
                 j.release()
+
+    def vel(self, d, j):
+        j.setVelocity(d)
 
     def pos(self, d, j):
         j.setPosition(d.position, d.duration)
@@ -189,9 +195,10 @@ class TR3_Node:
                 actuator_state.rotations = int(state[2][i])
                 actuator_state.effort = state[3][i]
                 actuator_state.velocity = state[4][i]
-                actuator_state.mode = int(state[5][i])
-                actuator_state.stop = bool(state[6][i])
-                actuator_state.temperature = state[7][i]
+                actuator_state.torque = state[5][i]
+                actuator_state.mode = int(state[6][i])
+                actuator_state.stop = bool(state[7][i])
+                actuator_state.temperature = state[8][i]
                 pub.publish(actuator_state)
 
     	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.tr3.pos_th)
@@ -207,7 +214,7 @@ class TR3_Node:
     	odom.child_frame_id = "base_link"
     	odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
 
-            # publish the message
+        # publish the message
     	br = tf.TransformBroadcaster()
     	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
     	#br = tf.TransformBroadcaster()
@@ -220,8 +227,12 @@ class TR3_Node:
     def publish_pid(self, event):
         m = Float32MultiArray()
         for j in self.tr3.joints:
-            m.data = getattr(self.tr3, j)._pid
-            getattr(self, "tr3_pid_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_pos
+            getattr(self, "tr3_pid_pos_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_vel
+            getattr(self, "tr3_pid_vel_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_trq
+            getattr(self, "tr3_pid_trq_" + j + "_pub").publish(m)
 
     def spin(self):
         self.tr3.spin()
@@ -234,6 +245,7 @@ for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
     exec("def flip_" + j + "(self, msg): self.flip(bool(msg.data), self.tr3." + j + ")")
     exec("def stop_" + j + "(self, msg): self.stop(msg.data, self.tr3." + j + ")")
     exec("def pos_" + j + "(self, msg): self.pos(msg, self.tr3." + j + ")")
+    exec("def vel_" + j + "(self, msg): self.vel(msg.data, self.tr3." + j + ")")
     exec("def effort_" + j + "(self, msg): self.effort(msg.data, self.tr3." + j + ")")
 
     exec("setattr(TR3_Node, \"mode_" + j +"\", mode_" + j + ")")
@@ -242,6 +254,7 @@ for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
     exec("setattr(TR3_Node, \"flip_" + j + "\", flip_" + j + ")")
     exec("setattr(TR3_Node, \"stop_" + j + "\", stop_" + j + ")")
     exec("setattr(TR3_Node, \"pos_" + j + "\", pos_" + j + ")")
+    exec("setattr(TR3_Node, \"vel_" + j + "\", vel_" + j + ")")
     exec("setattr(TR3_Node, \"effort_" + j + "\", effort_" + j + ")")
 
 if __name__ == '__main__':

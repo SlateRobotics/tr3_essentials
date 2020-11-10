@@ -59,7 +59,7 @@ tr.gui.tabControl = {
       background: "rgb(80, 80, 80)",
       size: {
         w: 1.0,
-        h: 30
+        h: 50
       },
       children: c,
     };
@@ -71,7 +71,7 @@ tr.gui.tabControl = {
       type: "container",
       size: {
         w: w,
-        h: 30
+        h: 50
       },
       children: [{
         type: "container",
@@ -86,7 +86,7 @@ tr.gui.tabControl = {
           },
           padding: 4,
           align: {
-            v: "TOP",
+            v: "CENTER",
             h: "CENTER"
           },
         }],
