@@ -25,21 +25,25 @@ void Controller::step () {
         step_stop();
     }
 
-    /*Serial.print(millis());
-    Serial.print("::");
-    Serial.print(state.position);
-    Serial.print(", ");
-    Serial.print(pidPosSetpoint);
-    Serial.print(", ");
-    Serial.print(state.velocity);
-    Serial.print(", ");
-    Serial.print(pidVelSetpoint);
-    Serial.print(", ");
-    Serial.print(state.torque);
-    Serial.print(", ");
-    Serial.print(pidTrqSetpoint);
-    Serial.print(", ");
-    Serial.println(pidPwrSetpoint);*/
+    if (logTimer.ready()) {
+        Serial.print(millis());
+        Serial.print("::");
+        Serial.print(SEA_SPRING_RATE);
+        Serial.print("::");
+        Serial.print(state.position);
+        Serial.print(", ");
+        Serial.print(pidPosSetpoint);
+        Serial.print(", ");
+        Serial.print(state.velocity);
+        Serial.print(", ");
+        Serial.print(pidVelSetpoint);
+        Serial.print(", ");
+        Serial.print(state.torque);
+        Serial.print(", ");
+        Serial.print(pidTrqSetpoint);
+        Serial.print(", ");
+        Serial.println(pidPwrSetpoint);
+    }
 }
 
 void Controller::step_imu () {

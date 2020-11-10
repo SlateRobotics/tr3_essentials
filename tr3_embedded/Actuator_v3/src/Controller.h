@@ -31,7 +31,7 @@ class Controller {
 
     PID pidPos = PID(&pidPosInput, &pidVelSetpoint, &pidPosSetpoint, 8.500, 0.000, 0.000, DIRECT);
     PID pidVel = PID(&pidVelInput, &pidTrqSetpoint, &pidVelSetpoint, 4.000, 4.000, 0.000, DIRECT);
-    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.300, 0.050, 0.000, DIRECT);
+    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.250, 0.050, 0.000, DIRECT);
 
     long velTrajectoryStart = 0;
     long velTrajectoryDuration = 0;
@@ -39,7 +39,7 @@ class Controller {
     const static int velTrajectorySize = 128;
     float velTrajectory[velTrajectorySize];
 
-    float SEA_SPRING_RATE = 75.0; // Newton-Meters per Radian
+    float SEA_SPRING_RATE = -350.0; // Newton-Meters per Radian
 
     ControllerState state;
     Encoder encoderTorque = Encoder(PIN_ENC_TRQ_CS, PIN_ENC_TRQ_CLK, PIN_ENC_TRQ_DO);

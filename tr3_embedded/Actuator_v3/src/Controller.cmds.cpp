@@ -151,11 +151,11 @@ void Controller::cmd_calibrate() {
     encoderTorque.resetPos();
 
     if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
-        SEA_SPRING_RATE = 75;
+        SEA_SPRING_RATE = -350;
     } else {
-        SEA_SPRING_RATE = 50;
+        SEA_SPRING_RATE = -350;
     }
-    storage.writeUInt16(EEADDR_SEA_SPRING_RATE, SEA_SPRING_RATE);
+    storage.writeFloat(EEADDR_SEA_SPRING_RATE, SEA_SPRING_RATE);
 
     uint16_t encO_offset = encoderOutput.getOffset();
     uint16_t encD_offset = encoderTorque.getOffset();

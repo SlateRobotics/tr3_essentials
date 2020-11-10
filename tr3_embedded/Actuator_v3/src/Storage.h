@@ -3,21 +3,21 @@
 
 #define EEPROM_SIZE 256
 
-#define EEADDR_EE_SET_1 0
-#define EEADDR_EE_SET_2 1
-#define EEADDR_ENC_OUT_OFFSET 2
-#define EEADDR_ENC_TRQ_OFFSET 4
-#define EEADDR_MTR_FLIP 6
-#define EEADDR_SEA_SPRING_RATE 7
-#define EEADDR_ENC_OUT_UP 9
-#define EEADDR_ENC_OUT_POS 10
-#define EEADDR_ENC_OUT_LAP 55
-#define EEADDR_ENC_TRQ_UP 18
-#define EEADDR_ENC_TRQ_POS 19
-#define EEADDR_ENC_TRQ_LAP 63
-#define EEADDR_PID_POS_P 71
-#define EEADDR_PID_VEL_P 75
-#define EEADDR_PID_VEL_I 79
+#define EEADDR_EE_SET_1 0 // uint8, 1 byte
+#define EEADDR_EE_SET_2 1 // uint8, 1 byte
+#define EEADDR_ENC_OUT_OFFSET 2 // uint16, 2 bytes
+#define EEADDR_ENC_TRQ_OFFSET 4 // uint16, 2 bytes
+#define EEADDR_MTR_FLIP 6 // bool, 1 byte
+#define EEADDR_SEA_SPRING_RATE 27 // float, 4 bytes
+#define EEADDR_ENC_OUT_UP 9 // bool, 1 byte
+#define EEADDR_ENC_OUT_POS 10 // double, 8 bytes
+#define EEADDR_ENC_OUT_LAP 55 // double, 8 bytes
+#define EEADDR_ENC_TRQ_UP 18 // bool, 1 byte
+#define EEADDR_ENC_TRQ_POS 19 // double, 8 bytes
+#define EEADDR_ENC_TRQ_LAP 63 // double, 8 bytes
+#define EEADDR_PID_POS_P 71 // float, 4 bytes
+#define EEADDR_PID_VEL_P 75 // float, 4 bytes
+#define EEADDR_PID_VEL_I 79 // float, 4 bytes
 
 #define EE_SET_1 0x51
 #define EE_SET_2 0x22
