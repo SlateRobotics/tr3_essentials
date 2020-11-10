@@ -29,13 +29,13 @@ tr.controls.controlPanel.txtPID = function(controller, type) {
             pid = "pid_trq";
           }
 
-          if (tr.data.joints[id].pid) {
+          if (tr.data.joints[id][pid]) {
             if (type == "P") {
-              this.text = tr.data.joints[id][pid][0].toFixed(1);
+              this.text = tr.data.joints[id][pid][0].toFixed(3);
             } else if (type == "I") {
-              this.text = tr.data.joints[id][pid][1].toFixed(1);
+              this.text = tr.data.joints[id][pid][1].toFixed(3);
             } else if (type == "D") {
-              this.text = tr.data.joints[id][pid][2].toFixed(1);
+              this.text = tr.data.joints[id][pid][2].toFixed(3);
             }
           }
         },

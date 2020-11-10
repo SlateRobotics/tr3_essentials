@@ -74,16 +74,10 @@ class TR3:
         self.powerup()
         print("TR3 ready")
 
-        self.b0.updatePID()
-        self.b1.updatePID()
-        self.a0.updatePID()
-        self.a1.updatePID()
-        self.a2.updatePID()
-        self.a3.updatePID()
-        self.a4.updatePID()
-        self.g0.updatePID()
-        self.h0.updatePID()
-        self.h1.updatePID()
+        for j in self.joints:
+            getattr(self, j).updatePID_pos()
+            getattr(self, j).updatePID_vel()
+            getattr(self, j).updatePID_trq()
 
     def setupConfig(self):
         dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

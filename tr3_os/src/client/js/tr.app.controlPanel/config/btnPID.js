@@ -13,13 +13,6 @@ tr.controls.controlPanel.btnPID = function(controller, type, lbl) {
       var app = this.getApp();
       var page = app.getCurrentPage();
 
-      var inc = 0;
-      if (lbl == "▶") {
-        inc += 0.1;
-      } else if (lbl == "◀") {
-        inc -= 0.1;
-      }
-
       var pid = "";
       if (controller == "position") {
         pid = "pid_pos";
@@ -27,6 +20,21 @@ tr.controls.controlPanel.btnPID = function(controller, type, lbl) {
         pid = "pid_vel";
       } else if (controller == "torque") {
         pid = "pid_trq";
+      }
+
+      var inc = 0;
+      if (lbl == "▶") {
+	if (pid == "pid_trq") {
+          inc += 0.005;
+	} else {
+          inc += 0.1;
+        }
+      } else if (lbl == "◀") {
+	if (pid == "pid_trq") {
+          inc -= 0.005;
+	} else {
+          inc -= 0.1;
+	}
       }
 
       var id = tr.controlPanel.state.currentActuator;

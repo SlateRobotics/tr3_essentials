@@ -55,9 +55,9 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/control/effort", Float64, getattr(self, "effort_" + j))
 
             setattr(self, "tr3_state_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/state", ActuatorState, queue_size=1))
-            setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/pos", Float32MultiArray, queue_size=1))
-            setattr(self, "tr3_pid_vel_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/vel", Float32MultiArray, queue_size=1))
-            setattr(self, "tr3_pid_trq_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/trq", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_pos", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_vel_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_vel", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_trq_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_trq", Float32MultiArray, queue_size=1))
 
         self.tr3_odom_pub = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
         self.tr3_state_pub = rospy.Publisher("/tr3/state", JointState, queue_size=1)
