@@ -52,7 +52,7 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/stop", Bool, getattr(self, "stop_" + j))
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/position\", ActuatorPositionCommand, self.pos_" + j + ")")
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/velocity\", Float64, self.vel_" + j + ")")
-            rospy.Subscriber("/tr3/joints/" + j + "/control/effort", Float64, getattr(self, "effort_" + j))
+            rospy.Subscriber("/tr3/joints/" + j + "/control/voltage", Float64, getattr(self, "effort_" + j))
 
             setattr(self, "tr3_state_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/state", ActuatorState, queue_size=1))
             setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_pos", Float32MultiArray, queue_size=1))
@@ -106,7 +106,7 @@ class TR3_Node:
     def pos(self, d, j):
         j.setPosition(d.position, d.duration)
 
-    def effort(self, d, j):
+    def voltage(self, d, j):
         j.actuate(d)
 
     def mode_tr3(self, msg):
@@ -246,7 +246,7 @@ for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
     exec("def stop_" + j + "(self, msg): self.stop(msg.data, self.tr3." + j + ")")
     exec("def pos_" + j + "(self, msg): self.pos(msg, self.tr3." + j + ")")
     exec("def vel_" + j + "(self, msg): self.vel(msg.data, self.tr3." + j + ")")
-    exec("def effort_" + j + "(self, msg): self.effort(msg.data, self.tr3." + j + ")")
+    exec("def voltage_" + j + "(self, msg): self.voltage(msg.data, self.tr3." + j + ")")
 
     exec("setattr(TR3_Node, \"mode_" + j +"\", mode_" + j + ")")
     exec("setattr(TR3_Node, \"reset_" + j + "\", reset_" + j + ")")
@@ -255,7 +255,7 @@ for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
     exec("setattr(TR3_Node, \"stop_" + j + "\", stop_" + j + ")")
     exec("setattr(TR3_Node, \"pos_" + j + "\", pos_" + j + ")")
     exec("setattr(TR3_Node, \"vel_" + j + "\", vel_" + j + ")")
-    exec("setattr(TR3_Node, \"effort_" + j + "\", effort_" + j + ")")
+    exec("setattr(TR3_Node, \"voltage_" + j + "\", voltage_" + j + ")")
 
 if __name__ == '__main__':
     tr3_node = TR3_Node()
