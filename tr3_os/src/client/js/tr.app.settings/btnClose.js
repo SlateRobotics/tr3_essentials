@@ -9,7 +9,13 @@ tr.controls.settings.btnClose = function() {
     margin: 15,
     background: "red",
     onClick: function() {
-      document.exitFullscreen();
+      if((window.fullscreen()) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+        document.exitFullscreen();
+        documentFullScreen = false;
+      } else {
+        document.documentElement.requestFullscreen()
+        documentFullScreen = true;
+      }
     },
     children: [{
       type: "container",
@@ -22,6 +28,15 @@ tr.controls.settings.btnClose = function() {
         align: {
           v: "CENTER",
           h: "CENTER"
+        },
+        onDraw: function () {
+          if((window.fullscreen()) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+            this.text = "EXIT FULLSCREEN";
+            this.parent.parent.background = "red";
+          } else {
+            this.text = "ENTER FULLSCREEN";
+            this.parent.parent.background = "green";
+          }
         },
       }],
     }]

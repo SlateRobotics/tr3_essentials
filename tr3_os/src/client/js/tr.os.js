@@ -20,11 +20,11 @@ function preload() {
   tr.links.h1 = loadModel("/stl/xt-hd-b.stl");
 }
 
-var documentFullScreen = false;
+var documentFullScreenInit = false;
 document.onclick = function () {
-  if (!documentFullScreen) {
-    //document.documentElement.requestFullscreen();
-    documentFullScreen = true;
+  if (!documentFullScreenInit) {
+    document.documentElement.requestFullscreen();
+    documentFullScreenInit = true;
   }
 }
 
