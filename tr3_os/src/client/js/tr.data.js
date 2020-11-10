@@ -10,18 +10,7 @@ tr.data.robotState = {
   effort: []
 };
 
-tr.data.joints = {
-  a0: { pid: [0, 0, 0] },
-  a1: { pid: [0, 0, 0] },
-  a2: { pid: [0, 0, 0] },
-  a3: { pid: [0, 0, 0] },
-  a4: { pid: [0, 0, 0] },
-  g0: { pid: [0, 0, 0] },
-  h0: { pid: [0, 0, 0] },
-  h1: { pid: [0, 0, 0] },
-  b0: { pid: [0, 0, 0] },
-  b1: { pid: [0, 0, 0] }
-}
+tr.data.joints = {};
 
 tr.data.stopped = false;
 tr.data.nav = {};
@@ -43,8 +32,22 @@ tr.data.setup = function() {
   var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
   for (var i = 0; i < aids.length; i++) {
     let aid = aids[i];
-    tr.data.socket.on("/tr3/joints/" + aid + "/pid", function (data) {
-      tr.data.joints[aid].pid = data;
+    tr.data.joints[aid] = {
+      pid_pos: [0, 0, 0],
+      pid_vel: [0, 0, 0],
+      pid_trq: [0, 0, 0]
+    }
+
+    tr.data.socket.on("/tr3/joints/" + aid + "/pid_pos", function (data) {
+      tr.data.joints[aid].pid_pos = data;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/joints/" + aid + "/pid_vel", function (data) {
+      tr.data.joints[aid].pid_vel = data;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/joints/" + aid + "/pid_trq", function (data) {
+      tr.data.joints[aid].pid_trq = data;
     }.bind(aid))
   }
 

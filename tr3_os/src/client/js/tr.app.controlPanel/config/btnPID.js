@@ -2,12 +2,12 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.btnPID = function(id, type, lbl) {
+tr.controls.controlPanel.btnPID = function(controller, type, lbl) {
   return {
     type: "container",
     size: {
-      w: 1 / 18,
-      h: 35
+      w: 1/4,
+      h: 60
     },
     onClick: function() {
       var app = this.getApp();
@@ -20,15 +20,25 @@ tr.controls.controlPanel.btnPID = function(id, type, lbl) {
         inc -= 0.1;
       }
 
-      if (type == "P") {
-        tr.data.joints[id].pid[0] += inc;
-      } else if (type == "I") {
-        tr.data.joints[id].pid[1] += inc;
-      } else if (type == "D") {
-        tr.data.joints[id].pid[2] += inc;
+      var pid = "";
+      if (controller == "position") {
+        pid = "pid_pos";
+      } else if (controller == "velocity") {
+        pid = "pid_vel";
+      } else if (controller == "torque") {
+        pid = "pid_trq";
       }
 
-      tr.data.socket.emit("/tr3/joints/" + id + "/pid/set", tr.data.joints[id].pid);
+      var id = tr.controlPanel.state.currentActuator;
+      if (type == "P") {
+        tr.data.joints[id][pid][0] += inc;
+      } else if (type == "I") {
+        tr.data.joints[id][pid][1] += inc;
+      } else if (type == "D") {
+        tr.data.joints[id][pid][2] += inc;
+      }
+
+      tr.data.socket.emit("/tr3/joints/" + id + "/" + pid + "/set", tr.data.joints[id][pid]);
     },
     children: [{
       type: "container",
@@ -36,7 +46,7 @@ tr.controls.controlPanel.btnPID = function(id, type, lbl) {
       children: [{
         type: "text",
         text: lbl,
-        textSize: 14,
+        textSize: 18,
         textFont: "noto",
         align: {
           v: "CENTER",

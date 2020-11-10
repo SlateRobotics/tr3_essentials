@@ -20,7 +20,9 @@ CMD_STOP_EMERGENCY = 0x16
 CMD_FLIP_MOTOR = 0x17
 CMD_CALIBRATE = 0x18
 CMD_SHUTDOWN = 0x19
-CMD_UPDATE_PID = 0x20
+CMD_UPDATE_PID_POS = 0x20
+CMD_UPDATE_PID_VEL = 0x22
+CMD_UPDATE_PID_TRQ = 0x23
 CMD_SET_VELOCITY = 0x21
 
 class Joint:
@@ -33,7 +35,9 @@ class Joint:
     _mode = None
     _stop = None
     _temperature = None
-    _pid = [9.0, 5.0, 0.2]
+    _pid_pos = [9.000, 0.000, 0.000]
+    _pid_vel = [4.000, 4.000, 0.000]
+    _pid_trq = [0.300, 0.050, 0.000]
 
     def __init__(self, t, i):
         self._tr3 = t
@@ -143,25 +147,41 @@ class Joint:
         self._tr3._msgs.add(packet)
         self._tr3.step()
 
-    def updatePID(self, p = None, i = None, d = None):
+    def updatePID_pos(self, p = None, i = None, d = None):
+        self.updatePID("_pid_pos", p, i, d)
+
+    def updatePID_vel(self, p = None, i = None, d = None):
+        self.updatePID("_pid_vel", p, i, d)
+
+    def updatePID_trq(self, p = None, i = None, d = None):
+        self.updatePID("_pid_trq", p, i, d)
+
+    def updatePID(self, pid, p = None, i = None, d = None):
         if p == None:
-            p = self._pid[0]
+            p = getattr(self, pid)[0]
 
         if i == None:
-            i = self._pid[1]
+            i = getattr(self, pid)[1]
 
         if d == None:
-            d = self._pid[2]
+            d = getattr(self, pid)[2]
 
-        self._pid = [p, i, d]
+        setattr(self, pid, [p, i, d])
         self._tr3.flagSavePID = True
 
         packet = tr3_network.Packet()
         packet.address = self._id
-        packet.cmd = CMD_UPDATE_PID
-        packet.addParam(int(math.floor(p * 10.0)))
-        packet.addParam(int(math.floor(i * 10.0)))
-        packet.addParam(int(math.floor(d * 10.0)))
+
+        if pid == "_pid_pos":
+            packet.cmd = CMD_UPDATE_PID_POS
+        elif pid == "_pid_vel":
+            packet.cmd = CMD_UPDATE_PID_VEL
+        elif pid == "_pid_trq":
+            packet.cmd = CMD_UPDATE_PID_TRQ
+
+        packet.addParam(int(math.floor(p * 1000.0)))
+        packet.addParam(int(math.floor(i * 1000.0)))
+        packet.addParam(int(math.floor(d * 1000.0)))
 
         self._tr3._msgs.add(packet)
         self._tr3.step()
@@ -219,9 +239,9 @@ class Joint:
 
         self._tr3.sleep(2)
 
-	packet = tr3_network.Packet()
-	packet.address = self._id
-	packet.cmd = CMD_UPDATE_FIRMWARE_END
+        packet = tr3_network.Packet()
+        packet.address = self._id
+        packet.cmd = CMD_UPDATE_FIRMWARE_END
         self._tr3._msgs.add(packet)
         self._tr3.step()
         self._tr3.sleep(2)

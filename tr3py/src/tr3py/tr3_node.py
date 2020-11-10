@@ -55,13 +55,15 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/control/effort", Float64, getattr(self, "effort_" + j))
 
             setattr(self, "tr3_state_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/state", ActuatorState, queue_size=1))
-            setattr(self, "tr3_pid_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/pos", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_vel_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/vel", Float32MultiArray, queue_size=1))
+            setattr(self, "tr3_pid_trq_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid/trq", Float32MultiArray, queue_size=1))
 
         self.tr3_odom_pub = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
         self.tr3_state_pub = rospy.Publisher("/tr3/state", JointState, queue_size=1)
         self.tr3.state_change = self.tr3_state_change
 
-        rospy.Timer(rospy.Duration(1), self.publish_pid)
+        rospy.Timer(rospy.Duration(0.1), self.publish_pid)
 
     def shutdown(self, d):
         if bool(d) == True:
@@ -99,7 +101,7 @@ class TR3_Node:
                 j.release()
 
     def vel(self, d, j):
-        j.setVelocity(d);
+        j.setVelocity(d)
 
     def pos(self, d, j):
         j.setPosition(d.position, d.duration)
@@ -212,7 +214,7 @@ class TR3_Node:
     	odom.child_frame_id = "base_link"
     	odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
 
-            # publish the message
+        # publish the message
     	br = tf.TransformBroadcaster()
     	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
     	#br = tf.TransformBroadcaster()
@@ -225,8 +227,12 @@ class TR3_Node:
     def publish_pid(self, event):
         m = Float32MultiArray()
         for j in self.tr3.joints:
-            m.data = getattr(self.tr3, j)._pid
-            getattr(self, "tr3_pid_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_pos
+            getattr(self, "tr3_pid_pos_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_vel
+            getattr(self, "tr3_pid_vel_" + j + "_pub").publish(m)
+            m.data = getattr(self.tr3, j)._pid_trq
+            getattr(self, "tr3_pid_trq_" + j + "_pub").publish(m)
 
     def spin(self):
         self.tr3.spin()

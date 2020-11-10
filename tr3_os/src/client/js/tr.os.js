@@ -23,7 +23,7 @@ function preload() {
 var documentFullScreen = false;
 document.onclick = function () {
   if (!documentFullScreen) {
-    document.documentElement.requestFullscreen();
+    //document.documentElement.requestFullscreen();
     documentFullScreen = true;
   }
 }

@@ -2,26 +2,20 @@ if (!tr) tr = {};
 if (!tr.controls) tr.controls = {};
 if (!tr.controls.controlPanel) tr.controls.controlPanel = {};
 
-tr.controls.controlPanel.btnWaypointRight = function(rostopic, value) {
+tr.controls.controlPanel.lblPID = function(controller, text) {
   return {
     type: "container",
     size: {
       w: 1 / 4,
-      h: 50
+      h: 60
     },
     children: [{
       type: "container",
       border: false,
-      onClick: function() {
-        if (rostopic && value) {
-          tr.data.socket.emit(rostopic, value);
-        }
-      },
       children: [{
         type: "text",
-        text: " 〉", // ▶ ◀
-        textSize: 16,
-        textFont: "noto",
+        text: text,
+        textSize: 18,
         align: {
           v: "CENTER",
           h: "CENTER"

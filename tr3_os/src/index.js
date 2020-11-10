@@ -33,68 +33,22 @@ var rostopics = [
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
   { name: "/move_base/cancel", type: "actionlib_msgs/GoalID"},
-  { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"},
-  { name: "/tr3/joints/a0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/a1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/a2/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/a3/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/a4/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/g0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/h0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/h1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/b0/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/b1/control/position", type: "tr3_msgs/ActuatorPositionCommand"},
-  { name: "/tr3/joints/a0/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a1/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a2/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a3/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a4/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/g0/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/h0/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/h1/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/b0/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/b1/control/effort", type: "std_msgs/Float64"},
-  { name: "/tr3/joints/a0/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/a1/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/a2/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/a3/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/a4/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/g0/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/h0/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/h1/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/b0/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/b1/mode", type: "std_msgs/UInt8"},
-  { name: "/tr3/joints/a0/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a1/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a2/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a3/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a4/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/g0/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/h0/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/h1/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/b0/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/b1/reset", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a0/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a1/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a2/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a3/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a4/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/g0/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/h0/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/h1/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/b0/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/b1/flip", type: "std_msgs/Bool"},
-  { name: "/tr3/joints/a0/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/a1/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/a2/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/a3/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/a4/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/g0/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/h0/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/h1/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/b0/pid/set", type: "std_msgs/Float32MultiArray"},
-  { name: "/tr3/joints/b1/pid/set", type: "std_msgs/Float32MultiArray"},
-]
+  { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"}
+];
+
+var joints = ["a0", "a1", "a2", "a3", "a4", "g0", "h0", "h1", "b0", "b1"];
+for (var i = 0; i < joints.length; i++) {
+  var j = joints[i];
+  rostopics.push({ name: "/tr3/joints/" + j + "/control/position", type: "tr3_msgs/ActuatorPositionCommand"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/control/velocity", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/control/effort", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/mode", type: "std_msgs/UInt8"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/reset", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/flip", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/pid_pos/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/pid_vel/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/pid_trq/set", type: "std_msgs/Float32MultiArray"});
+}
 
 var io = require('socket.io')(httpServer);
 io.on('connection', function (socket) {
@@ -110,8 +64,14 @@ io.on('connection', function (socket) {
     var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
     for (var i = 0; i < aids.length; i++) {
       let aid = aids[i];
-      nh.subscribe("/tr3/joints/" + aid + "/pid", "std_msgs/Float32MultiArray", function (msg) {
-        socket.emit("/tr3/joints/" + aid + "/pid", msg.data);
+      nh.subscribe("/tr3/joints/" + aid + "/pid_pos", "std_msgs/Float32MultiArray", function (msg) {
+        socket.emit("/tr3/joints/" + aid + "/pid_pos", msg.data);
+      }.bind(aid));
+      nh.subscribe("/tr3/joints/" + aid + "/pid_vel", "std_msgs/Float32MultiArray", function (msg) {
+        socket.emit("/tr3/joints/" + aid + "/pid_vel", msg.data);
+      }.bind(aid));
+      nh.subscribe("/tr3/joints/" + aid + "/pid_trq", "std_msgs/Float32MultiArray", function (msg) {
+        socket.emit("/tr3/joints/" + aid + "/pid_trq", msg.data);
       }.bind(aid));
     }
 

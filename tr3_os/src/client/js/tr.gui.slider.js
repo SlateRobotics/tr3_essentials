@@ -5,6 +5,7 @@ tr.gui.slider = {
     this.max = this.config.max;
     this.val = this.config.val;
     this.step = this.config.step || 1;
+    this.disabled = this.config.disabled;
     this.element = createSlider(this.min, this.max, this.val, this.step);
     this.onChange = this.config.onChange;
     this.onInput = this.config.onInput;
@@ -41,6 +42,12 @@ tr.gui.slider = {
     this.element.position(pos.x, pos.y);
     this.element.size(this.size.w - this.padding * 2 - 3, this.size.h - this.padding * 2);
     this.element.show();
+
+    if (this.disabled) {
+      this.element.elt.disabled = true;
+    } else {
+      this.element.elt.disabled = false;
+    }
   },
 
   clear: function() {

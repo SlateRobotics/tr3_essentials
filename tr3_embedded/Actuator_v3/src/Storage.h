@@ -16,8 +16,14 @@
 #define EEADDR_ENC_TRQ_POS 19
 #define EEADDR_ENC_TRQ_LAP 63
 #define EEADDR_PID_POS_P 71
+#define EEADDR_PID_POS_I 87
+#define EEADDR_PID_POS_D 91
 #define EEADDR_PID_VEL_P 75
 #define EEADDR_PID_VEL_I 79
+#define EEADDR_PID_VEL_D 83
+#define EEADDR_PID_TRQ_P 95
+#define EEADDR_PID_TRQ_I 99
+#define EEADDR_PID_TRQ_D 103
 
 #define EE_SET_1 0x51
 #define EE_SET_2 0x22

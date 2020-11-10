@@ -34,7 +34,11 @@ void Controller::parseCmd (NetworkPacket packet) {
         cmd_calibrate();
     } else if (packet.command == CMD_SHUTDOWN) {
         cmd_shutdown();
-    } else if (packet.command == CMD_UPDATE_PID) {
+    } else if (packet.command == CMD_UPDATE_PID_POS) {
+        cmd_updatePid(packet);
+    } else if (packet.command == CMD_UPDATE_PID_VEL) {
+        cmd_updatePid(packet);
+    } else if (packet.command == CMD_UPDATE_PID_TRQ) {
         cmd_updatePid(packet);
     } else if (packet.command == CMD_SET_VELOCITY) {
         cmd_setVelocity(packet);
@@ -181,13 +185,26 @@ void Controller::cmd_shutdown() {
 }
 
 void Controller::cmd_updatePid (NetworkPacket packet) {
-    double p_pos = packet.parameters[0] / 10.0;
-    double p_vel = packet.parameters[1] / 10.0;
-    double i_vel = packet.parameters[2] / 10.0;
-    pidPos.SetTunings(p_pos, 0.0, 0.0);
-    pidVel.SetTunings(p_vel, i_vel, 0.0);
-    storage.writeFloat(EEADDR_PID_POS_P, p_pos);
-    storage.writeFloat(EEADDR_PID_VEL_P, p_vel);
-    storage.writeFloat(EEADDR_PID_VEL_I, i_vel);
+    double p = packet.parameters[0] / 1000.0;
+    double i = packet.parameters[1] / 1000.0;
+    double d = packet.parameters[2] / 1000.0;
+
+    if (packet.command == CMD_UPDATE_PID_POS) {
+        pidPos.SetTunings(p, i, d);
+        storage.writeFloat(EEADDR_PID_POS_P, p);
+        storage.writeFloat(EEADDR_PID_POS_I, i);
+        storage.writeFloat(EEADDR_PID_POS_D, d);
+    } else if (packet.command == CMD_UPDATE_PID_VEL) {
+        pidVel.SetTunings(p, i, d);
+        storage.writeFloat(EEADDR_PID_VEL_P, p);
+        storage.writeFloat(EEADDR_PID_VEL_I, i);
+        storage.writeFloat(EEADDR_PID_VEL_D, d);
+    } else if (packet.command == CMD_UPDATE_PID_TRQ) {
+        pidTrq.SetTunings(p, i, d);
+        storage.writeFloat(EEADDR_PID_TRQ_P, p);
+        storage.writeFloat(EEADDR_PID_TRQ_I, i);
+        storage.writeFloat(EEADDR_PID_TRQ_D, d);
+    }
+
     storage.commit();
 }

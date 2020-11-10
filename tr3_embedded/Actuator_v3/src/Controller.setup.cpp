@@ -77,10 +77,17 @@ void Controller::setUpConfig () {
         }
 
         double p_pos = storage.readFloat(EEADDR_PID_POS_P);
+        double i_pos = storage.readFloat(EEADDR_PID_POS_I);
+        double d_pos = storage.readFloat(EEADDR_PID_POS_D);
         double p_vel = storage.readFloat(EEADDR_PID_VEL_P);
         double i_vel = storage.readFloat(EEADDR_PID_VEL_I);
-        pidPos.SetTunings(p_pos, 0.0, 0.0);
-        pidVel.SetTunings(p_vel, i_vel, 0.0);
+        double d_vel = storage.readFloat(EEADDR_PID_VEL_D);
+        double p_trq = storage.readFloat(EEADDR_PID_TRQ_P);
+        double i_trq = storage.readFloat(EEADDR_PID_TRQ_I);
+        double d_trq = storage.readFloat(EEADDR_PID_TRQ_D);
+        pidPos.SetTunings(p_pos, i_pos, d_pos);
+        pidVel.SetTunings(p_vel, i_vel, d_vel);
+        pidTrq.SetTunings(p_trq, i_trq, d_trq);
     } else {
         storage.configure();
     }
