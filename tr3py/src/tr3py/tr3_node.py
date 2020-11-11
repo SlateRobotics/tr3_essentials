@@ -52,7 +52,8 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/stop", Bool, getattr(self, "stop_" + j))
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/position\", ActuatorPositionCommand, self.pos_" + j + ")")
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/velocity\", Float64, self.vel_" + j + ")")
-            rospy.Subscriber("/tr3/joints/" + j + "/control/voltage", Float64, getattr(self, "effort_" + j))
+            #rospy.Subscriber("/tr3/joints/" + j + "/control/torque", Float64, getattr(self, "torque_" + j))
+            rospy.Subscriber("/tr3/joints/" + j + "/control/voltage", Float64, getattr(self, "voltage_" + j))
 
             setattr(self, "tr3_state_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/state", ActuatorState, queue_size=1))
             setattr(self, "tr3_pid_pos_" + j + "_pub", rospy.Publisher("/tr3/joints/" + j + "/pid_pos", Float32MultiArray, queue_size=1))
@@ -170,8 +171,8 @@ class TR3_Node:
         joint_state = JointState()
         joint_state.name = state[0]
         joint_state.position = state[1]
-        joint_state.velocity = state[3]
-        joint_state.effort = state[2]
+        joint_state.velocity = state[4]
+        joint_state.effort = state[5]
 
         g0_pos = 0.0
         for i in range(len(joint_state.name)):

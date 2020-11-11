@@ -41,7 +41,8 @@ for (var i = 0; i < joints.length; i++) {
   var j = joints[i];
   rostopics.push({ name: "/tr3/joints/" + j + "/control/position", type: "tr3_msgs/ActuatorPositionCommand"});
   rostopics.push({ name: "/tr3/joints/" + j + "/control/velocity", type: "std_msgs/Float64"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/control/effort", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/control/torque", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/joints/" + j + "/control/voltage", type: "std_msgs/Float64"});
   rostopics.push({ name: "/tr3/joints/" + j + "/mode", type: "std_msgs/UInt8"});
   rostopics.push({ name: "/tr3/joints/" + j + "/reset", type: "std_msgs/Bool"});
   rostopics.push({ name: "/tr3/joints/" + j + "/flip", type: "std_msgs/Bool"});

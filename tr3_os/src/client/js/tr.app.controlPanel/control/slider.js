@@ -37,8 +37,8 @@ tr.controls.controlPanel.slider = function(type) {
           } else {
             slider.elt.disabled = false;
             var sliderVal = slider.value();
-            if (type == "effort" && abs(sliderVal) > 0.1) {
-              tr.data.socket.emit("/tr3/joints/" + id + "/control/voltage", type);
+            if (type == "voltage" && abs(sliderVal) > 0.1) {
+              tr.data.socket.emit("/tr3/joints/" + id + "/control/voltage", sliderVal);
             }
           }
         },
