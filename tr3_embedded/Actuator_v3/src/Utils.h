@@ -4,6 +4,15 @@
 #include "Config.h"
 
 namespace Utils {
+    inline float bytesToFloat (uint8_t a[4]) {
+      float value = 0.0;
+       byte* p = (byte*)(void*)&value;
+       for (int i = 0; i < sizeof(value); i++) {
+           *p++ = a[i];
+       }
+       return value;
+    }
+
     inline double formatAngle (double x) {
         if (x < -TAU) {
             x += TAU;

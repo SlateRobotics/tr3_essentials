@@ -8,7 +8,7 @@
 #define EEADDR_ENC_OUT_OFFSET 2
 #define EEADDR_ENC_TRQ_OFFSET 4
 #define EEADDR_MTR_FLIP 6
-#define EEADDR_SEA_SPRING_RATE 7
+#define EEADDR_SEA_SPRING_RATE 107
 #define EEADDR_ENC_OUT_UP 9
 #define EEADDR_ENC_OUT_POS 10
 #define EEADDR_ENC_OUT_LAP 55
@@ -34,7 +34,7 @@ class Storage {
   private:
 
   public:
-    bool begin() {
+    bool begin () {
       return EEPROM.begin(EEPROM_SIZE);
     }
 

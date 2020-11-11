@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define ACTUATOR_ID "a2"
+#define ACTUATOR_ID "a0"
 
 #define TR2_AN_SSID "TR2_AN_111222333"
 #define TR2_AN_PASS "MATHI78741"

@@ -23,7 +23,6 @@ class Encoder {
     double prevVelocity[prevVelocityN];
     long prevVelocityTS[prevVelocityN];
 
-    long pos = 0;
     double velocity = 0;
     double acceleration = 0;
 
@@ -35,15 +34,14 @@ class Encoder {
     int rotations = 0;
 
     bool prevUp = false;
-    float prevLap = 0.0;
-    bool flagUp = false;
-    bool flagLap = false;
+    int prevLap = 0;
   
   public:
     int EEADDR_ENC_OFFSET = -1;
     int EEADDR_ENC_UP = -1;
     int EEADDR_ENC_LAP = -1;
     Storage* storage;
+    long pos = 0;
 
     Encoder(int pCs, int pClock, int pData) {
       PIN_CS = pCs;
@@ -71,36 +69,31 @@ class Encoder {
     }
 
     void configure () {
-        readPosition();
-        int encOffset = storage->readUInt16(EEADDR_ENC_OFFSET);
-        double encLap = storage->readDouble(EEADDR_ENC_LAP);
-        bool encUp = storage->readBool(EEADDR_ENC_UP);
+      readPosition();
+      int encOffset = storage->readUInt16(EEADDR_ENC_OFFSET);
+      double encLap = storage->readDouble(EEADDR_ENC_LAP);
+      bool encUp = storage->readBool(EEADDR_ENC_UP);
 
-        if (encUp == true && isUp() == false) {
-          encLap += 1;
-        } else if (encUp == false && isUp() == true) {
-          encLap -= 1;
-        }
+      if (encUp == true && isUp() == false) {
+        encLap += 1;
+      } else if (encUp == false && isUp() == true) {
+        encLap -= 1;
+      }
 
-        setOffset(encOffset);
-        reconstruct(encLap);
+      setOffset(encOffset);
+      reconstruct(encLap);
+
+      prevUp = isUp();
+      prevLap = getLap();
+
+      storage->writeBool(EEADDR_ENC_UP, prevUp);
+      storage->writeDouble(EEADDR_ENC_LAP, prevLap);
+      storage->commit();
     }
     
     void step() {
       readPosition();
       writeChanges();
-    }
-
-    void writeChanges() {
-      if (upChanged()) {
-        storage->writeBool(EEADDR_ENC_UP, isUp());
-        storage->commit();
-      }
-
-      if (lapChanged()) {
-        storage->writeDouble(EEADDR_ENC_LAP, getLap());
-        storage->commit();
-      }
     }
     
     void setOffset(uint16_t o) {
@@ -145,9 +138,24 @@ class Encoder {
       return dataOut;
     }
 
+    void writeChanges() {
+      if (upChanged()) {
+        Serial.println(getPrevPosition());
+        storage->writeBool(EEADDR_ENC_UP, isUp());
+        storage->commit();
+      }
+
+      if (lapChanged()) {
+        Serial.println(getPrevPosition());
+        storage->writeDouble(EEADDR_ENC_LAP, getLap());
+        storage->commit();
+      }
+    }
+
     bool lapChanged () {
-      if (flagLap) {
-        flagLap = false;
+      int lap = getLap();
+      if (abs(prevLap - lap) > 0) {
+        prevLap = lap;
         return true;
       } else {
         return false;
@@ -155,27 +163,12 @@ class Encoder {
     }
 
     bool upChanged () {
-      if (flagUp) {
-        flagUp = false;
+      bool up = isUp();
+      if (prevUp != up) {
+        prevUp = up;
         return true;
       } else {
         return false;
-      }
-    }
-
-    void checkLap () {
-      double lap = getLap();
-      if (abs(prevLap - lap) > 0.01) {
-        flagLap = true;
-        prevLap = lap;
-      }
-    }
-
-    void checkUp () {
-      bool up = isUp();
-      if (prevUp != up) {
-        flagUp = true;
-        prevUp = up;
       }
     }
  
@@ -219,8 +212,7 @@ class Encoder {
     }
 
     int getLap () {
-      //return fmod(ratio + ((pos - (double)prevPosition[0] + (double)offset) / encoderResolution), ratio);
-      return (int)((double)pos / (double)encoderResolution);
+      return (int)floor((double)(pos + offset) / (double)encoderResolution);
     }
 
     double getEncoderResolution () {
@@ -231,7 +223,7 @@ class Encoder {
       return ratio;
     }
     
-    double getOffset() {
+    uint16_t getOffset() {
       return offset;
     }
     
@@ -244,13 +236,10 @@ class Encoder {
         return;
       }
       
-      pos = (int)((double)lap * encoderResolution + ((double)prevPosition[0] - (double)offset));
-
-      prevUp = isUp();
-      prevLap = getLap();
+      pos = (int)(lap * encoderResolution) + prevPosition[0] - offset;
     }
 
-    double getPrevPosition(int i = 0) {
+    uint16_t getPrevPosition(int i = 0) {
       return prevPosition[i];
     }
 

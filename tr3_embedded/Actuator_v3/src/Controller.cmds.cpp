@@ -57,9 +57,8 @@ void Controller::cmd_setMode (NetworkPacket packet) {
 }
 
 void Controller::cmd_setPosition (NetworkPacket packet) {
-    int param = packet.parameters[0] + packet.parameters[1] * 256;
-    int dur = packet.parameters[2] + packet.parameters[3] * 256;
-    double pos = param / 65535.0 * TAU;
+    double pos = Utils::bytesToFloat(packet.parameters);
+    int dur = packet.parameters[4] + packet.parameters[5] * 256;
 
     if (ACTUATOR_ID == "g0") {
         if (abs(pos) < 0.5 ) {

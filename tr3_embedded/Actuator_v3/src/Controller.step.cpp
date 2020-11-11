@@ -25,9 +25,11 @@ void Controller::step () {
         step_stop();
     }
 
-    if (logTimer.ready()) {
+    /*if (logTimer.ready()) {
         Serial.print(millis());
         Serial.print("::");
+        Serial.print(encoderOutput.pos);
+        Serial.print(", ");
         Serial.print(encoderOutput.getPrevPosition());
         Serial.print(", ");
         Serial.print(encoderOutput.getOffset());
@@ -36,7 +38,7 @@ void Controller::step () {
         Serial.print(", ");
         Serial.print(encoderOutput.getAngleRadians());
         Serial.println();
-    }
+    }*/
 
     /*if (logTimer.ready()) {
         Serial.print(millis());
@@ -88,7 +90,7 @@ void Controller::step_servo () {
     }
     
     pidPosInput = state.position;
-    Utils::formatPosition(&pidPosInput, &pidPosSetpoint);
+    //Utils::formatPosition(&pidPosInput, &pidPosSetpoint);
 
     float acceleration = 0.25; // rad / sec
 
