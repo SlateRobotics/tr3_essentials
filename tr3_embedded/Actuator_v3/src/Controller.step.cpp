@@ -28,6 +28,19 @@ void Controller::step () {
     if (logTimer.ready()) {
         Serial.print(millis());
         Serial.print("::");
+        Serial.print(encoderOutput.getPrevPosition());
+        Serial.print(", ");
+        Serial.print(encoderOutput.getOffset());
+        Serial.print(", ");
+        Serial.print(encoderOutput.getLap());
+        Serial.print(", ");
+        Serial.print(encoderOutput.getAngleRadians());
+        Serial.println();
+    }
+
+    /*if (logTimer.ready()) {
+        Serial.print(millis());
+        Serial.print("::");
         Serial.print(SEA_SPRING_RATE);
         Serial.print("::");
         Serial.print(state.position);
@@ -43,7 +56,7 @@ void Controller::step () {
         Serial.print(pidTrqSetpoint);
         Serial.print(", ");
         Serial.println(pidPwrSetpoint);
-    }
+    }*/
 }
 
 void Controller::step_imu () {

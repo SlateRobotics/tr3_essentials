@@ -16,14 +16,14 @@ class Encoder {
     long prevAngleTS[prevAngleN];
 
     static const int prevPositionN = 16;
-    double prevPosition[prevPositionN];
+    uint16_t prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
 
     static const int prevVelocityN = 4;
     double prevVelocity[prevVelocityN];
     long prevVelocityTS[prevVelocityN];
 
-    double pos = 0;
+    long pos = 0;
     double velocity = 0;
     double acceleration = 0;
 
@@ -38,17 +38,6 @@ class Encoder {
     float prevLap = 0.0;
     bool flagUp = false;
     bool flagLap = false;
-
-    void formatPosition() {
-      double maxPos = ratio * (double)encoderResolution;
-      if (pos > maxPos) {
-        rotations += 1;
-        pos -= maxPos;
-      } else if (pos < 0) {
-        rotations -= 1;
-        pos += maxPos;
-      }
-    }
   
   public:
     int EEADDR_ENC_OFFSET = -1;
@@ -121,8 +110,7 @@ class Encoder {
     int readPosition() {
       unsigned int dataOut = 0;
       digitalWrite(PIN_CS, LOW);
-      delayMicroseconds(1
-      );
+      delayMicroseconds(1);
     
       for(int x = 0; x < 12; x++){
         digitalWrite(PIN_CLOCK, LOW);
@@ -150,7 +138,6 @@ class Encoder {
       recordVelocity(vel);
 
       pos += dif;
-      formatPosition();
       
       double a = getAngleRadians();
       recordAngle();
@@ -231,8 +218,9 @@ class Encoder {
       return (prevPosition[0] > encoderResolution / 2.0);
     }
 
-    double getLap () {
-      return fmod(ratio + ((pos - (double)prevPosition[0] + (double)offset) / encoderResolution), ratio);
+    int getLap () {
+      //return fmod(ratio + ((pos - (double)prevPosition[0] + (double)offset) / encoderResolution), ratio);
+      return (int)((double)pos / (double)encoderResolution);
     }
 
     double getEncoderResolution () {
@@ -256,16 +244,10 @@ class Encoder {
         return;
       }
       
-      pos = lap * encoderResolution + ((double)prevPosition[0] - (double)offset);
-      formatPosition();
+      pos = (int)((double)lap * encoderResolution + ((double)prevPosition[0] - (double)offset));
 
       prevUp = isUp();
       prevLap = getLap();
-    }
-
-    void addPosition (double o) {
-      pos += o;
-      formatPosition();
     }
 
     double getPrevPosition(int i = 0) {
