@@ -7,16 +7,16 @@ class ControllerState {
   public:
     int mode = 0; // effort, servo, backdrive, velocity
     int stop = 0;
-    float position = 0.0; // Radians
+    double position = 0.0; // Radians
     int rotations = 0;
-    float effort = 0.0; // -100 -> 100
-    float velocity = 0.0; // Radians per second
-    float acceleration = 0.0;
-    float torque = 0.0; // Newton-Meters
-    float accel[3] = {0, 0, 0}; // x, y, z (meter/sec^2)
-    float gyro[3] = {0, 0, 0}; // x, y, z (rad/sec)
-    float mag[3] = {0, 0, 0}; // x, y, z (uT, microtesla)
-    float temp = 0.0; // celsius
+    double effort = 0.0; // -100 -> 100
+    double velocity = 0.0; // Radians per second
+    double acceleration = 0.0;
+    double torque = 0.0; // Newton-Meters
+    double accel[3] = {0, 0, 0}; // x, y, z (meter/sec^2)
+    double gyro[3] = {0, 0, 0}; // x, y, z (rad/sec)
+    double mag[3] = {0, 0, 0}; // x, y, z (uT, microtesla)
+    double temp = 0.0; // celsius
 
     void compute () {
       
