@@ -48,7 +48,9 @@ class TR3_Node:
             rospy.Subscriber("/tr3/joints/" + j + "/mode", UInt8, getattr(self, "mode_" + j))
             rospy.Subscriber("/tr3/joints/" + j + "/reset", Bool, getattr(self, "reset_" + j))
             rospy.Subscriber("/tr3/joints/" + j + "/flip", Bool, getattr(self, "flip_" + j))
-            rospy.Subscriber("/tr3/joints/" + j + "/pid/set", Float32MultiArray, getattr(self, "pid_" + j))
+            rospy.Subscriber("/tr3/joints/" + j + "/pid_pos/set", Float32MultiArray, getattr(self, "pid_pos_" + j))
+            rospy.Subscriber("/tr3/joints/" + j + "/pid_vel/set", Float32MultiArray, getattr(self, "pid_vel_" + j))
+            rospy.Subscriber("/tr3/joints/" + j + "/pid_trq/set", Float32MultiArray, getattr(self, "pid_trq_" + j))
             rospy.Subscriber("/tr3/joints/" + j + "/stop", Bool, getattr(self, "stop_" + j))
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/position\", ActuatorPositionCommand, self.pos_" + j + ")")
             exec("rospy.Subscriber(\"/tr3/joints/" + j + "/control/velocity\", Float64, self.vel_" + j + ")")
@@ -149,8 +151,14 @@ class TR3_Node:
         if b == True:
             a.resetEncoderPosition()
 
-    def pid(self, d, a):
-        a.updatePID(d[0], d[1], d[2])
+    def pid_pos(self, d, a):
+        a.updatePID_pos(d[0], d[1], d[2])
+
+    def pid_vel(self, d, a):
+        a.updatePID_vel(d[0], d[1], d[2])
+
+    def pid_trq(self, d, a):
+        a.updatePID_trq(d[0], d[1], d[2])
 
     def flip(self, b, a):
         if b == True:
@@ -242,7 +250,9 @@ class TR3_Node:
 for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
     exec("def mode_" + j + "(self, msg): self.mode(msg.data, self.tr3." + j + ")")
     exec("def reset_" + j + "(self, msg): self.reset(bool(msg.data), self.tr3." + j + ")")
-    exec("def pid_" + j + "(self, msg): self.pid(msg.data, self.tr3." + j + ")")
+    exec("def pid_pos_" + j + "(self, msg): self.pid_pos(msg.data, self.tr3." + j + ")")
+    exec("def pid_vel_" + j + "(self, msg): self.pid_vel(msg.data, self.tr3." + j + ")")
+    exec("def pid_trq_" + j + "(self, msg): self.pid_trq(msg.data, self.tr3." + j + ")")
     exec("def flip_" + j + "(self, msg): self.flip(bool(msg.data), self.tr3." + j + ")")
     exec("def stop_" + j + "(self, msg): self.stop(msg.data, self.tr3." + j + ")")
     exec("def pos_" + j + "(self, msg): self.pos(msg, self.tr3." + j + ")")
@@ -251,7 +261,9 @@ for j in ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]:
 
     exec("setattr(TR3_Node, \"mode_" + j +"\", mode_" + j + ")")
     exec("setattr(TR3_Node, \"reset_" + j + "\", reset_" + j + ")")
-    exec("setattr(TR3_Node, \"pid_" + j + "\", pid_" + j +")")
+    exec("setattr(TR3_Node, \"pid_pos_" + j + "\", pid_pos_" + j +")")
+    exec("setattr(TR3_Node, \"pid_vel_" + j + "\", pid_vel_" + j +")")
+    exec("setattr(TR3_Node, \"pid_trq_" + j + "\", pid_trq_" + j +")")
     exec("setattr(TR3_Node, \"flip_" + j + "\", flip_" + j + ")")
     exec("setattr(TR3_Node, \"stop_" + j + "\", stop_" + j + ")")
     exec("setattr(TR3_Node, \"pos_" + j + "\", pos_" + j + ")")

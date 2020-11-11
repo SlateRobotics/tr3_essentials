@@ -5,6 +5,7 @@ import os
 import math
 import yaml
 import io
+import struct
 import tr3_network
 
 CMD_UPDATE_FIRMWARE_BEGIN = 0x01
@@ -47,13 +48,13 @@ class Joint:
         return self._state
 
     def setPosition(self, pos, dur = 0):
-        x = pos / (math.pi * 2) * 65535
-
         packet = tr3_network.Packet()
         packet.address = self._id
         packet.cmd = CMD_SET_POS
-        packet.addParam(int(math.floor(x % 256)))
-        packet.addParam(int(math.floor(x / 256)))
+
+        for b in bytearray(struct.pack("f", pos)):
+            packet.addParam(int(b))
+
         packet.addParam(int(math.floor(dur % 256)))
         packet.addParam(int(math.floor(dur / 256)))
 
@@ -201,10 +202,7 @@ class Joint:
         with open(file_path) as f:
             numPacksSent = 0
             while 1:
-                #byte_s = f.read(2048 - 4)
-                #byte_s = f.read(4096 - 4)
                 byte_s = f.read(4096)
-                #byte_s = f.read(8192 - 4)
                 if not byte_s:
                     break
 
