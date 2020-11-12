@@ -184,9 +184,9 @@ void Controller::cmd_shutdown() {
 }
 
 void Controller::cmd_updatePid (NetworkPacket packet) {
-    double p = packet.parameters[0] / 1000.0;
-    double i = packet.parameters[1] / 1000.0;
-    double d = packet.parameters[2] / 1000.0;
+    float p = Utils::bytesToFloat(packet.parameters + 0);
+    float i = Utils::bytesToFloat(packet.parameters + 4);
+    float d = Utils::bytesToFloat(packet.parameters + 8);
 
     if (packet.command == CMD_UPDATE_PID_POS) {
         pidPos.SetTunings(p, i, d);
