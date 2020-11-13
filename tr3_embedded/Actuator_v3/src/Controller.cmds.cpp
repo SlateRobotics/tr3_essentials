@@ -75,10 +75,7 @@ void Controller::cmd_setPosition (NetworkPacket packet) {
             storage.writeFloat(EEADDR_ENC_OUT_POS, 1.0);
         }
     } else {
-        pidPosSetpoint = Utils::formatAngle(pos);
-        velTrajectoryDuration = dur;
-        planVelTrajectory();
-        velTrajectoryStart = millis();
+        trajectory.begin(pos, dur);
     }
 
     if (mode != MODE_STOP) {

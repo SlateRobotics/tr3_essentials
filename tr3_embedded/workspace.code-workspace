@@ -1,0 +1,16 @@
+{
+    "folders": [
+        {
+            "path": "Actuator_v3"
+        },
+        {
+            "path": "tr.libs"
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "cmath": "cpp",
+            "cstdlib": "cpp"
+        }
+    }
+}

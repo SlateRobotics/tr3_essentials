@@ -13,6 +13,7 @@
 #include "MPU9250.h"
 #include "NetworkPacket.h"
 #include "PID.h"
+#include "Trajectory.h"
 #include "Timer.h"
 #include "Storage.h"
 
@@ -23,21 +24,18 @@ class Controller {
 
     double pidPosInput = 0.0;
     double pidPosSetpoint = 0.0;
+    double pidPosOutput = 0.0;
     double pidVelInput = 0.0;
     double pidVelSetpoint = 0.0;
+    double pidVelOutput = 0.0;
     double pidTrqInput = 0.0;
     double pidTrqSetpoint = 0.0;
+    double pidTrqOutput = 0.0;
     double pidPwrSetpoint = 0.0;
 
-    PID pidPos = PID(&pidPosInput, &pidVelSetpoint, &pidPosSetpoint, 8.500, 0.000, 0.000, DIRECT);
-    PID pidVel = PID(&pidVelInput, &pidTrqSetpoint, &pidVelSetpoint, 4.000, 4.000, 0.000, DIRECT);
-    PID pidTrq = PID(&pidTrqInput, &pidPwrSetpoint, &pidTrqSetpoint, 0.250, 0.050, 0.000, DIRECT);
-
-    long velTrajectoryStart = 0;
-    long velTrajectoryDuration = 0;
-    double velTrajectoryPosStart = 0;
-    const static int velTrajectorySize = 128;
-    float velTrajectory[velTrajectorySize];
+    PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint, 8.500, 0.000, 0.000, DIRECT);
+    PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint, 4.000, 4.000, 0.000, DIRECT);
+    PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint, 0.250, 0.050, 0.000, DIRECT);
 
     float SEA_SPRING_RATE = -350.0; // Newton-Meters per Radian
 
@@ -48,11 +46,11 @@ class Controller {
     Motor motor = Motor(PIN_MTR_PWM, PIN_MTR_IN1, PIN_MTR_IN2);
     Storage storage;
     MPU9250 imu = MPU9250(Wire,0x68);
+    Trajectory trajectory = Trajectory(&state);
     Timer imuTimer = Timer(5); // hz
     Timer logTimer = Timer(4);
 
     void computeState();
-    void planVelTrajectory();
 
   public:
     bool requireImu = true;

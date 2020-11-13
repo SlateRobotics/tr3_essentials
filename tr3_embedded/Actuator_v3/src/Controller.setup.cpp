@@ -21,16 +21,18 @@ void Controller::setUp () {
     encoderOutput.EEADDR_ENC_LAP = EEADDR_ENC_OUT_LAP;
     
     pidPos.SetMode(AUTOMATIC);
-    pidPos.SetOutputLimits(VELOCITY_MIN, VELOCITY_MAX);
+    pidPos.SetOutputLimits(TORQUE_MIN, TORQUE_MAX);
+    pidPos.SetIThresh(TORQUE_MAX);
+    pidPos.DisableIClamp();
     
     pidVel.SetMode(AUTOMATIC);
-    pidVel.SetOutputLimits(TORQUE_MIN, TORQUE_MAX);
-    pidVel.SetIThresh(TORQUE_MAX);
+    pidVel.SetOutputLimits(MOTOR_MIN, MOTOR_MAX);
+    pidVel.SetIThresh(MOTOR_MAX);
     pidVel.DisableIClamp();
     
     pidTrq.SetMode(AUTOMATIC);
-    pidTrq.SetOutputLimits(-1, 1);
-    pidTrq.SetIThresh(0.5);
+    pidTrq.SetOutputLimits(MOTOR_MIN, MOTOR_MAX);
+    pidVel.SetIThresh(0.25);
     pidTrq.DisableIClamp();
 
     setUpConfig();
@@ -63,9 +65,6 @@ void Controller::setUpConfig () {
     }
 
     if (storage.isConfigured()) {
-        storage.writeFloat(EEADDR_SEA_SPRING_RATE, SEA_SPRING_RATE);
-        storage.commit();
-
         SEA_SPRING_RATE = storage.readFloat(EEADDR_SEA_SPRING_RATE);
 
         if (ACTUATOR_ID == "g0") {

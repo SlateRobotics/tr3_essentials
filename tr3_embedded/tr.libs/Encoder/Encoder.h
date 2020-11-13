@@ -140,13 +140,11 @@ class Encoder {
 
     void writeChanges() {
       if (upChanged()) {
-        Serial.println(getPrevPosition());
         storage->writeBool(EEADDR_ENC_UP, isUp());
         storage->commit();
       }
 
       if (lapChanged()) {
-        Serial.println(getPrevPosition());
         storage->writeDouble(EEADDR_ENC_LAP, getLap());
         storage->commit();
       }

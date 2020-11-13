@@ -28,4 +28,7 @@
 #define TORQUE_MIN -40.0
 #define TORQUE_MAX 40.0
 
+#define MOTOR_MIN -1.0
+#define MOTOR_MAX 1.0
+
 #endif

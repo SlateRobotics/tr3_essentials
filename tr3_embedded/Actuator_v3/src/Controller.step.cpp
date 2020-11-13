@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include "Trajectory.h"
 
 void Controller::step () {
     encoderTorque.step();
@@ -40,22 +41,27 @@ void Controller::step () {
         Serial.println();
     }*/
 
-    /*if (logTimer.ready()) {
+    //if (logTimer.ready()) {
+    /*if (!trajectory.complete()) {
         Serial.print(millis());
         Serial.print("::");
-        Serial.print(SEA_SPRING_RATE);
-        Serial.print("::");
+        Serial.print(pidPosSetpoint);
+        Serial.print(", ");
         Serial.print(state.position);
         Serial.print(", ");
-        Serial.print(pidPosSetpoint);
+        Serial.print(pidPosOutput);
+        Serial.print("::");
+        Serial.print(pidVelSetpoint);
         Serial.print(", ");
         Serial.print(state.velocity);
         Serial.print(", ");
-        Serial.print(pidVelSetpoint);
+        Serial.print(pidVelOutput);
+        Serial.print("::");
+        Serial.print(pidTrqSetpoint);
         Serial.print(", ");
         Serial.print(state.torque);
         Serial.print(", ");
-        Serial.print(pidTrqSetpoint);
+        Serial.print(pidTrqOutput);
         Serial.print(", ");
         Serial.println(pidPwrSetpoint);
     }*/
@@ -88,30 +94,18 @@ void Controller::step_servo () {
         motor.executePreparedCommand();
         return;
     }
-    
+
+    trajectory.step();
+
     pidPosInput = state.position;
-    //Utils::formatPosition(&pidPosInput, &pidPosSetpoint);
+    pidPosSetpoint = trajectory.getTargetPosition();
+    pidPos.Compute();
 
-    float acceleration = 0.25; // rad / sec
-
-    long dur_elapsed = millis() - velTrajectoryStart;
-    long dur_remain = velTrajectoryDuration - dur_elapsed;
-
-    float dist_total = pidPosSetpoint - velTrajectoryPosStart;
-    float dist_remain = pidPosSetpoint - pidPosInput;
-    
-    float break_dist = (state.velocity * state.velocity) / (acceleration * 2.0);
-    
-    if (dur_remain < 200 || abs(dist_remain) < break_dist) {
-        pidPos.Compute();
-    } else {
-        float vel_req = dist_remain / (float)dur_remain * 1000.0;
-        pidVelSetpoint = vel_req;
-    }
-
-    pidVelSetpoint = constrain(pidVelSetpoint, VELOCITY_MIN, VELOCITY_MAX);
-
+    pidVelInput = state.velocity;
+    pidVelSetpoint = trajectory.getTargetVelocity();
     step_velocity(false);
+
+    step_torque(false);
 }
 
 void Controller::step_velocity (bool pulseLED) {
@@ -126,7 +120,11 @@ void Controller::step_velocity (bool pulseLED) {
     pidVelInput = state.velocity;
     pidVel.Compute();
 
-    step_torque(false);
+    // disable vel controller and wind-down if torque outside bounds
+    if (state.torque <= TORQUE_MIN || state.torque >= TORQUE_MAX) {
+        pidVelOutput = 0;
+        pidVel.clear();
+    }
 }
 
 void Controller::step_torque (bool pulseLED) {
@@ -139,7 +137,12 @@ void Controller::step_torque (bool pulseLED) {
     }
 
     pidTrqInput = state.torque;
+    pidTrqSetpoint = pidPosOutput;
+    pidTrqSetpoint = constrain(pidTrqSetpoint, TORQUE_MIN, TORQUE_MAX);
     pidTrq.Compute();
+
+    pidPwrSetpoint = pidVelOutput + pidTrqOutput;
+    pidPwrSetpoint = constrain(pidPwrSetpoint, MOTOR_MIN, MOTOR_MAX);
     motor.step(pidPwrSetpoint * 100.0);
 }
 
