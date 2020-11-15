@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define ACTUATOR_ID "a0"
+#define ACTUATOR_ID "a2"
 #define ACTUATOR_VERSION "v3.0.0"
 
 #define TR2_AN_SSID "TR2_AN_111222333"
@@ -25,8 +25,8 @@
 #define VELOCITY_MIN -0.942
 #define VELOCITY_MAX 0.942
 
-#define TORQUE_MIN -40.0
-#define TORQUE_MAX 40.0
+#define TORQUE_MIN -60.0
+#define TORQUE_MAX 60.0
 
 #define MOTOR_MIN -1.0
 #define MOTOR_MAX 1.0

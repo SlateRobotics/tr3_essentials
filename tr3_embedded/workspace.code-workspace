@@ -10,7 +10,8 @@
     "settings": {
         "files.associations": {
             "cmath": "cpp",
-            "cstdlib": "cpp"
+            "cstdlib": "cpp",
+            "*.bak": "cpp"
         }
     }
 }

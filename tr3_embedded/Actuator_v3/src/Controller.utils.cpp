@@ -18,9 +18,9 @@ void Controller::computeState () {
     if (torque > PI) { torque -= TAU; }
     state.torque = torque * SEA_SPRING_RATE;
 
-    if (imuTimer.ready()) {
+    /*if (imuTimer.ready()) {
         step_imu();
-    }
+    }*/
 }
 
 ControllerState* Controller::getState () {

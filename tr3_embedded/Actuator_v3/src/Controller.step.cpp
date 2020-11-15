@@ -42,7 +42,7 @@ void Controller::step () {
     }*/
 
     //if (logTimer.ready()) {
-    /*if (!trajectory.complete()) {
+    if (!trajectory.complete()) {
         Serial.print(millis());
         Serial.print("::");
         Serial.print(pidPosSetpoint);
@@ -64,7 +64,7 @@ void Controller::step () {
         Serial.print(pidTrqOutput);
         Serial.print(", ");
         Serial.println(pidPwrSetpoint);
-    }*/
+    }
 }
 
 void Controller::step_imu () {
@@ -137,7 +137,13 @@ void Controller::step_torque (bool pulseLED) {
     }
 
     pidTrqInput = state.torque;
-    pidTrqSetpoint = pidPosOutput;
+    pidTrqSetpoint = pidPosOutput + pidTrqInput;
+
+    // gravity compensation if assigned appropriate torque limits
+    // possible
+    // pidTrqSetpoint = pidTrqInput;
+
+
     pidTrqSetpoint = constrain(pidTrqSetpoint, TORQUE_MIN, TORQUE_MAX);
     pidTrq.Compute();
 

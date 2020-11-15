@@ -110,8 +110,8 @@ class Trajectory {
       return targetVelocity;
     }
 
-    float sign () {
-      float s = 1.0;
+    double sign () {
+      double s = 1.0;
       if (trajectoryPosGoal - trajectoryPosStart < 0) {
         s = -1.0;
       }
@@ -144,7 +144,7 @@ class Trajectory {
         targetPos = targetPos + targetVelocity * delta;
       }
 
-      if (dur_remain >= 0) {
+      /*if (dur_remain >= 0) {
         Serial.print(millis());
         Serial.print(", ");
         Serial.print(dur_elapsed);
@@ -157,7 +157,7 @@ class Trajectory {
         Serial.print(", ");
         Serial.print(targetVelocity);
         Serial.println();
-      }
+      }*/
     }
     
 };

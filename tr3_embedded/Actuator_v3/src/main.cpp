@@ -25,7 +25,7 @@ void setup() {
   networking.connect();
 }
 
-void loop() { 
+void loop() {
   if (timer.ready()) {
     ControllerState* state = controller.getState();
     networking.step(ACTUATOR_ID, state);

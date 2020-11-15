@@ -22,14 +22,13 @@ class PID {
     double *myInput;
     double *myOutput;
     double *mySetpoint;
+    double feedforward;
     unsigned long lastTime;
     double outputSum, lastInput, lastSetpoint;
     unsigned long SampleTime;
     double outMin, outMax;
     bool inAuto, pOnE;
-    double iThresh = 0.30;
-    double iClamp = 0.2;
-    bool disableIClamp = false;
+    double iClamp = 0.25;
     
     void Initialize () {
       outputSum = *myOutput;
@@ -63,21 +62,14 @@ class PID {
       double setpoint = *mySetpoint;
       double error = *mySetpoint - input;
       double dInput = input - lastInput;
-      double output;
+      double output = 0;
   
       outputSum += (ki * error);
+
+      outputSum = constrain(outputSum, -iClamp, iClamp);
   
-      if (disableIClamp == false && abs(error) > iClamp) {
-        outputSum = 0;
-      }
-  
-      if (outputSum > iThresh) {
-        outputSum = iThresh;
-      } else if (outputSum < -iThresh) {
-        outputSum = -iThresh;
-      }
-  
-      output = kp * error;
+      output += setpoint * feedforward;
+      output += kp * error;
       output += outputSum;
       output -= kd * dInput;
       
@@ -136,6 +128,10 @@ class PID {
         kd = (0 - kd);
       }
     }
+
+    void SetFeedforward (double ff) {
+      feedforward = ff;
+    }
     
     void SetControllerDirection(int Direction) {
       if (inAuto && Direction != controllerDirection) {
@@ -145,29 +141,9 @@ class PID {
       }
       controllerDirection = Direction;
     }
-    
-    //void SetSampleTime(int);
-    
-    //double GetKp();
-    
-    //double GetKi();
-    
-    //double GetKd();
-    
-    //int GetMode();
-    
-    //int GetDirection();
-
-    void SetIThresh(float t) {
-      iThresh = t;
-    }
 
     void SetIClamp(float c) {
       iClamp = c;
-    }
-
-    void DisableIClamp() {
-      disableIClamp = true;
     }
     
     void clear() {
