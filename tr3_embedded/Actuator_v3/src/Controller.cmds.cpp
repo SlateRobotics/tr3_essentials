@@ -1,67 +1,22 @@
+#include "Config.h"
 #include "Controller.h"
 
-void Controller::parseCmd (NetworkPacket packet) {
-    if (packet.command == CMD_UPDATE_FIRMWARE_BEGIN) {
-        led.white();
-        Serial.println("update");
-        mode = MODE_UPDATE_FIRMWARE;
-        Update.begin(UPDATE_SIZE_UNKNOWN);
-    } else if (packet.command == CMD_UPDATE_FIRMWARE) {
-        // doing it this way, we process small chunks of the firmware
-        // instead of putting the entire prog into mem, then updating
-        led.white();
-        Serial.println("recv packet");
-        Update.write(packet.parameters, packet.length - 4);
-    } else if (packet.command == CMD_UPDATE_FIRMWARE_END) {
-        led.white();
-        Update.end(true);
-        ESP.restart();
-    } else if (packet.command == CMD_SET_MODE) {
-        cmd_setMode(packet);
-    } else if (packet.command == CMD_SET_POS) {
-        cmd_setPosition(packet);
-    } else if (packet.command == CMD_RESET_POS) {
-        cmd_resetPosition();
-    } else if (packet.command == CMD_FLIP_MOTOR) {
-        cmd_flipMotorPins();
-    } else if (packet.command == CMD_ROTATE) {
-        cmd_rotate(packet);
-    } else if (packet.command == CMD_STOP_RELEASE) {
-        cmd_release();
-    } else if (packet.command == CMD_STOP_EMERGENCY) {
-        cmd_stop();
-    } else if (packet.command == CMD_CALIBRATE) {
-        cmd_calibrate();
-    } else if (packet.command == CMD_SHUTDOWN) {
-        cmd_shutdown();
-    } else if (packet.command == CMD_UPDATE_PID_POS) {
-        cmd_updatePid(packet);
-    } else if (packet.command == CMD_UPDATE_PID_VEL) {
-        cmd_updatePid(packet);
-    } else if (packet.command == CMD_UPDATE_PID_TRQ) {
-        cmd_updatePid(packet);
-    } else if (packet.command == CMD_SET_VELOCITY) {
-        cmd_setVelocity(packet);
-    }
-}
-
-void Controller::cmd_setMode (NetworkPacket packet) {
-    mode = packet.parameters[0];
+void Controller::cmd_setMode (uint8_t m) {
+    mode = m;
     if (mode == MODE_SERVO) {
         pidPosSetpoint = (double)state.position;
     } else if (mode == MODE_VELOCITY) {
         pidVelSetpoint = 0;
+    } else if (mode == MODE_TORQUE) {
+        pidTrqSetpoint = 0;
     } else if (mode == MODE_BACKDRIVE) {
         pidTrqSetpoint = 0;
     }
 }
 
-void Controller::cmd_setPosition (NetworkPacket packet) {
-    double pos = Utils::bytesToFloat(packet.parameters);
-    int dur = packet.parameters[4] + packet.parameters[5] * 256;
-
+void Controller::cmd_setPosition (double position, long duration) {
     if (ACTUATOR_ID == "g0") {
-        if (abs(pos) < 0.5 ) {
+        if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
                 motor.prepareCommand(100, 1750);
             }
@@ -75,7 +30,7 @@ void Controller::cmd_setPosition (NetworkPacket packet) {
             storage.writeFloat(EEADDR_ENC_OUT_POS, 1.0);
         }
     } else {
-        trajectory.begin(pos, dur);
+        trajectory.begin(position, duration);
     }
 
     if (mode != MODE_STOP) {
@@ -83,14 +38,28 @@ void Controller::cmd_setPosition (NetworkPacket packet) {
     }
 }
 
-void Controller::cmd_setVelocity (NetworkPacket packet) {
-    int param = packet.parameters[0] + packet.parameters[1] * 256;
-    pidVelSetpoint = (param / 100.0) - 10.0;
-
-    pidVel.clear();
+void Controller::cmd_setVelocity (double velocity) {
+    pidVelSetpoint = velocity;
 
     if (mode != MODE_STOP) {
         mode = MODE_VELOCITY;
+    }
+}
+
+void Controller::cmd_setTorque (double torque) {
+    pidTrqSetpoint = torque;
+
+    if (mode != MODE_STOP) {
+        mode = MODE_TORQUE;
+    }
+}
+
+void Controller::cmd_setVoltage (double voltage) {
+    
+    motor.prepareCommand(voltage / 12.6, 1000);
+
+    if (mode != MODE_STOP) {
+        mode = MODE_ROTATE;
     }
 }
 
@@ -115,22 +84,6 @@ void Controller::cmd_flipMotorPins () {
 
     storage.writeBool(EEADDR_MTR_FLIP, motor.flipDrivePinsStatus());
     storage.commit();
-}
-
-void Controller::cmd_rotate (NetworkPacket packet) {
-    int offsetBinary = 128;
-    int motorStep = packet.parameters[0] - offsetBinary;
-    int motorDuration = packet.parameters[1] + packet.parameters[2] * 256;
-
-    if (motorDuration > 1000) {
-        motorDuration = 1000;
-    }
-
-    motor.prepareCommand(motorStep, motorDuration);
-    
-    if (mode != MODE_STOP) {
-        mode = MODE_ROTATE;
-    }
 }
 
 void Controller::cmd_release () {
@@ -180,27 +133,26 @@ void Controller::cmd_shutdown() {
     }
 }
 
-void Controller::cmd_updatePid (NetworkPacket packet) {
-    float p = Utils::bytesToFloat(packet.parameters + 0);
-    float i = Utils::bytesToFloat(packet.parameters + 4);
-    float d = Utils::bytesToFloat(packet.parameters + 8);
+void Controller::cmd_updatePidPos (float p, float i, float d) {
+    pidPos.SetTunings(p, i, d);
+    storage.writeFloat(EEADDR_PID_POS_P, p);
+    storage.writeFloat(EEADDR_PID_POS_I, i);
+    storage.writeFloat(EEADDR_PID_POS_D, d);
+    storage.commit();
+}
 
-    if (packet.command == CMD_UPDATE_PID_POS) {
-        pidPos.SetTunings(p, i, d);
-        storage.writeFloat(EEADDR_PID_POS_P, p);
-        storage.writeFloat(EEADDR_PID_POS_I, i);
-        storage.writeFloat(EEADDR_PID_POS_D, d);
-    } else if (packet.command == CMD_UPDATE_PID_VEL) {
-        pidVel.SetTunings(p, i, d);
-        storage.writeFloat(EEADDR_PID_VEL_P, p);
-        storage.writeFloat(EEADDR_PID_VEL_I, i);
-        storage.writeFloat(EEADDR_PID_VEL_D, d);
-    } else if (packet.command == CMD_UPDATE_PID_TRQ) {
-        pidTrq.SetTunings(p, i, d);
-        storage.writeFloat(EEADDR_PID_TRQ_P, p);
-        storage.writeFloat(EEADDR_PID_TRQ_I, i);
-        storage.writeFloat(EEADDR_PID_TRQ_D, d);
-    }
+void Controller::cmd_updatePidVel (float p, float i, float d) {
+    pidVel.SetTunings(p, i, d);
+    storage.writeFloat(EEADDR_PID_VEL_P, p);
+    storage.writeFloat(EEADDR_PID_VEL_I, i);
+    storage.writeFloat(EEADDR_PID_VEL_D, d);
+    storage.commit();
+}
 
+void Controller::cmd_updatePidTrq (float p, float i, float d) {
+    pidTrq.SetTunings(p, i, d);
+    storage.writeFloat(EEADDR_PID_TRQ_P, p);
+    storage.writeFloat(EEADDR_PID_TRQ_I, i);
+    storage.writeFloat(EEADDR_PID_TRQ_D, d);
     storage.commit();
 }

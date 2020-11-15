@@ -1,12 +1,10 @@
-#include "Config.h"
-#include "Defaults.h"
-#include "Controller.h"
-#include "Network.h"
-#include "Timer.h"
+#include <Arduino.h>
 
-Networking networking;
+#include "Config.h"
+#include "Controller.h"
+#include "RosHandle.h"
+
 Controller controller;
-Timer timer(20); // hz
 
 void setup() {
   Serial.begin(115200);
@@ -19,17 +17,16 @@ void setup() {
   controller.requireImu = false;
   controller.setUp();
 
-  networking.controller = &controller;
-  networking.ssid = TR2_AN_SSID;
-  networking.pass = TR2_AN_PASS;
-  networking.connect();
+  RosHandle::setup(&controller);
+  RosHandle::state.position = 0;
 }
 
 void loop() {
-  if (timer.ready()) {
-    ControllerState* state = controller.getState();
-    networking.step(ACTUATOR_ID, state);
-  }
+  //RosHandle::state = controller.getState();
+  //RosHandle::pid_pos = controller.pidPos.getGains();
+  //RosHandle::pid_vel = controller.pidVel.getGains();
+  //RosHandle::pid_trq = controller.pidTrq.getGains();
 
+  RosHandle::step();
   controller.step();
 }

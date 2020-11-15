@@ -36,8 +36,8 @@ void Controller::setUp () {
     pidTrq.SetFeedforward(0.0);
 
     setUpConfig();
-    setUpImu();
-    step_imu();
+    //setUpImu();
+    //step_imu();
 }
 
 void Controller::setUpImu() {

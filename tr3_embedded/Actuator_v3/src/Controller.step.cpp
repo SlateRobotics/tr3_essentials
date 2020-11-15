@@ -15,6 +15,9 @@ void Controller::step () {
     } else if (mode == MODE_ROTATE) {
         step_rotate();
     } else if (mode == MODE_BACKDRIVE) {
+        pidTrqSetpoint = 0;
+        step_torque();
+    } else if (mode == MODE_TORQUE) {
         step_torque();
     } else if (mode == MODE_SERVO) {
         step_servo();
@@ -99,12 +102,18 @@ void Controller::step_servo () {
 
     pidPosInput = state.position;
     pidPosSetpoint = trajectory.getTargetPosition();
+    pidPosSetpoint = constrain(pidPosSetpoint, POSITION_MIN, POSITION_MAX);
     pidPos.Compute();
 
     pidVelInput = state.velocity;
     pidVelSetpoint = trajectory.getTargetVelocity();
     step_velocity(false);
 
+    // gravity compensation if assigned appropriate torque limits
+    // possible
+    // pidTrqSetpoint = pidTrqInput;
+
+    pidTrqSetpoint = pidPosOutput + pidTrqInput;
     step_torque(false);
 }
 
@@ -118,6 +127,7 @@ void Controller::step_velocity (bool pulseLED) {
     }
 
     pidVelInput = state.velocity;
+    pidVelSetpoint = constrain(pidVelSetpoint, VELOCITY_MIN, VELOCITY_MAX);
     pidVel.Compute();
 
     // disable vel controller and wind-down if torque outside bounds
@@ -137,13 +147,6 @@ void Controller::step_torque (bool pulseLED) {
     }
 
     pidTrqInput = state.torque;
-    pidTrqSetpoint = pidPosOutput + pidTrqInput;
-
-    // gravity compensation if assigned appropriate torque limits
-    // possible
-    // pidTrqSetpoint = pidTrqInput;
-
-
     pidTrqSetpoint = constrain(pidTrqSetpoint, TORQUE_MIN, TORQUE_MAX);
     pidTrq.Compute();
 

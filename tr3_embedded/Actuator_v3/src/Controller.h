@@ -4,6 +4,8 @@
 #include <ESPmDNS.h>
 #include <Update.h>
 
+#include <std_msgs/UInt8.h>
+
 #include "Config.h"
 #include "Utils.h"
 #include "ControllerState.h"
@@ -11,7 +13,6 @@
 #include "LED.h"
 #include "Motor.h"
 #include "MPU9250.h"
-#include "NetworkPacket.h"
 #include "PID.h"
 #include "Trajectory.h"
 #include "Timer.h"
@@ -75,18 +76,20 @@ class Controller {
     void step_calibrate();
     void step_stop();
 
-    void parseCmd(NetworkPacket packet);
-    void cmd_setMode(NetworkPacket packet);
-    void cmd_setPosition(NetworkPacket packet);
-    void cmd_setVelocity(NetworkPacket packet);
+    void cmd_setMode(uint8_t m);
+    void cmd_setPosition(double position, long duration);
+    void cmd_setVelocity(double velocity);
+    void cmd_setTorque(double torque);
+    void cmd_setVoltage(double voltage);
     void cmd_resetPosition();
     void cmd_flipMotorPins();
-    void cmd_rotate(NetworkPacket packet);
     void cmd_release();
     void cmd_stop();
     void cmd_calibrate();
     void cmd_shutdown();
-    void cmd_updatePid(NetworkPacket packet);
+    void cmd_updatePidPos(float p, float i, float d);
+    void cmd_updatePidVel(float p, float i, float d);
+    void cmd_updatePidTrq(float p, float i, float d);
 };
 
 #endif
