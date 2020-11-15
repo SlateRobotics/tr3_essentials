@@ -1,10 +1,11 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <std_msgs/Float32MultiArray.h>
+#include <tr3_msgs/ActuatorState.h>
+
 #include <ESPmDNS.h>
 #include <Update.h>
-
-#include <std_msgs/UInt8.h>
 
 #include "Config.h"
 #include "Utils.h"
@@ -62,7 +63,10 @@ class Controller {
     void setUpImu();
     void setUpConfig();
 
-    ControllerState* getState();
+    void setActuatorState(tr3_msgs::ActuatorState* state);
+    void setPidPosTunings(std_msgs::Float32MultiArray* gains);
+    void setPidVelTunings(std_msgs::Float32MultiArray* gains);
+    void setPidTrqTunings(std_msgs::Float32MultiArray* gains);
 
     void fanOn();
     void fanOff();

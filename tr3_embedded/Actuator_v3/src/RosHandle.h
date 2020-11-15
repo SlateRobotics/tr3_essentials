@@ -108,6 +108,8 @@ namespace RosHandle {
     controller = c;
 
     nh.initNode();
+
+    // subscribers
     nh.subscribe(sub_mode);
     nh.subscribe(sub_reset);
     nh.subscribe(sub_flip);
@@ -120,6 +122,8 @@ namespace RosHandle {
     nh.subscribe(sub_control_velocity);
     nh.subscribe(sub_control_torque);
     nh.subscribe(sub_control_voltage);
+
+    // publishers
     nh.advertise(pub_state);
     nh.advertise(pub_pid_pos);
     nh.advertise(pub_pid_vel);
@@ -128,7 +132,13 @@ namespace RosHandle {
 
   void step() {
     if (nhTimer.ready()) {
+       controller->setActuatorState(&RosHandle::state);
+
       if (pidTimer.ready()) {
+        controller->setPidPosTunings(&pid_pos);
+        controller->setPidVelTunings(&pid_vel);
+        controller->setPidTrqTunings(&pid_trq);
+        
         RosHandle::pub_pid_pos.publish(&RosHandle::pid_pos);
         RosHandle::pub_pid_vel.publish(&RosHandle::pid_vel);
         RosHandle::pub_pid_trq.publish(&RosHandle::pid_trq);

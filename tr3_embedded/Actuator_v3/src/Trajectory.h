@@ -1,6 +1,8 @@
 #ifndef TRAJECTORY_H
 #define TRAJECTORY_H
 
+#include <tr3_msgs/ActuatorState.h>
+
 #include "ControllerState.h"
 
 class Trajectory {

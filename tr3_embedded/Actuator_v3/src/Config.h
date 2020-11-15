@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // ACTUATOR DETAILS
-#define ACTUATOR_ID "a2"
+#define ACTUATOR_ID "a1"
 #define ACTUATOR_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG

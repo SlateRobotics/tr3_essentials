@@ -104,6 +104,14 @@ class PID {
         else if (outputSum < outMin) outputSum = outMin;
       }
     }
+
+    double GetTunings(int i) {
+      double gains[3];
+      gains[0] = kp;
+      gains[1] = ki;
+      gains[2] = kd;
+      return gains[i];
+    }
     
     void SetTunings(double Kp, double Ki, double Kd) {
       SetTunings(Kp, Ki, Kd, pOn);

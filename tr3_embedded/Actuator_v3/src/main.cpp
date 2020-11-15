@@ -21,11 +21,6 @@ void setup() {
 }
 
 void loop() {
-  //RosHandle::state = controller.getState();
-  //RosHandle::pid_pos = controller.pidPos.getGains();
-  //RosHandle::pid_vel = controller.pidVel.getGains();
-  //RosHandle::pid_trq = controller.pidTrq.getGains();
-
   RosHandle::step();
   controller.step();
 }

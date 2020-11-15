@@ -72,17 +72,22 @@ void Controller::step () {
 
 void Controller::step_imu () {
     imu.readSensor();
-    state.accel[0] = imu.getAccelX_mss();
-    state.accel[1] = imu.getAccelY_mss();
-    state.accel[2] = imu.getAccelZ_mss();
-    state.gyro[0] = imu.getGyroX_rads();
+
+    /*state.imu_accel_length = 3;
+    //state.imu_accel = { 0, 0, 0 };
+    state.imu_accel[0] = imu.getAccelX_mss();
+    state.imu_accel[1] = imu.getAccelY_mss();
+    state.imu_accel[2] = imu.getAccelZ_mss();*/
+
+
+    /*state.gyro[0] = imu.getGyroX_rads();
     state.gyro[1] = imu.getGyroY_rads();
     state.gyro[2] = imu.getGyroZ_rads();
     state.mag[0] = imu.getMagX_uT();
     
     state.mag[1] = imu.getMagY_uT();
     state.mag[2] = imu.getMagZ_uT();
-    state.temp = imu.getTemperature_C();
+    state.temp = imu.getTemperature_C();*/
 }
 
 void Controller::step_rotate () {
