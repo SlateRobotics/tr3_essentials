@@ -18,7 +18,6 @@ void setup() {
   controller.setUp();
 
   RosHandle::setup(&controller);
-  RosHandle::state.position = 0;
 }
 
 void loop() {
