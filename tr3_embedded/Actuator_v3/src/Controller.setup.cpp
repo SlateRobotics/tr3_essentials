@@ -19,23 +19,24 @@ void Controller::setUp () {
     encoderOutput.EEADDR_ENC_OFFSET = EEADDR_ENC_OUT_OFFSET;
     encoderOutput.EEADDR_ENC_UP = EEADDR_ENC_OUT_UP;
     encoderOutput.EEADDR_ENC_LAP = EEADDR_ENC_OUT_LAP;
+
+    setUpConfig();
     
     pidPos.SetMode(AUTOMATIC);
-    pidPos.SetOutputLimits(TORQUE_MIN, TORQUE_MAX);
-    pidPos.SetIClamp(TORQUE_MAX * 0.25);
+    pidPos.SetOutputLimits(MIN_TORQUE, MAX_TORQUE);
+    pidPos.SetIClamp(MAX_TORQUE * 0.25);
     pidPos.SetFeedforward(0.0);
     
     pidVel.SetMode(AUTOMATIC);
-    pidVel.SetOutputLimits(MOTOR_MIN, MOTOR_MAX);
+    pidVel.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     pidVel.SetIClamp(0.50);
     pidVel.SetFeedforward(0.2);
     
     pidTrq.SetMode(AUTOMATIC);
-    pidTrq.SetOutputLimits(MOTOR_MIN, MOTOR_MAX);
+    pidTrq.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     pidTrq.SetIClamp(0.50);
     pidTrq.SetFeedforward(0.0);
-
-    setUpConfig();
+    
     //setUpImu();
     //step_imu();
 }
@@ -77,6 +78,13 @@ void Controller::setUpConfig () {
         if (storage.readBool(EEADDR_MTR_FLIP)) {
             motor.flipDrivePins();
         }
+
+        MIN_POSITION = storage.readFloat(EEADDR_POSITION_MIN);
+        MAX_POSITION = storage.readFloat(EEADDR_POSITION_MAX);
+        MIN_VELOCITY = storage.readFloat(EEADDR_VELOCITY_MIN);
+        MAX_VELOCITY = storage.readFloat(EEADDR_VELOCITY_MAX);
+        MIN_TORQUE = storage.readFloat(EEADDR_TORQUE_MIN);
+        MAX_TORQUE = storage.readFloat(EEADDR_TORQUE_MAX);
 
         double p_pos = storage.readFloat(EEADDR_PID_POS_P);
         double i_pos = storage.readFloat(EEADDR_PID_POS_I);

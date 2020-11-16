@@ -24,6 +24,13 @@ class Controller {
     int mode = MODE_ROTATE;
     int modePrev = MODE_ROTATE;
 
+    float MIN_POSITION = DEFAULT_POSITION_MIN;
+    float MAX_POSITION = DEFAULT_POSITION_MAX;
+    float MIN_VELOCITY = DEFAULT_VELOCITY_MIN;
+    float MAX_VELOCITY = DEFAULT_VELOCITY_MAX;
+    float MIN_TORQUE = DEFAULT_TORQUE_MIN;
+    float MAX_TORQUE = DEFAULT_TORQUE_MAX;
+
     double pidPosInput = 0.0;
     double pidPosSetpoint = 0.0;
     double pidPosOutput = 0.0;
@@ -64,6 +71,7 @@ class Controller {
     void setUpConfig();
 
     void setActuatorState(tr3_msgs::ActuatorState* state);
+    void setLimits(std_msgs::Float32MultiArray* limits);
     void setPidPosTunings(std_msgs::Float32MultiArray* gains);
     void setPidVelTunings(std_msgs::Float32MultiArray* gains);
     void setPidTrqTunings(std_msgs::Float32MultiArray* gains);
@@ -92,6 +100,12 @@ class Controller {
     void cmd_stop();
     void cmd_calibrate();
     void cmd_shutdown();
+    void cmd_setLimitPositionMin(float v);
+    void cmd_setLimitPositionMax(float v);
+    void cmd_setLimitVelocityMin(float v);
+    void cmd_setLimitVelocityMax(float v);
+    void cmd_setLimitTorqueMin(float v);
+    void cmd_setLimitTorqueMax(float v);
     void cmd_updatePidPos(float p, float i, float d);
     void cmd_updatePidVel(float p, float i, float d);
     void cmd_updatePidTrq(float p, float i, float d);

@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // ACTUATOR DETAILS
-#define ACTUATOR_ID "a2"
+#define ACTUATOR_ID "a1"
 #define ACTUATOR_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG
@@ -31,6 +31,13 @@
 #define RT_PID_POS            "/tr3/" ACTUATOR_ID "/pid_pos"
 #define RT_PID_VEL            "/tr3/" ACTUATOR_ID "/pid_vel"
 #define RT_PID_TRQ            "/tr3/" ACTUATOR_ID "/pid_trq"
+#define RT_LIMIT              "/tr3/" ACTUATOR_ID "/limit"
+#define RT_LIMIT_POS_MIN      "/tr3/" ACTUATOR_ID "/limit/position/min"
+#define RT_LIMIT_POS_MAX      "/tr3/" ACTUATOR_ID "/limit/position/max"
+#define RT_LIMIT_VEL_MIN      "/tr3/" ACTUATOR_ID "/limit/velocity/min"
+#define RT_LIMIT_VEL_MAX      "/tr3/" ACTUATOR_ID "/limit/velocity/max"
+#define RT_LIMIT_TRQ_MIN      "/tr3/" ACTUATOR_ID "/limit/torque/min"
+#define RT_LIMIT_TRQ_MAX      "/tr3/" ACTUATOR_ID "/limit/torque/max"
 #define RT_PID_POS_SET        "/tr3/" ACTUATOR_ID "/pid_pos/set"
 #define RT_PID_VEL_SET        "/tr3/" ACTUATOR_ID "/pid_vel/set"
 #define RT_PID_TRQ_SET        "/tr3/" ACTUATOR_ID "/pid_trq/set"
@@ -49,14 +56,14 @@
 #define LED_DATA_PIN 5
 
 // DEFAULT LIMITS
-#define POSITION_MIN -6.28
-#define POSITION_MAX 6.28
-#define VELOCITY_MIN -0.942
-#define VELOCITY_MAX 0.942
-#define TORQUE_MIN -45.0
-#define TORQUE_MAX 45.0
-#define MOTOR_MIN -1.0
-#define MOTOR_MAX 1.0
+#define DEFAULT_POSITION_MIN -6.28
+#define DEFAULT_POSITION_MAX 6.28
+#define DEFAULT_VELOCITY_MIN -0.942
+#define DEFAULT_VELOCITY_MAX 0.942
+#define DEFAULT_TORQUE_MIN -60.0
+#define DEFAULT_TORQUE_MAX 60.0
+#define DEFAULT_MOTOR_MIN -1.0
+#define DEFAULT_MOTOR_MAX 1.0
 
 // MODES
 #define MODE_STOP 0

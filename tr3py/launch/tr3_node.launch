@@ -4,4 +4,10 @@
 
   <node pkg="tr3py" name="tr3_node" type="tr3.py" output="screen" />
   <!--node pkg="tr3py" name="tr3_action_server" type="tr3_action_server.py" output="screen" /-->
+
+  <node pkg="rosserial_server" type="serial_node" name="rosserial_server">
+    <rosparam>
+      port: 11311
+    </rosparam>
+  </node>
 </launch>

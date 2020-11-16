@@ -36,6 +36,7 @@ class Joint:
     _state = None
     _state_received = None
 
+    _limits = [-6.28, 6.28, -0.942, 0.942, -60, 60]
     _pid_pos = [9.000, 0.000, 0.000]
     _pid_vel = [4.000, 4.000, 0.000]
     _pid_trq = [0.300, 0.050, 0.000]
@@ -73,6 +74,7 @@ class Joint:
         self._pub_control_vol = rospy.Publisher("/tr3/" + self._id + "/control/voltage", Float64, queue_size=1)
         
         rospy.Subscriber("/tr3/" + self._id + "/state", ActuatorState, self._sub_state)
+        rospy.Subscriber("/tr3/" + self._id + "/limit", Float32MultiArray, self._sub_limits)
         rospy.Subscriber("/tr3/" + self._id + "/pid_pos", Float32MultiArray, self._sub_pid_pos)
         rospy.Subscriber("/tr3/" + self._id + "/pid_vel", Float32MultiArray, self._sub_pid_vel)
         rospy.Subscriber("/tr3/" + self._id + "/pid_trq", Float32MultiArray, self._sub_pid_trq)
@@ -80,6 +82,9 @@ class Joint:
     def _sub_state(self, msg):
         self._state_received = datetime.datetime.now()
         self._state = msg
+
+    def _sub_limits(self, msg):
+        self._limits = msg.data
 
     def _sub_pid_pos(self, msg):
         self._pid_pos = msg.data

@@ -140,6 +140,42 @@ void Controller::cmd_shutdown() {
     }
 }
 
+void Controller::cmd_setLimitPositionMin (float v) {
+    MIN_POSITION = v;
+    storage.writeFloat(EEADDR_POSITION_MIN, MIN_POSITION);
+    storage.commit();
+}
+
+void Controller::cmd_setLimitPositionMax (float v) {
+    MAX_POSITION = v;
+    storage.writeFloat(EEADDR_POSITION_MAX, MAX_POSITION);
+    storage.commit();
+}
+
+void Controller::cmd_setLimitVelocityMin (float v) {
+    MIN_VELOCITY = v;
+    storage.writeFloat(EEADDR_VELOCITY_MIN, MIN_VELOCITY);
+    storage.commit();
+}
+
+void Controller::cmd_setLimitVelocityMax (float v) {
+    MAX_VELOCITY = v;
+    storage.writeFloat(EEADDR_VELOCITY_MAX, MAX_VELOCITY);
+    storage.commit();
+}
+
+void Controller::cmd_setLimitTorqueMin (float v) {
+    MIN_TORQUE = v;
+    storage.writeFloat(EEADDR_TORQUE_MIN, MIN_TORQUE);
+    storage.commit();
+}
+
+void Controller::cmd_setLimitTorqueMax (float v) {
+    MAX_TORQUE = v;
+    storage.writeFloat(EEADDR_TORQUE_MAX, MAX_TORQUE);
+    storage.commit();
+}
+
 void Controller::cmd_updatePidPos (float p, float i, float d) {
     pidPos.SetTunings(p, i, d);
     storage.writeFloat(EEADDR_PID_POS_P, p);

@@ -17,9 +17,9 @@
 #define CONFIG_ROSSERVER_PASS "narrowroad512"
 
 // ROSTOPICS USED BY NODE
-#define RT_STATE            "/tr3/" NODE_ID "/state"
-#define RT_POWERON          "/tr3/" NODE_ID "/poweron"
-#define RT_POWEROFF         "/tr3/" NODE_ID "/poweroff"
+#define RT_STATE            "/tr3/power/state"
+#define RT_POWERON          "/tr3/power/on"
+#define RT_POWEROFF         "/tr3/power/off"
 
 // PINS USED BY NODE
 #define PIN_RELAY 14

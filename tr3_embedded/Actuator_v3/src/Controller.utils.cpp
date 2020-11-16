@@ -40,9 +40,20 @@ void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
     msg->torque = state.torque;
 }
 
+void Controller::setLimits (std_msgs::Float32MultiArray* msg) {
+    msg->data_length = 6;
+    msg->data = (float*)malloc(sizeof(float) * msg->data_length);
+    msg->data[0] = MIN_POSITION;
+    msg->data[1] = MAX_POSITION;
+    msg->data[2] = MIN_VELOCITY;
+    msg->data[3] = MAX_VELOCITY;
+    msg->data[4] = MIN_TORQUE;
+    msg->data[5] = MAX_TORQUE;
+}
+
 void Controller::setPidPosTunings (std_msgs::Float32MultiArray* msg) {
     msg->data_length = 3;
-    msg->data = (float*)malloc(sizeof(float) * 3);
+    msg->data = (float*)malloc(sizeof(float) * msg->data_length);
     msg->data[0] = (float)pidPos.GetTunings(0);
     msg->data[1] = (float)pidPos.GetTunings(1);
     msg->data[2] = (float)pidPos.GetTunings(2);
@@ -50,7 +61,7 @@ void Controller::setPidPosTunings (std_msgs::Float32MultiArray* msg) {
 
 void Controller::setPidVelTunings (std_msgs::Float32MultiArray* msg) {
     msg->data_length = 3;
-    msg->data = (float*)malloc(sizeof(float) * 3);
+    msg->data = (float*)malloc(sizeof(float) * msg->data_length);
     msg->data[0] = (float)pidVel.GetTunings(0);
     msg->data[1] = (float)pidVel.GetTunings(1);
     msg->data[2] = (float)pidVel.GetTunings(2);
@@ -58,7 +69,7 @@ void Controller::setPidVelTunings (std_msgs::Float32MultiArray* msg) {
 
 void Controller::setPidTrqTunings (std_msgs::Float32MultiArray* msg) {
     msg->data_length = 3;
-    msg->data = (float*)malloc(sizeof(float) * 3);
+    msg->data = (float*)malloc(sizeof(float) * msg->data_length);
     msg->data[0] = (float)pidTrq.GetTunings(0);
     msg->data[1] = (float)pidTrq.GetTunings(1);
     msg->data[2] = (float)pidTrq.GetTunings(2);

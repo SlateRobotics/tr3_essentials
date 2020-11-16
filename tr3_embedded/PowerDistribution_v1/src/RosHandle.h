@@ -19,7 +19,7 @@ namespace RosHandle {
   const int max_failures = 5;
 
   Timer pidTimer(5); // hz
-  Timer nhTimer(500); // hz
+  Timer nhTimer(200); // hz
 
   std_msgs::Bool state;
 
@@ -49,16 +49,16 @@ namespace RosHandle {
       if (failures < max_failures) {
         failures++;
         //controller->cmd_poweroff();
-        Serial.print("Failed to connect... trying again in 1000ms... [Attempt ");
+        Serial.print("Failed to connect... trying again in 200ms... [Attempt ");
         Serial.print(failures);
         Serial.print(" of ");
         Serial.print(max_failures);
         Serial.println("]");
-        delay(1000);
+        delay(200);
       } else {
         Serial.println("Max try limit reached. Restarting...");
         ESP.restart();
-        delay(1000000);
+        delay(5000);
       }
       nh.spinOnce();
     }

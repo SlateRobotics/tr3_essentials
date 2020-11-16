@@ -107,7 +107,7 @@ void Controller::step_servo () {
 
     pidPosInput = state.position;
     pidPosSetpoint = trajectory.getTargetPosition();
-    pidPosSetpoint = constrain(pidPosSetpoint, POSITION_MIN, POSITION_MAX);
+    pidPosSetpoint = constrain(pidPosSetpoint, MIN_POSITION, MAX_POSITION);
     pidPos.Compute();
 
     pidVelInput = state.velocity;
@@ -132,11 +132,11 @@ void Controller::step_velocity (bool pulseLED) {
     }
 
     pidVelInput = state.velocity;
-    pidVelSetpoint = constrain(pidVelSetpoint, VELOCITY_MIN, VELOCITY_MAX);
+    pidVelSetpoint = constrain(pidVelSetpoint, MIN_VELOCITY, MAX_VELOCITY);
     pidVel.Compute();
 
     // disable vel controller and wind-down if torque outside bounds
-    if (state.torque <= TORQUE_MIN || state.torque >= TORQUE_MAX) {
+    if (state.torque <= MIN_TORQUE || state.torque >= MAX_TORQUE) {
         pidVelOutput = 0;
         pidVel.clear();
     }
@@ -152,11 +152,11 @@ void Controller::step_torque (bool pulseLED) {
     }
 
     pidTrqInput = state.torque;
-    pidTrqSetpoint = constrain(pidTrqSetpoint, TORQUE_MIN, TORQUE_MAX);
+    pidTrqSetpoint = constrain(pidTrqSetpoint, MIN_TORQUE, MAX_TORQUE);
     pidTrq.Compute();
 
     pidPwrSetpoint = pidVelOutput + pidTrqOutput;
-    pidPwrSetpoint = constrain(pidPwrSetpoint, MOTOR_MIN, MOTOR_MAX);
+    pidPwrSetpoint = constrain(pidPwrSetpoint, DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     motor.step(pidPwrSetpoint * 100.0);
 }
 

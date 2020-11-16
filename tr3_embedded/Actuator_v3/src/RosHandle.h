@@ -23,15 +23,17 @@ namespace RosHandle {
   int failures = 0;
   const int max_failures = 5;
 
-  Timer pidTimer(5); // hz
-  Timer nhTimer(500); // hz
+  Timer configTimer(1); // hz
+  Timer nhTimer(200); // hz
 
   tr3_msgs::ActuatorState state;
+  std_msgs::Float32MultiArray limits;
   std_msgs::Float32MultiArray pid_pos;
   std_msgs::Float32MultiArray pid_vel;
   std_msgs::Float32MultiArray pid_trq;
 
   ros::Publisher pub_state(RT_STATE, &state);
+  ros::Publisher pub_limit(RT_LIMIT, &limits);
   ros::Publisher pub_pid_pos(RT_PID_POS, &pid_pos);
   ros::Publisher pub_pid_vel(RT_PID_VEL, &pid_vel);
   ros::Publisher pub_pid_trq(RT_PID_TRQ, &pid_trq);
@@ -87,6 +89,30 @@ namespace RosHandle {
       controller->cmd_shutdown();
     }
   }
+
+  void ros_callback_limit_pos_min (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitPositionMin(msg.data);
+  }
+
+  void ros_callback_limit_pos_max (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitPositionMax(msg.data);
+  }
+
+  void ros_callback_limit_vel_min (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitVelocityMin(msg.data);
+  }
+
+  void ros_callback_limit_vel_max (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitVelocityMax(msg.data);
+  }
+
+  void ros_callback_limit_trq_min (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitTorqueMin(msg.data);
+  }
+
+  void ros_callback_limit_trq_max (const std_msgs::Float64 &msg) {
+    controller->cmd_setLimitTorqueMax(msg.data);
+  }
   
   void ros_callback_pid_pos_set (const std_msgs::Float32MultiArray &msg) {
     controller->cmd_updatePidPos(msg.data[0], msg.data[1], msg.data[2]);
@@ -109,6 +135,12 @@ namespace RosHandle {
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_pos_set(RT_PID_POS_SET, &ros_callback_pid_pos_set);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_vel_set(RT_PID_VEL_SET, &ros_callback_pid_vel_set);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_trq_set(RT_PID_TRQ_SET, &ros_callback_pid_trq_set);
+  ros::Subscriber<std_msgs::Float64> sub_limit_pos_min(RT_LIMIT_POS_MIN, &ros_callback_limit_pos_min);
+  ros::Subscriber<std_msgs::Float64> sub_limit_pos_max(RT_LIMIT_POS_MAX, &ros_callback_limit_pos_max);
+  ros::Subscriber<std_msgs::Float64> sub_limit_vel_min(RT_LIMIT_VEL_MIN, &ros_callback_limit_vel_min);
+  ros::Subscriber<std_msgs::Float64> sub_limit_vel_max(RT_LIMIT_VEL_MAX, &ros_callback_limit_vel_max);
+  ros::Subscriber<std_msgs::Float64> sub_limit_trq_min(RT_LIMIT_TRQ_MIN, &ros_callback_limit_trq_min);
+  ros::Subscriber<std_msgs::Float64> sub_limit_trq_max(RT_LIMIT_TRQ_MAX, &ros_callback_limit_trq_max);
   ros::Subscriber<tr3_msgs::ActuatorPositionCommand> sub_control_position(RT_CONTROL_POSITION, &ros_callback_control_position);
   ros::Subscriber<std_msgs::Float64> sub_control_velocity(RT_CONTROL_VELOCITY, &ros_callback_control_velocity);
   ros::Subscriber<std_msgs::Float64> sub_control_torque(RT_CONTROL_TORQUE, &ros_callback_control_torque);
@@ -119,16 +151,16 @@ namespace RosHandle {
       if (failures < max_failures) {
         failures++;
         controller->cmd_stop();
-        Serial.print("Failed to connect... trying again in 1000ms... [Attempt ");
+        Serial.print("Failed to connect... trying again in 200ms... [Attempt ");
         Serial.print(failures);
         Serial.print(" of ");
         Serial.print(max_failures);
         Serial.println("]");
-        delay(1000);
+        delay(200);
       } else {
         Serial.println("Max try limit reached. Restarting...");
         ESP.restart();
-        delay(1000000);
+        delay(5000);
       }
       nh.spinOnce();
     }
@@ -153,6 +185,12 @@ namespace RosHandle {
     nh.subscribe(sub_pid_pos_set);
     nh.subscribe(sub_pid_vel_set);
     nh.subscribe(sub_pid_trq_set);
+    nh.subscribe(sub_limit_pos_min);
+    nh.subscribe(sub_limit_pos_max);
+    nh.subscribe(sub_limit_vel_min);
+    nh.subscribe(sub_limit_vel_max);
+    nh.subscribe(sub_limit_trq_min);
+    nh.subscribe(sub_limit_trq_max);
     nh.subscribe(sub_control_position);
     nh.subscribe(sub_control_velocity);
     nh.subscribe(sub_control_torque);
@@ -160,6 +198,7 @@ namespace RosHandle {
 
     // publishers
     nh.advertise(pub_state);
+    nh.advertise(pub_limit);
     nh.advertise(pub_pid_pos);
     nh.advertise(pub_pid_vel);
     nh.advertise(pub_pid_trq);
@@ -169,11 +208,13 @@ namespace RosHandle {
     if (nhTimer.ready()) {
        controller->setActuatorState(&RosHandle::state);
 
-      if (pidTimer.ready()) {
+      if (configTimer.ready()) {
+        controller->setLimits(&limits);
         controller->setPidPosTunings(&pid_pos);
         controller->setPidVelTunings(&pid_vel);
         controller->setPidTrqTunings(&pid_trq);
         
+        RosHandle::pub_limit.publish(&RosHandle::limits);
         RosHandle::pub_pid_pos.publish(&RosHandle::pid_pos);
         RosHandle::pub_pid_vel.publish(&RosHandle::pid_vel);
         RosHandle::pub_pid_trq.publish(&RosHandle::pid_trq);
