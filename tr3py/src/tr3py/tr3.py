@@ -179,8 +179,8 @@ class TR3:
         if (self.b0.state() == None or self.b1.state() == None):
             return
 
-        l_pos = -self.b0.state.position
-        r_pos = self.b1.state.position
+        l_pos = -self.b0.state().position
+        r_pos = self.b1.state().position
 
         if (self.l_pos_prev == None or self.r_pos_prev == None):
             self.l_pos_prev = l_pos
