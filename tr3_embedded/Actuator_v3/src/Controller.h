@@ -81,11 +81,12 @@ class Controller {
     void step_stop();
 
     void cmd_setMode(uint8_t m);
-    void cmd_setPosition(double position, long duration);
-    void cmd_setVelocity(double velocity);
-    void cmd_setTorque(double torque);
-    void cmd_setVoltage(double voltage);
+    void cmd_setPosition(float position, int duration);
+    void cmd_setVelocity(float velocity);
+    void cmd_setTorque(float torque);
+    void cmd_setVoltage(float voltage);
     void cmd_resetPosition();
+    void cmd_resetTorque();
     void cmd_flipMotorPins();
     void cmd_release();
     void cmd_stop();

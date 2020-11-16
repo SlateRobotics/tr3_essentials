@@ -7,7 +7,14 @@ void Controller::computeState () {
         state.torque = 0;
         return;
     }
+
+    if (mode == MODE_STOP) {
+        state.stop = true;
+    } else {
+        state.stop = false;
+    }
     
+    state.mode = mode;
     state.position = encoderOutput.getAngleRadians();
     state.velocity = encoderOutput.getVelocity();
     state.acceleration = encoderOutput.getAcceleration();
@@ -24,6 +31,9 @@ void Controller::computeState () {
 }
 
 void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
+    msg->id = ACTUATOR_ID;
+    msg->mode = state.mode;
+    msg->stop = state.stop;
     msg->position = state.position;
     msg->velocity = state.velocity;
     msg->effort = state.effort;

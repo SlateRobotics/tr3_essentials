@@ -14,7 +14,7 @@ void Controller::cmd_setMode (uint8_t m) {
     }
 }
 
-void Controller::cmd_setPosition (double position, long duration) {
+void Controller::cmd_setPosition (float position, int duration) {
     if (ACTUATOR_ID == "g0") {
         if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
@@ -38,7 +38,7 @@ void Controller::cmd_setPosition (double position, long duration) {
     }
 }
 
-void Controller::cmd_setVelocity (double velocity) {
+void Controller::cmd_setVelocity (float velocity) {
     pidVelSetpoint = velocity;
 
     if (mode != MODE_STOP) {
@@ -46,7 +46,7 @@ void Controller::cmd_setVelocity (double velocity) {
     }
 }
 
-void Controller::cmd_setTorque (double torque) {
+void Controller::cmd_setTorque (float torque) {
     pidTrqSetpoint = torque;
 
     if (mode != MODE_STOP) {
@@ -54,9 +54,10 @@ void Controller::cmd_setTorque (double torque) {
     }
 }
 
-void Controller::cmd_setVoltage (double voltage) {
+void Controller::cmd_setVoltage (float voltage) {
+    Serial.println(voltage);
     
-    motor.prepareCommand(voltage / 12.6, 1000);
+    motor.prepareCommand(floor(voltage / 12.6 * 100.0), 1000);
 
     if (mode != MODE_STOP) {
         mode = MODE_ROTATE;
@@ -64,18 +65,24 @@ void Controller::cmd_setVoltage (double voltage) {
 }
 
 void Controller::cmd_resetPosition () {
-    float positionOutput = encoderOutput.getAngleRadians();
-    
     encoderOutput.resetPos();
+
+    pidPos.clear();
+    pidVel.clear();
+
+    uint16_t enc_offset = encoderOutput.getOffset();
+    storage.writeUInt16(EEADDR_ENC_OUT_OFFSET, enc_offset);
+    storage.commit();
+}
+
+void Controller::cmd_resetTorque () {
     encoderTorque.resetPos();
 
     pidPos.clear();
     pidVel.clear();
 
-    uint16_t encO_offset = encoderOutput.getOffset();
-    uint16_t encD_offset = encoderTorque.getOffset();
-    storage.writeUInt16(EEADDR_ENC_OUT_OFFSET, encO_offset);
-    storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, encD_offset);
+    uint16_t enc_offset = encoderTorque.getOffset();
+    storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, enc_offset);
     storage.commit();
 }
 

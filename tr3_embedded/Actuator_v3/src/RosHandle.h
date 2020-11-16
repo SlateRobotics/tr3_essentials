@@ -20,6 +20,9 @@ namespace RosHandle {
   ros::NodeHandle_<ESP32Hardware> nh;
   Controller *controller;
 
+  int failures = 0;
+  const int max_failures = 5;
+
   Timer pidTimer(5); // hz
   Timer nhTimer(500); // hz
 
@@ -53,9 +56,15 @@ namespace RosHandle {
     controller->cmd_setMode(msg.data);
   }
   
-  void ros_callback_reset (const std_msgs::Bool &msg) {
+  void ros_callback_reset_pos (const std_msgs::Bool &msg) {
     if (msg.data == true) {
       controller->cmd_resetPosition();
+    }
+  }
+  
+  void ros_callback_reset_trq (const std_msgs::Bool &msg) {
+    if (msg.data == true) {
+      controller->cmd_resetTorque();
     }
   }
   
@@ -92,9 +101,10 @@ namespace RosHandle {
   }
 
   ros::Subscriber<std_msgs::UInt8> sub_mode(RT_MODE, &ros_callback_mode);
-  ros::Subscriber<std_msgs::Bool> sub_reset(RT_RESET, &ros_callback_reset);
+  ros::Subscriber<std_msgs::Bool> sub_reset_pos(RT_RESET_POS, &ros_callback_reset_pos);
+  ros::Subscriber<std_msgs::Bool> sub_reset_trq(RT_RESET_TRQ, &ros_callback_reset_trq);
   ros::Subscriber<std_msgs::Bool> sub_flip(RT_FLIP, &ros_callback_flip);
-  ros::Subscriber<std_msgs::Bool> sub_stop(RT_FLIP, &ros_callback_stop);
+  ros::Subscriber<std_msgs::Bool> sub_stop(RT_STOP, &ros_callback_stop);
   ros::Subscriber<std_msgs::Bool> sub_shutdown(RT_SHUTDOWN, &ros_callback_shutdown);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_pos_set(RT_PID_POS_SET, &ros_callback_pid_pos_set);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_vel_set(RT_PID_VEL_SET, &ros_callback_pid_vel_set);
@@ -104,6 +114,30 @@ namespace RosHandle {
   ros::Subscriber<std_msgs::Float64> sub_control_torque(RT_CONTROL_TORQUE, &ros_callback_control_torque);
   ros::Subscriber<std_msgs::Float64> sub_control_voltage(RT_CONTROL_VOLTAGE, &ros_callback_control_voltage);
 
+  void connectRecovery () {
+    while (!nh.connected()) {
+      if (failures < max_failures) {
+        failures++;
+        controller->cmd_stop();
+        Serial.print("Failed to connect... trying again in 1000ms... [Attempt ");
+        Serial.print(failures);
+        Serial.print(" of ");
+        Serial.print(max_failures);
+        Serial.println("]");
+        delay(1000);
+      } else {
+        Serial.println("Max try limit reached. Restarting...");
+        ESP.restart();
+        delay(1000000);
+      }
+      nh.spinOnce();
+    }
+
+    Serial.println("Succesfully recovered connection");
+    failures = 0;
+    controller->cmd_release();
+  }
+
   void setup(Controller* c) {
     controller = c;
 
@@ -111,7 +145,8 @@ namespace RosHandle {
 
     // subscribers
     nh.subscribe(sub_mode);
-    nh.subscribe(sub_reset);
+    nh.subscribe(sub_reset_pos);
+    nh.subscribe(sub_reset_trq);
     nh.subscribe(sub_flip);
     nh.subscribe(sub_stop);
     nh.subscribe(sub_shutdown);
@@ -145,7 +180,14 @@ namespace RosHandle {
       }
 
       RosHandle::pub_state.publish(&RosHandle::state);
-      nh.spinOnce();
+
+      // error when esp32 spins, then we start rosserial server
+      // we need to figure out how to intelligently restart connection
+      // if we fail to send/receive data
+      int result = nh.spinOnce();
+      if (result != ros::SPIN_OK || !nh.connected()) {
+        connectRecovery();
+      }
     }
   }
 }

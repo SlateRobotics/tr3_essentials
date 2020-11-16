@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // ACTUATOR DETAILS
-#define ACTUATOR_ID "a1"
+#define ACTUATOR_ID "a2"
 #define ACTUATOR_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG
@@ -17,22 +17,23 @@
 #define CONFIG_ROSSERVER_PASS "narrowroad512"
 
 // ROSTOPICS USED BY ACTUATOR
-#define RT_STATE              "/tr3/joints/" ACTUATOR_ID "/state"
-#define RT_MODE               "/tr3/joints/" ACTUATOR_ID "/mode"
-#define RT_RESET              "/tr3/joints/" ACTUATOR_ID "/reset"
-#define RT_FLIP               "/tr3/joints/" ACTUATOR_ID "/flip"
-#define RT_STOP               "/tr3/joints/" ACTUATOR_ID "/stop"
-#define RT_SHUTDOWN           "/tr3/joints/" ACTUATOR_ID "/shutdown"
-#define RT_CONTROL_POSITION   "/tr3/joints/" ACTUATOR_ID "/control/position"
-#define RT_CONTROL_VELOCITY   "/tr3/joints/" ACTUATOR_ID "/control/velocity"
-#define RT_CONTROL_TORQUE     "/tr3/joints/" ACTUATOR_ID "/control/torque"
-#define RT_CONTROL_VOLTAGE    "/tr3/joints/" ACTUATOR_ID "/control/voltage"
-#define RT_PID_POS            "/tr3/joints/" ACTUATOR_ID "/pid_pos"
-#define RT_PID_VEL            "/tr3/joints/" ACTUATOR_ID "/pid_vel"
-#define RT_PID_TRQ            "/tr3/joints/" ACTUATOR_ID "/pid_trq"
-#define RT_PID_POS_SET        "/tr3/joints/" ACTUATOR_ID "/pid_pos/set"
-#define RT_PID_VEL_SET        "/tr3/joints/" ACTUATOR_ID "/pid_vel/set"
-#define RT_PID_TRQ_SET        "/tr3/joints/" ACTUATOR_ID "/pid_trq/set"
+#define RT_STATE              "/tr3/" ACTUATOR_ID "/state"
+#define RT_MODE               "/tr3/" ACTUATOR_ID "/mode"
+#define RT_RESET_POS          "/tr3/" ACTUATOR_ID "/reset/position"
+#define RT_RESET_TRQ          "/tr3/" ACTUATOR_ID "/reset/torque"
+#define RT_FLIP               "/tr3/" ACTUATOR_ID "/flip"
+#define RT_STOP               "/tr3/" ACTUATOR_ID "/stop"
+#define RT_SHUTDOWN           "/tr3/" ACTUATOR_ID "/shutdown"
+#define RT_CONTROL_POSITION   "/tr3/" ACTUATOR_ID "/control/position"
+#define RT_CONTROL_VELOCITY   "/tr3/" ACTUATOR_ID "/control/velocity"
+#define RT_CONTROL_TORQUE     "/tr3/" ACTUATOR_ID "/control/torque"
+#define RT_CONTROL_VOLTAGE    "/tr3/" ACTUATOR_ID "/control/voltage"
+#define RT_PID_POS            "/tr3/" ACTUATOR_ID "/pid_pos"
+#define RT_PID_VEL            "/tr3/" ACTUATOR_ID "/pid_vel"
+#define RT_PID_TRQ            "/tr3/" ACTUATOR_ID "/pid_trq"
+#define RT_PID_POS_SET        "/tr3/" ACTUATOR_ID "/pid_pos/set"
+#define RT_PID_VEL_SET        "/tr3/" ACTUATOR_ID "/pid_vel/set"
+#define RT_PID_TRQ_SET        "/tr3/" ACTUATOR_ID "/pid_trq/set"
 
 // PINS USED BY ACTUATOR
 #define PIN_MTR_PWM 23 // ENABLE / PWM
@@ -52,8 +53,8 @@
 #define POSITION_MAX 6.28
 #define VELOCITY_MIN -0.942
 #define VELOCITY_MAX 0.942
-#define TORQUE_MIN -60.0
-#define TORQUE_MAX 60.0
+#define TORQUE_MIN -45.0
+#define TORQUE_MAX 45.0
 #define MOTOR_MIN -1.0
 #define MOTOR_MAX 1.0
 
