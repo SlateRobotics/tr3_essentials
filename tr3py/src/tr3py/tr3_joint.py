@@ -6,188 +6,153 @@ import math
 import yaml
 import io
 import struct
-import tr3_network
 
-CMD_UPDATE_FIRMWARE_BEGIN = 0x01
-CMD_UPDATE_FIRMWARE = 0x02
-CMD_UPDATE_FIRMWARE_END = 0x03
-CMD_SET_MODE = 0x10
-CMD_SET_POS = 0x11
-CMD_RESET_POS = 0x12
-CMD_ROTATE = 0x13
-CMD_RETURN_STATUS = 0x14
-CMD_STOP_RELEASE = 0x15
-CMD_STOP_EMERGENCY = 0x16
-CMD_FLIP_MOTOR = 0x17
-CMD_CALIBRATE = 0x18
-CMD_SHUTDOWN = 0x19
-CMD_UPDATE_PID_POS = 0x20
-CMD_UPDATE_PID_VEL = 0x22
-CMD_UPDATE_PID_TRQ = 0x23
-CMD_SET_VELOCITY = 0x21
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Bool
+from std_msgs.msg import UInt8
+from std_msgs.msg import Float64
+from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+from nav_msgs.msg import Odometry
+from tr3_msgs.msg import ActuatorState
+from tr3_msgs.msg import ActuatorPositionCommand
+
+MODE_STOP = 0
+MODE_SERVO = 1
+MODE_VELOCITY = 2
+MODE_TORQUE = 3
+MODE_ROTATE = 4
+MODE_BACKDRIVE = 5
+MODE_CALIBRATE = 6
+MODE_UPDATE_FIRMWARE = 7
 
 class Joint:
     _tr3 = None
     _id = None
-    _position = None
-    _rotations = None
-    _effort = None
-    _torque = None
-    _mode = None
-    _stop = None
-    _temperature = None
+    
+    _state = None
+    _state_received = None
+
     _pid_pos = [9.000, 0.000, 0.000]
     _pid_vel = [4.000, 4.000, 0.000]
     _pid_trq = [0.300, 0.050, 0.000]
+
+    _pub_stop = None
+    _pub_shutdown = None
+    _pub_mode = None
+    _pub_reset_pos = None
+    _pub_reset_trq = None
+    _pub_flip = None
+    _pub_pid_pos_set = None
+    _pub_pid_vel_set = None
+    _pub_pid_trq_set = None
+    _pub_control_pos = None
+    _pub_control_vel = None
+    _pub_control_trq = None
+    _pub_control_vol = None
 
     def __init__(self, t, i):
         self._tr3 = t
         self._id = i
 
+        self._pub_stop = rospy.Publisher("/tr3/" + self._id + "/stop", Bool)
+        self._pub_shutdown = rospy.Publisher("/tr3/" + self._id + "/shutdown", Bool)
+        self._pub_mode = rospy.Publisher("/tr3/" + self._id + "/mode", UInt8)
+        self._pub_reset_pos = rospy.Publisher("/tr3/" + self._id + "/reset/position", Bool)
+        self._pub_reset_trq = rospy.Publisher("/tr3/" + self._id + "/reset/torque", Bool)
+        self._pub_flip = rospy.Publisher("/tr3/" + self._id + "/flip", Bool)
+        self._pub_pid_pos_set = rospy.Publisher("/tr3/" + self._id + "/pid_pos/set", Float32MultiArray)
+        self._pub_pid_vel_set = rospy.Publisher("/tr3/" + self._id + "/pid_vel/set", Float32MultiArray)
+        self._pub_pid_trq_set = rospy.Publisher("/tr3/" + self._id + "/pid_trq/set", Float32MultiArray)
+        self._pub_control_pos = rospy.Publisher("/tr3/" + self._id + "/control/position", ActuatorPositionCommand)
+        self._pub_control_vel = rospy.Publisher("/tr3/" + self._id + "/control/velocity", Float64)
+        self._pub_control_trq = rospy.Publisher("/tr3/" + self._id + "/control/torque", Float64)
+        self._pub_control_vol = rospy.Publisher("/tr3/" + self._id + "/control/voltage", Float64)
+        
+        rospy.Subscriber("/tr3/" + self._id + "/state", ActuatorState, self._sub_state)
+        rospy.Subscriber("/tr3/" + self._id + "/pid_pos", Float32MultiArray, self._sub_pid_pos)
+        rospy.Subscriber("/tr3/" + self._id + "/pid_vel", Float32MultiArray, self._sub_pid_vel)
+        rospy.Subscriber("/tr3/" + self._id + "/pid_trq", Float32MultiArray, self._sub_pid_trq)
+
+    def _sub_state(self, msg):
+        self._state_received = datetime.datetime.now()
+        self._state = msg
+
+    def _sub_pid_pos(self, msg):
+        self._pid_pos = msg.data
+
+    def _sub_pid_vel(self, msg):
+        self._pid_vel = msg.data
+
+    def _sub_pid_trq(self, msg):
+        self._pid_trq = msg.data
+
     def state(self):
-        return self._state
+        now = datetime.datetime.now()
+        expires = self._state_received + datetime.timedelta(milliseconds=500)
+
+        # state expires after 500ms and will return None
+        if now < expires:
+            return self._state
+        else:
+            return None
 
     def setPosition(self, pos, dur = 0):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_SET_POS
-
-        for b in bytearray(struct.pack("f", pos)):
-            packet.addParam(int(b))
-
-        packet.addParam(int(math.floor(dur % 256)))
-        packet.addParam(int(math.floor(dur / 256)))
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+        cmd = ActuatorPositionCommand()
+        cmd.position = pos
+        cmd.duraiton = dur
+        self._pub_control_pos.publish(cmd)
 
     def setVelocity (self, vel):
-        x = (vel + 10.0) * 100.0
+        self._pub_control_vel.publish(vel)
 
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_SET_VELOCITY
-        packet.addParam(int(math.floor(x % 256)))
-        packet.addParam(int(math.floor(x / 256)))
+    def setTorque (self, trq):
+        self._pub_control_trq.publish(trq)
 
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+    def setVoltage (self, vol):
+        self._pub_control_vol.publish(vol)
 
     def release(self):
-        cmd = CMD_STOP_RELEASE
-
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = cmd
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+        self._pub_stop.publish(0)
 
     def stop(self):
-        cmd = CMD_STOP_EMERGENCY
-
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = cmd
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+        self._pub_stop.publish(1)
 
     def actuate(self, motorValue, motorDuration = 250):
-        offsetBinary = 128
-        x = int(math.floor(motorValue * 100.0))
-
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_ROTATE
-        packet.addParam(x + offsetBinary)
-        packet.addParam(int(math.floor(motorDuration % 256)))
-        packet.addParam(int(math.floor(motorDuration / 256)))
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+        # need to implement custom message with duration
+        self._pub_control_vol.publish(motorValue * 12.6)
 
     def flipMotor(self):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_FLIP_MOTOR
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+        self._pub_flip.publish(1)
 
     def shutdown(self):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_SHUTDOWN
+        self._pub_shutdown.publish(1)
 
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+    def resetPosition(self):
+        self._pub_reset_pos.publish(1)
 
-    def resetEncoderPosition(self):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_RESET_POS
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
-
-    def calibrate(self):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_CALIBRATE
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+    def resetTorque(self):
+        self._pub_reset_trq.publish(1)
 
     def setMode(self, mode):
-        packet = tr3_network.Packet()
-        packet.address = self._id
-        packet.cmd = CMD_SET_MODE
-        packet.addParam(mode)
+        self._pub_mode.publish(mode)
 
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
+    def updatePosPID(self, p, i, d):
+        pid = Float32MultiArray()
+        pid.data = [p, i, d]
+        self._pub_pid_pos_set.publish(pid)
 
-    def updatePID_pos(self, p = None, i = None, d = None):
-        self.updatePID("_pid_pos", p, i, d)
+    def updateVelPID(self, p, i, d):
+        pid = Float32MultiArray()
+        pid.data = [p, i, d]
+        self._pub_pid_vel_set.publish(pid)
 
-    def updatePID_vel(self, p = None, i = None, d = None):
-        self.updatePID("_pid_vel", p, i, d)
+    def updateTrqPID(self, p, i, d):
+        pid = Float32MultiArray()
+        pid.data = [p, i, d]
+        self._pub_pid_trq_set.publish(pid)
 
-    def updatePID_trq(self, p = None, i = None, d = None):
-        self.updatePID("_pid_trq", p, i, d)
-
-    def updatePID(self, pid, p = None, i = None, d = None):
-        if p == None:
-            p = getattr(self, pid)[0]
-
-        if i == None:
-            i = getattr(self, pid)[1]
-
-        if d == None:
-            d = getattr(self, pid)[2]
-
-        setattr(self, pid, [p, i, d])
-        self._tr3.flagSavePID = True
-
-        packet = tr3_network.Packet()
-        packet.address = self._id
-
-        if pid == "_pid_pos":
-            packet.cmd = CMD_UPDATE_PID_POS
-        elif pid == "_pid_vel":
-            packet.cmd = CMD_UPDATE_PID_VEL
-        elif pid == "_pid_trq":
-            packet.cmd = CMD_UPDATE_PID_TRQ
-
-        packet.addParam(int(math.floor(p * 1000.0)))
-        packet.addParam(int(math.floor(i * 1000.0)))
-        packet.addParam(int(math.floor(d * 1000.0)))
-
-        self._tr3._msgs.add(packet)
-        self._tr3.step()
-
-
+    # NOT IMPLEMENTED
     def updateFirmware(self, file_path):
     	packet = tr3_network.Packet()
     	packet.address = self._id

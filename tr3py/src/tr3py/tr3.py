@@ -7,49 +7,47 @@ import math
 import os
 import io
 import yaml
-import tr3_network
+
+import tf
+import rospy
+
 from tr3_joint import Joint
 
-CMD_SET_MODE = 0x10
-CMD_SET_POS = 0x11
-CMD_RESET_POS = 0x12
-CMD_ROTATE = 0x13
-CMD_RETURN_STATUS = 0x14
-CMD_STOP_RELEASE = 0x15
-CMD_STOP_EMERGENCY = 0x16
-CMD_FLIP_MOTOR = 0x17
-CMD_CALIBRATE = 0x18
-CMD_SHUTDOWN = 0x19
-CMD_UPDATE_PID = 0x20
-CMD_SET_VELOCITY = 0x21
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Bool
+from std_msgs.msg import UInt8
+from std_msgs.msg import Float64
+from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+from nav_msgs.msg import Odometry
+from tr3_msgs.msg import ActuatorState
+from tr3_msgs.msg import ActuatorPositionCommand
 
 TAU = math.pi * 2.0
 
-close = False
-def signal_handler(sig, frame):
-    global close
-    close = True
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-
 class TR3:
-    _msgs = tr3_network.Network()
-
-    tr3_config_path = None
-    flagSavePID = False
-
     _state = None
-    state_change = None
+    _pub_odom = None
+    _pub_state = None
 
     joints = ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]
 
-    mode_servo = 0x10
-    mode_backdrive = 0x11
-    mode_rotate = 0x12
-    mode_velocity = 0x13
+    l_pos_prev = None
+    r_pos_prev = None
+    pos_x = 0
+    pos_y = 0
+    pos_th = 0
 
-    def __init__(self):
+    MODE_STOP = 0
+    MODE_SERVO = 1
+    MODE_VELOCITY = 2
+    MODE_TORQUE = 3
+    MODE_ROTATE = 4
+    MODE_BACKDRIVE = 5
+    MODE_CALIBRATE = 6
+    MODE_UPDATE_FIRMWARE = 7
+
+    def __init__(self, _init_node = True):
         self.b0 = Joint(self, "b0")
         self.b1 = Joint(self, "b1")
         self.a0 = Joint(self, "a0")
@@ -63,126 +61,68 @@ class TR3:
         self.p0 = Joint(self, "p0")
         self.p1 = Joint(self, "p1")
         self.p2 = Joint(self, "p2")
-        self._msgs.state_change = self.handle_state_change
 
-        self.setupConfig()
+        if _init_node == True:
+            rospy.init_node('tr3_node', anonymous=True)
+           
+        rospy.Subscriber("/tr3/shutdown", Bool, self._sub_shutdown)
+        rospy.Subscriber("/tr3/powerup", Bool, self._sub_powerup)
+        rospy.Subscriber("/tr3/stop", Bool, self._sub_stop)
+        rospy.Subscriber("/tr3/base/diff/cmd_vel", Twist, self._sub_base_cmd)
 
-        print("TR3 waiting for state")
-        while self._state == None:
-            self.step()
+        self._pub_odom = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
+        self._pub_state = rospy.Publisher("/tr3/state", JointState, queue_size=1)
 
         self.powerup()
         print("TR3 ready")
 
-        for j in self.joints:
-            getattr(self, j).updatePID_pos()
-            getattr(self, j).updatePID_vel()
-            getattr(self, j).updatePID_trq()
-
-    def setupConfig(self):
-        dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-        self.tr3_config_path = os.path.join(dir, 'tr3_config.yaml')
-        tr3_config_default_path = os.path.join(dir, 'tr3_config_default.yaml')
-
-        if os.path.isfile(self.tr3_config_path) == False:
-            with open(tr3_config_default_path, 'r') as stream:
-                config = yaml.safe_load(stream)
-                with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
-                    yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
-
-        with open(self.tr3_config_path, 'r') as stream:
-            config = yaml.safe_load(stream)
-            for j in self.joints:
-                setattr(self, j + '._pid_pos', config['tr3']['joints'][j]['pid_pos'])
-                setattr(self, j + '._pid_vel', config['tr3']['joints'][j]['pid_vel'])
-                setattr(self, j + '._pid_trq', config['tr3']['joints'][j]['pid_trq'])
-
-    def savePID(self):
-        with open(self.tr3_config_path, 'r') as stream:
-            config = yaml.safe_load(stream)
-            try:
-                for j in self.joints:
-                    config['tr3']['joints'][j]['pid_pos'] = getattr(self, j + '._pid_pos')
-                    config['tr3']['joints'][j]['pid_vel'] = getattr(self, j + '._pid_vel')
-                    config['tr3']['joints'][j]['pid_trq'] = getattr(self, j + '._pid_trq')
-
-                with io.open(self.tr3_config_path, "w+", encoding="utf8") as f:
-                    yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
-            except:
-                print("An exception occurred saving PID:", config)
-
-
-    def handle_state_change(self, state):
-        if self.state_change != None:
-            self.state_change(state)
-
     def state(self):
         return self._state
+    
+    def _sub_powerup (self, msg):
+        if msg.data == True:
+            self.powerup()
+    
+    def _sub_shutdown (self, msg):
+        if msg.data == True:
+            self.shutdown()
 
-    def drive(self, motorLeft, motorRight, motorDuration = 250):
-        offsetBinary = 100
+    def _sub_stop (self, msg):
+        if msg.data == True:
+            self.stop()
+        else:
+            self.release()
 
-        packet = tr3_msgs.Packet()
-        packet.address = "b0"
-        packet.cmd = CMD_ROTATE
-        packet.addParam(int((motorLeft * 100.0) + offsetBinary))
-        packet.addParam(int((motorRight * 100.0) + offsetBinary))
-        packet.addParam(int(math.floor(motorDuration % 256)))
-        packet.addParam(int(math.floor(motorDuration / 256)))
+    def _sub_base_cmd (self, msg):
+        x, th = (msg.linear.x, msg.angular.z)
+        self.drive(x, th)
 
-        self._msgs.add(packet)
-        self.step()
+    def drive(self, x, th):
+        R = 0.3175
+        L = 0.6562
+        l = ((2 * x) - (th * L)) / (2 * R)
+        r = ((2 * x) + (th * L)) / (2 * R)
+
+        self.tr3.b0.setVelocity(-l)
+        self.tr3.b1.setVelocity(r)
 
     def release(self):
-        self.a0.release()
-        self.a1.release()
-        self.a2.release()
-        self.a3.release()
-        self.a4.release()
-        self.h0.release()
-        self.h1.release()
-        self.b0.release()
-        self.b1.release()
+        for j in self.joints:
+            getattr(self, j).release()
 
     def powerup(self):
         self.p0.setPosition(1)
-        self.sleep(2)
 
     def shutdown(self):
-        self.a0.shutdown()
-        self.a1.shutdown()
-        self.a2.shutdown()
-        self.a3.shutdown()
-        self.a4.shutdown()
-        self.h0.shutdown()
-        self.h1.shutdown()
-        self.b0.shutdown()
-        self.b1.shutdown()
+        for j in self.joints:
+            getattr(self, j).shutdown()
+                
         self.sleep(2)
         self.close()
 
     def stop(self):
-        self.a0.stop()
-        self.a1.stop()
-        self.a2.stop()
-        self.a3.stop()
-        self.a4.stop()
-        self.h0.stop()
-        self.h1.stop()
-        self.b0.stop()
-        self.b1.stop()
-
-    def setMode(self, mode):
-        self.a0.setMode(mode)
-        self.a1.setMode(mode)
-        self.a2.setMode(mode)
-        self.a3.setMode(mode)
-        self.a4.setMode(mode)
-        self.h0.setMode(mode)
-        self.h1.setMode(mode)
-        self.b0.setMode(mode)
-        self.b1.setMode(mode)
+        for j in self.joints:
+            getattr(self, j).stop()
 
     def sleep(self, sec):
         t_start = time.time()
@@ -195,53 +135,35 @@ class TR3:
         except:
             pass
 
+    def set_state(self):
+        joint_state = JointState()
+        joint_state.name = []
+        joint_state.position = []
+        joint_state.velocity = []
+        joint_state.effort = []
+
+        for j in self.joints:
+            s = getattr(self, j).state()
+            if state != None:
+                joint_state.name.append(j)
+                joint_state.position.append(s.position)
+                joint_state.velocity.append(s.velocity)
+                joint_state.effort.append(s.effort)
+
+        self._pub_state.publish(joint_state)
+
     def step(self):
-        global close
-        if close == True:
-            self._msgs.close()
-            self.close()
-            return
-
-        self._msgs.step()
-        self._state = self._msgs.state()
-
-        if self.flagSavePID == True:
-            self.savePID()
-            self.flagSavePID = False
-
-        if self._state == None:
-            return
-
-        ids, pos, rot, eff, vel, trq, mod, stp, tmp = self._state
-        for i in range(len(ids)):
-            try:
-                getattr(self,ids[i])._position = pos[i]
-                getattr(self,ids[i])._rotations = rot[i]
-                getattr(self,ids[i])._effort = eff[i]
-                getattr(self,ids[i])._velocity = vel[i]
-                getattr(self,ids[i])._torque = trq[i]
-                getattr(self,ids[i])._mode = mod[i]
-                getattr(self,ids[i])._stop = stp[i]
-                getattr(self,ids[i])._temperature = tmp[i]
-            except:
-                pass
-
+        self.set_state()
         self.step_odom()
-
-    l_pos_prev = None
-    r_pos_prev = None
-    pos_x = 0
-    pos_y = 0
-    pos_th = 0
 
     def step_odom(self):
         wheel_dist = 0.6562
 
-        if (self.b0._position == None or self.b0._rotations == None or self.b1._position == None or self.b1._rotations == None):
+        if (self.b0.state.position == None or self.b1.state.position == None):
             return
 
-        l_pos = -(self.b0._position + self.b0._rotations * 6.283185)
-        r_pos = (self.b1._position + self.b1._rotations * 6.283185)
+        l_pos = -self.b0.state.position
+        r_pos = self.b1.state.position
 
         if (self.l_pos_prev == None or self.r_pos_prev == None):
             self.l_pos_prev = l_pos
@@ -257,19 +179,40 @@ class TR3:
         dist_per_rad = 0.15875 # meters
         dist_l = d_l * dist_per_rad
         dist_r = d_r * dist_per_rad
-        dist_c = (dist_l + dist_r) / 2.0;
+        dist_c = (dist_l + dist_r) / 2.0
 
         self.pos_x += dist_c * math.cos(self.pos_th)
         self.pos_y += dist_c * math.sin(self.pos_th)
         self.pos_th += (dist_r - dist_l) / wheel_dist
 
+    	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.tr3.pos_th)
+
+    	odom = Odometry()
+    	odom.header.stamp = rospy.Time.now()
+    	odom.header.frame_id = "odom"
+
+    	# set the position
+    	odom.pose.pose = Pose(Point(self.tr3.pos_x, self.tr3.pos_y, 0), Quaternion(*odom_quat))
+
+    	# set the velocity
+    	odom.child_frame_id = "base_link"
+    	odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+
+        # publish the message
+    	br = tf.TransformBroadcaster()
+    	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
+    	#br = tf.TransformBroadcaster()
+    	#br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
+        self._pub_odom.publish(odom)
+
     def spin(self, condition = True):
-        global close
-        while condition == True or close == True:
+        while condition == True:
             self.step()
 
     def close(self):
         self.p0.setPosition(0)
         self.sleep(1)
-        while self._msgs._msgs != "":
-            self.step()
+
+if __name__ == '__main__':
+    tr3 = TR3()
+    tr3.spin()
