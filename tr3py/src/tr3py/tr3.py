@@ -7,6 +7,7 @@ import math
 import os
 import io
 import yaml
+from datetime import datetime
 
 import tf
 import rospy
@@ -25,10 +26,20 @@ from tr3_msgs.msg import ActuatorPositionCommand
 
 TAU = math.pi * 2.0
 
+close = False
+def signal_handler(sig, frame):
+    global close
+    close = True
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
 class TR3:
     _state = None
     _pub_odom = None
     _pub_state = None
+    _pub_poweron = None
+    _pub_poweroff = None
 
     joints = ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]
 
@@ -58,26 +69,32 @@ class TR3:
         self.g0 = Joint(self, "g0")
         self.h0 = Joint(self, "h0")
         self.h1 = Joint(self, "h1")
-        self.p0 = Joint(self, "p0")
-        self.p1 = Joint(self, "p1")
-        self.p2 = Joint(self, "p2")
+        #self.p0 = Joint(self, "p0")
+        #self.p1 = Joint(self, "p1")
+        #self.p2 = Joint(self, "p2")
 
-        if _init_node == True:
-            rospy.init_node('tr3_node', anonymous=True)
-           
         rospy.Subscriber("/tr3/shutdown", Bool, self._sub_shutdown)
         rospy.Subscriber("/tr3/powerup", Bool, self._sub_powerup)
         rospy.Subscriber("/tr3/stop", Bool, self._sub_stop)
         rospy.Subscriber("/tr3/base/diff/cmd_vel", Twist, self._sub_base_cmd)
+        rospy.Subscriber("/tr3/power/state", Bool, self._sub_power_state)
 
+        self._pub_poweron = rospy.Publisher("/tr3/power/on", Bool, queue_size=1)
+        self._pub_poweroff = rospy.Publisher("/tr3/power/off", Bool, queue_size=1)
         self._pub_odom = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
         self._pub_state = rospy.Publisher("/tr3/state", JointState, queue_size=1)
+
+        if _init_node == True:
+            rospy.init_node('tr3_node', anonymous=True)
 
         self.powerup()
         print("TR3 ready")
 
     def state(self):
         return self._state
+
+    def _sub_power_state (self, msg):
+        self.powerOn = msg.data
     
     def _sub_powerup (self, msg):
         if msg.data == True:
@@ -111,7 +128,7 @@ class TR3:
             getattr(self, j).release()
 
     def powerup(self):
-        self.p0.setPosition(1)
+        self._pub_poweron.publish(True)
 
     def shutdown(self):
         for j in self.joints:
@@ -144,7 +161,7 @@ class TR3:
 
         for j in self.joints:
             s = getattr(self, j).state()
-            if state != None:
+            if s != None:
                 joint_state.name.append(j)
                 joint_state.position.append(s.position)
                 joint_state.velocity.append(s.velocity)
@@ -159,7 +176,7 @@ class TR3:
     def step_odom(self):
         wheel_dist = 0.6562
 
-        if (self.b0.state.position == None or self.b1.state.position == None):
+        if (self.b0.state() == None or self.b1.state() == None):
             return
 
         l_pos = -self.b0.state.position
@@ -201,16 +218,19 @@ class TR3:
         # publish the message
     	br = tf.TransformBroadcaster()
     	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
-    	#br = tf.TransformBroadcaster()
-    	#br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
+        #br = tf.TransformBroadcaster()
+        #br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
         self._pub_odom.publish(odom)
 
     def spin(self, condition = True):
-        while condition == True:
+        global close
+        r = rospy.Rate(20)
+        while condition == True and close == False and rospy.is_shutdown() == False:
             self.step()
+            r.sleep()
 
     def close(self):
-        self.p0.setPosition(0)
+        self._pub_poweroff.publish(True)
         self.sleep(1)
 
 if __name__ == '__main__':

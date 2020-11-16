@@ -2,6 +2,6 @@
   <param name="robot_description" command="$(find xacro)/xacro.py $(find tr3_description)/robots/tr3.urdf.xacro" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-  <node pkg="tr3py" name="tr3_node" type="tr3_node.py" output="screen" />
+  <node pkg="tr3py" name="tr3_node" type="tr3.py" output="screen" />
   <!--node pkg="tr3py" name="tr3_action_server" type="tr3_action_server.py" output="screen" /-->
 </launch>

@@ -6,6 +6,9 @@ import math
 import yaml
 import io
 import struct
+import datetime
+
+import rospy
 
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
@@ -55,19 +58,19 @@ class Joint:
         self._tr3 = t
         self._id = i
 
-        self._pub_stop = rospy.Publisher("/tr3/" + self._id + "/stop", Bool)
-        self._pub_shutdown = rospy.Publisher("/tr3/" + self._id + "/shutdown", Bool)
-        self._pub_mode = rospy.Publisher("/tr3/" + self._id + "/mode", UInt8)
-        self._pub_reset_pos = rospy.Publisher("/tr3/" + self._id + "/reset/position", Bool)
-        self._pub_reset_trq = rospy.Publisher("/tr3/" + self._id + "/reset/torque", Bool)
-        self._pub_flip = rospy.Publisher("/tr3/" + self._id + "/flip", Bool)
-        self._pub_pid_pos_set = rospy.Publisher("/tr3/" + self._id + "/pid_pos/set", Float32MultiArray)
-        self._pub_pid_vel_set = rospy.Publisher("/tr3/" + self._id + "/pid_vel/set", Float32MultiArray)
-        self._pub_pid_trq_set = rospy.Publisher("/tr3/" + self._id + "/pid_trq/set", Float32MultiArray)
-        self._pub_control_pos = rospy.Publisher("/tr3/" + self._id + "/control/position", ActuatorPositionCommand)
-        self._pub_control_vel = rospy.Publisher("/tr3/" + self._id + "/control/velocity", Float64)
-        self._pub_control_trq = rospy.Publisher("/tr3/" + self._id + "/control/torque", Float64)
-        self._pub_control_vol = rospy.Publisher("/tr3/" + self._id + "/control/voltage", Float64)
+        self._pub_stop = rospy.Publisher("/tr3/" + self._id + "/stop", Bool, queue_size=1)
+        self._pub_shutdown = rospy.Publisher("/tr3/" + self._id + "/shutdown", Bool, queue_size=1)
+        self._pub_mode = rospy.Publisher("/tr3/" + self._id + "/mode", UInt8, queue_size=1)
+        self._pub_reset_pos = rospy.Publisher("/tr3/" + self._id + "/reset/position", Bool, queue_size=1)
+        self._pub_reset_trq = rospy.Publisher("/tr3/" + self._id + "/reset/torque", Bool, queue_size=1)
+        self._pub_flip = rospy.Publisher("/tr3/" + self._id + "/flip", Bool, queue_size=1)
+        self._pub_pid_pos_set = rospy.Publisher("/tr3/" + self._id + "/pid_pos/set", Float32MultiArray, queue_size=1)
+        self._pub_pid_vel_set = rospy.Publisher("/tr3/" + self._id + "/pid_vel/set", Float32MultiArray, queue_size=1)
+        self._pub_pid_trq_set = rospy.Publisher("/tr3/" + self._id + "/pid_trq/set", Float32MultiArray, queue_size=1)
+        self._pub_control_pos = rospy.Publisher("/tr3/" + self._id + "/control/position", ActuatorPositionCommand, queue_size=1)
+        self._pub_control_vel = rospy.Publisher("/tr3/" + self._id + "/control/velocity", Float64, queue_size=1)
+        self._pub_control_trq = rospy.Publisher("/tr3/" + self._id + "/control/torque", Float64, queue_size=1)
+        self._pub_control_vol = rospy.Publisher("/tr3/" + self._id + "/control/voltage", Float64, queue_size=1)
         
         rospy.Subscriber("/tr3/" + self._id + "/state", ActuatorState, self._sub_state)
         rospy.Subscriber("/tr3/" + self._id + "/pid_pos", Float32MultiArray, self._sub_pid_pos)
@@ -88,6 +91,9 @@ class Joint:
         self._pid_trq = msg.data
 
     def state(self):
+        if self._state == None:
+            return None
+
         now = datetime.datetime.now()
         expires = self._state_received + datetime.timedelta(milliseconds=500)
 
@@ -100,7 +106,7 @@ class Joint:
     def setPosition(self, pos, dur = 0):
         cmd = ActuatorPositionCommand()
         cmd.position = pos
-        cmd.duraiton = dur
+        cmd.duration = dur
         self._pub_control_pos.publish(cmd)
 
     def setVelocity (self, vel):
