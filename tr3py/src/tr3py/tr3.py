@@ -16,7 +16,10 @@ from tr3_joint import Joint
 
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
+from std_msgs.msg import String
 from std_msgs.msg import UInt8
+from std_msgs.msg import UInt32
+from std_msgs.msg import UInt8MultiArray
 from std_msgs.msg import Float64
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
@@ -40,6 +43,9 @@ class TR3:
     _pub_state = None
     _pub_poweron = None
     _pub_poweroff = None
+    _pub_power_ota_start = None
+    _pub_power_ota_data = None
+    _pub_power_ota_end = None
 
     joints = ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]
 
@@ -78,11 +84,15 @@ class TR3:
         rospy.Subscriber("/tr3/stop", Bool, self._sub_stop)
         rospy.Subscriber("/tr3/base/diff/cmd_vel", Twist, self._sub_base_cmd)
         rospy.Subscriber("/tr3/power/state", Bool, self._sub_power_state)
+        rospy.Subscriber("/tr3/power/firmware/update", String, self._sub_power_firmware_update)
 
         self._pub_poweron = rospy.Publisher("/tr3/power/on", Bool, queue_size=1)
         self._pub_poweroff = rospy.Publisher("/tr3/power/off", Bool, queue_size=1)
         self._pub_odom = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
         self._pub_state = rospy.Publisher("/tr3/state", JointState, queue_size=1)
+        self._pub_power_ota_start = rospy.Publisher("/tr3/power/ota/start", UInt32, queue_size=1)
+        self._pub_power_ota_data = rospy.Publisher("/tr3/power/ota/data", UInt8MultiArray, queue_size=1)
+        self._pub_power_ota_end = rospy.Publisher("/tr3/power/ota/end", Bool, queue_size=1)
 
         if _init_node == True:
             rospy.init_node('tr3_node', anonymous=True)
@@ -113,6 +123,9 @@ class TR3:
     def _sub_base_cmd (self, msg):
         x, th = (msg.linear.x, msg.angular.z)
         self.drive(x, th)
+
+    def _sub_power_firmware_update (self, msg):
+        self.updateFirmware("power", msg.data);
 
     def drive(self, x, th):
         R = 0.3175
@@ -165,7 +178,7 @@ class TR3:
                 joint_state.name.append(j)
                 joint_state.position.append(s.position)
                 joint_state.velocity.append(s.velocity)
-                joint_state.effort.append(s.effort)
+                joint_state.effort.append(s.torque)
 
         self._pub_state.publish(joint_state)
 
@@ -232,6 +245,35 @@ class TR3:
     def close(self):
         self._pub_poweroff.publish(True)
         self.sleep(1)
+
+    def updateFirmware(self, node_id, file_path):
+        bytes_read = 0
+        file_size = os.path.getsize(file_path)
+
+        self._pub_power_ota_start.publish(UInt32(file_size))
+        self.sleep(1.0)
+
+        with open(file_path) as f:
+            numPacksSent = 0
+            while 1:
+                bytes_to_read = 512 #4096
+                byte_s = f.read(bytes_to_read)
+                if not byte_s:
+                    break
+
+                ma = UInt8MultiArray()
+                ma.data = []
+
+                for b in byte_s:
+                    bytes_read = bytes_read + 1
+                    byte_int = int(b.encode('hex'), 16)
+                    ma.data.append(byte_int)
+
+                self._pub_power_ota_data.publish(ma)
+                self.sleep(0.050)
+
+        self._pub_power_ota_end.publish(0)
+        self.sleep(2)
 
 if __name__ == '__main__':
     tr3 = TR3()
