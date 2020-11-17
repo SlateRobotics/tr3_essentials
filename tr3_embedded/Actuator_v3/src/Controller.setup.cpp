@@ -68,7 +68,7 @@ void Controller::setUpConfig () {
     if (storage.isConfigured()) {
         SEA_SPRING_RATE = storage.readFloat(EEADDR_SEA_SPRING_RATE);
 
-        if (ACTUATOR_ID == "g0") {
+        if (NODE_ID == "g0") {
             state.position = storage.readFloat(EEADDR_ENC_OUT_POS);
         }
 

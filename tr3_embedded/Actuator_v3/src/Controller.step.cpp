@@ -98,7 +98,7 @@ void Controller::step_rotate () {
 void Controller::step_servo () {
     led.pulse(LED_MAGENTA);
 
-    if (ACTUATOR_ID == "g0") {
+    if (NODE_ID == "g0") {
         motor.executePreparedCommand();
         return;
     }
@@ -127,7 +127,7 @@ void Controller::step_velocity (bool pulseLED) {
         led.pulse(LED_GREEN);
     }
 
-    if (ACTUATOR_ID == "g0") {
+    if (NODE_ID == "g0") {
         return;
     }
 
@@ -147,7 +147,7 @@ void Controller::step_torque (bool pulseLED) {
         led.pulse(LED_YELLOW);
     }
 
-    if (ACTUATOR_ID == "g0") {
+    if (NODE_ID == "g0") {
         return;
     }
 

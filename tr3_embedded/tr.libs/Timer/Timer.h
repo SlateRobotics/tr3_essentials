@@ -4,11 +4,11 @@
 class Timer {
   private:
     unsigned long lastEvent = 0;
-    int hertz = 20;
+    double hertz = 20;
     int delayMs = 50;
 
   public:
-    Timer (int h) {
+    Timer (double h) {
       hertz = h;
       delayMs = int(1000 / hertz);
     }

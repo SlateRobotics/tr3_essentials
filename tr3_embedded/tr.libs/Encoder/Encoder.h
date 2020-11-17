@@ -57,7 +57,7 @@ class Encoder {
       digitalWrite(PIN_CLOCK, HIGH);
       digitalWrite(PIN_CS, HIGH);
 
-      if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
+      if (NODE_ID == "a0" || NODE_ID == "a1" || NODE_ID == "a2" || NODE_ID == "b0" || NODE_ID == "b1") {
         ratio = 124.0 / 25.0;
       } else {
         ratio = 104.0 / 25.0;

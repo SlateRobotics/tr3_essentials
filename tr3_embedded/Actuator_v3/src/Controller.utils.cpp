@@ -1,7 +1,7 @@
 #include "Controller.h"
 
 void Controller::computeState () {
-    if (ACTUATOR_ID == "g0") {
+    if (NODE_ID == "g0") {
         state.rotations = 0;
         state.effort = 0;
         state.torque = 0;
@@ -31,7 +31,7 @@ void Controller::computeState () {
 }
 
 void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
-    msg->id = ACTUATOR_ID;
+    msg->id = NODE_ID;
     msg->mode = state.mode;
     msg->stop = state.stop;
     msg->position = state.position;

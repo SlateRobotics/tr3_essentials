@@ -15,7 +15,7 @@ void Controller::cmd_setMode (uint8_t m) {
 }
 
 void Controller::cmd_setPosition (float position, int duration) {
-    if (ACTUATOR_ID == "g0") {
+    if (NODE_ID == "g0") {
         if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
                 motor.prepareCommand(100, 1750);
@@ -57,7 +57,7 @@ void Controller::cmd_setTorque (float torque) {
 void Controller::cmd_setVoltage (float voltage) {
     Serial.println(voltage);
     
-    motor.prepareCommand(floor(voltage / 12.6 * 100.0), 1000);
+    motor.prepareCommand(floor(voltage / 12.6 * 100.0), 200);
 
     if (mode != MODE_STOP) {
         mode = MODE_ROTATE;
@@ -110,7 +110,7 @@ void Controller::cmd_calibrate() {
     encoderOutput.resetPos();
     encoderTorque.resetPos();
 
-    if (ACTUATOR_ID == "a0" || ACTUATOR_ID == "a1" || ACTUATOR_ID == "a2" || ACTUATOR_ID == "b0" || ACTUATOR_ID == "b1") {
+    if (NODE_ID == "a0" || NODE_ID == "a1" || NODE_ID == "a2" || NODE_ID == "b0" || NODE_ID == "b1") {
         SEA_SPRING_RATE = -350;
     } else {
         SEA_SPRING_RATE = -350;

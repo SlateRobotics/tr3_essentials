@@ -10,13 +10,13 @@ void setup() {
   Serial.begin(115200);
 
   Serial.print("Actuator: ");
-  Serial.print(ACTUATOR_ID);
+  Serial.print(NODE_ID);
   Serial.print(", ");
-  Serial.println(ACTUATOR_VERSION);
+  Serial.println(NODE_VERSION);
 
   controller.requireImu = false;
   controller.setUp();
-
+  
   RosHandle::setup(&controller);
 }
 

@@ -14,6 +14,7 @@
 #include <ESP32Hardware.h>
 
 #include "Controller.h"
+#include "RosHandleBase.h"
 #include "Timer.h"
 
 namespace RosHandle {
@@ -23,7 +24,7 @@ namespace RosHandle {
   int failures = 0;
   const int max_failures = 5;
 
-  Timer configTimer(1); // hz
+  Timer configTimer(0.5); // hz
   Timer nhTimer(200); // hz
 
   tr3_msgs::ActuatorState state;
@@ -146,31 +147,9 @@ namespace RosHandle {
   ros::Subscriber<std_msgs::Float64> sub_control_torque(RT_CONTROL_TORQUE, &ros_callback_control_torque);
   ros::Subscriber<std_msgs::Float64> sub_control_voltage(RT_CONTROL_VOLTAGE, &ros_callback_control_voltage);
 
-  void connectRecovery () {
-    while (!nh.connected()) {
-      if (failures < max_failures) {
-        failures++;
-        controller->cmd_stop();
-        Serial.print("Failed to connect... trying again in 200ms... [Attempt ");
-        Serial.print(failures);
-        Serial.print(" of ");
-        Serial.print(max_failures);
-        Serial.println("]");
-        delay(200);
-      } else {
-        Serial.println("Max try limit reached. Restarting...");
-        ESP.restart();
-        delay(5000);
-      }
-      nh.spinOnce();
-    }
-
-    Serial.println("Succesfully recovered connection");
-    failures = 0;
-    controller->cmd_release();
-  }
-
   void setup(Controller* c) {
+    RosHandleEvents::setup(c);
+    RosHandleBase::setup(&nh);
     controller = c;
 
     nh.initNode();
@@ -205,6 +184,8 @@ namespace RosHandle {
   }
 
   void step() {
+    RosHandleBase::step();
+
     if (nhTimer.ready()) {
        controller->setActuatorState(&RosHandle::state);
 
@@ -227,7 +208,7 @@ namespace RosHandle {
       // if we fail to send/receive data
       int result = nh.spinOnce();
       if (result != ros::SPIN_OK || !nh.connected()) {
-        connectRecovery();
+        RosHandleBase::connectRecovery();
       }
     }
   }
