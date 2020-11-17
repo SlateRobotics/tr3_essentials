@@ -54,6 +54,9 @@ class Joint:
     _pub_control_vel = None
     _pub_control_trq = None
     _pub_control_vol = None
+    _pub_ota_start = None
+    _pub_ota_data = None
+    _pub_ota_end = None
 
     def __init__(self, t, i):
         self._tr3 = t
@@ -72,6 +75,9 @@ class Joint:
         self._pub_control_vel = rospy.Publisher("/tr3/" + self._id + "/control/velocity", Float64, queue_size=1)
         self._pub_control_trq = rospy.Publisher("/tr3/" + self._id + "/control/torque", Float64, queue_size=1)
         self._pub_control_vol = rospy.Publisher("/tr3/" + self._id + "/control/voltage", Float64, queue_size=1)
+        self._pub_ota_start = rospy.Publisher("/tr3/" + self._id + "/ota/start", UInt32, queue_size=1)
+        self._pub_ota_data = rospy.Publisher("/tr3/" + self._id + "/ota/data", UInt8MultiArray, queue_size=1)
+        self._pub_ota_end = rospy.Publisher("/tr3/" + self._id + "/ota/end", Bool, queue_size=1)
         
         rospy.Subscriber("/tr3/" + self._id + "/state", ActuatorState, self._sub_state)
         rospy.Subscriber("/tr3/" + self._id + "/limit", Float32MultiArray, self._sub_limits)

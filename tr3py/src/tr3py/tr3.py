@@ -89,7 +89,7 @@ class TR3:
         self._pub_poweron = rospy.Publisher("/tr3/power/on", Bool, queue_size=1)
         self._pub_poweroff = rospy.Publisher("/tr3/power/off", Bool, queue_size=1)
         self._pub_odom = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
-        self._pub_state = rospy.Publisher("/tr3/state", JointState, queue_size=1)
+        self._pub_joint_states = rospy.Publisher("/tr3/joint_states", JointState, queue_size=1)
         self._pub_power_ota_start = rospy.Publisher("/tr3/power/ota/start", UInt32, queue_size=1)
         self._pub_power_ota_data = rospy.Publisher("/tr3/power/ota/data", UInt8MultiArray, queue_size=1)
         self._pub_power_ota_end = rospy.Publisher("/tr3/power/ota/end", Bool, queue_size=1)
@@ -180,7 +180,7 @@ class TR3:
                 joint_state.velocity.append(s.velocity)
                 joint_state.effort.append(s.torque)
 
-        self._pub_state.publish(joint_state)
+        self._pub_joint_states.publish(joint_state)
 
     def step(self):
         self.set_state()
@@ -247,10 +247,23 @@ class TR3:
         self.sleep(1)
 
     def updateFirmware(self, node_id, file_path):
+        pub_start = None
+        pub_data = None
+        pub_end = None
+
+        if node_id == "power":
+            pub_start = self._pub_power_ota_start
+            pub_data = self._pub_power_ota_data
+            pub_end = self._pub_power_ota_end
+        else:
+            pub_start = getattr(self, node_id)._pub_ota_start
+            pub_data = getattr(self, node_id)._pub_ota_data
+            pub_end = getattr(self, node_id)._pub_ota_end
+
         bytes_read = 0
         file_size = os.path.getsize(file_path)
 
-        self._pub_power_ota_start.publish(UInt32(file_size))
+        pub_start.publish(UInt32(file_size))
         self.sleep(1.0)
 
         with open(file_path) as f:
@@ -269,10 +282,10 @@ class TR3:
                     byte_int = int(b.encode('hex'), 16)
                     ma.data.append(byte_int)
 
-                self._pub_power_ota_data.publish(ma)
+                pub_ota_data.publish(ma)
                 self.sleep(0.050)
 
-        self._pub_power_ota_end.publish(0)
+        pub_ota_end.publish(0)
         self.sleep(2)
 
 if __name__ == '__main__':
