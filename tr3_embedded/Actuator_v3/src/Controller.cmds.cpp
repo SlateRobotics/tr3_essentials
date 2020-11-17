@@ -64,6 +64,12 @@ void Controller::cmd_setVoltage (float voltage) {
     }
 }
 
+void Controller::cmd_reset () {
+    storage.reset();
+    cmd_resetPosition();
+    cmd_resetTorque();
+}
+
 void Controller::cmd_resetPosition () {
     encoderOutput.resetPos();
 

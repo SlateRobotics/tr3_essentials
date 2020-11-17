@@ -59,6 +59,12 @@ namespace RosHandle {
     controller->cmd_setMode(msg.data);
   }
   
+  void ros_callback_reset (const std_msgs::Bool &msg) {
+    if (msg.data == true) {
+      controller->cmd_reset();
+    }
+  }
+  
   void ros_callback_reset_pos (const std_msgs::Bool &msg) {
     if (msg.data == true) {
       controller->cmd_resetPosition();
@@ -128,6 +134,7 @@ namespace RosHandle {
   }
 
   ros::Subscriber<std_msgs::UInt8> sub_mode(RT_MODE, &ros_callback_mode);
+  ros::Subscriber<std_msgs::Bool> sub_reset(RT_RESET, &ros_callback_reset);
   ros::Subscriber<std_msgs::Bool> sub_reset_pos(RT_RESET_POS, &ros_callback_reset_pos);
   ros::Subscriber<std_msgs::Bool> sub_reset_trq(RT_RESET_TRQ, &ros_callback_reset_trq);
   ros::Subscriber<std_msgs::Bool> sub_flip(RT_FLIP, &ros_callback_flip);
@@ -156,6 +163,7 @@ namespace RosHandle {
 
     // subscribers
     nh.subscribe(sub_mode);
+    nh.subscribe(sub_reset);
     nh.subscribe(sub_reset_pos);
     nh.subscribe(sub_reset_trq);
     nh.subscribe(sub_flip);

@@ -5,8 +5,8 @@
 #define PI 3.1415926535897932384626433832795
 #define TAU (PI * 2)
 
-// ACTUATOR DETAILS
-#define NODE_ID "a2"
+// NODE DETAILS
+#define NODE_ID "a0"
 #define NODE_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG
@@ -19,6 +19,7 @@
 // ROSTOPICS USED BY ACTUATOR
 #define RT_STATE              "/tr3/" NODE_ID "/state"
 #define RT_MODE               "/tr3/" NODE_ID "/mode"
+#define RT_RESET              "/tr3/" NODE_ID "/reset"
 #define RT_RESET_POS          "/tr3/" NODE_ID "/reset/position"
 #define RT_RESET_TRQ          "/tr3/" NODE_ID "/reset/torque"
 #define RT_FLIP               "/tr3/" NODE_ID "/flip"
@@ -54,6 +55,17 @@
 #define PIN_ENC_OUT_DO  34
 #define PIN_FAN 2
 #define LED_DATA_PIN 5
+
+// DEFAULT PID GAINS
+#define DEFAULT_PID_POS_P 5.000
+#define DEFAULT_PID_POS_I 0.000
+#define DEFAULT_PID_POS_D 0.000
+#define DEFAULT_PID_VEL_P 0.500
+#define DEFAULT_PID_VEL_I 1.000
+#define DEFAULT_PID_VEL_D 0.000
+#define DEFAULT_PID_TRQ_P 0.450
+#define DEFAULT_PID_TRQ_I 0.050
+#define DEFAULT_PID_TRQ_D 0.000
 
 // DEFAULT LIMITS
 #define DEFAULT_POSITION_MIN -6.28

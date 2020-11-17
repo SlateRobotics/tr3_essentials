@@ -99,6 +99,6 @@ void Controller::setUpConfig () {
         pidVel.SetTunings(p_vel, i_vel, d_vel);
         pidTrq.SetTunings(p_trq, i_trq, d_trq);
     } else {
-        storage.configure();
+        storage.reset();
     }
 }

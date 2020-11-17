@@ -93,6 +93,7 @@ class Controller {
     void cmd_setVelocity(float velocity);
     void cmd_setTorque(float torque);
     void cmd_setVoltage(float voltage);
+    void cmd_reset();
     void cmd_resetPosition();
     void cmd_resetTorque();
     void cmd_flipMotorPins();

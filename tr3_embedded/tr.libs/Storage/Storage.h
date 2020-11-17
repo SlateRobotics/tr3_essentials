@@ -13,7 +13,6 @@
 #define EEADDR_ENC_OUT_POS 10
 #define EEADDR_ENC_OUT_LAP 55
 #define EEADDR_ENC_TRQ_UP 18
-#define EEADDR_ENC_TRQ_POS 19
 #define EEADDR_ENC_TRQ_LAP 63
 #define EEADDR_PID_POS_P 71
 #define EEADDR_PID_POS_I 87
@@ -44,17 +43,39 @@ class Storage {
       return EEPROM.begin(EEPROM_SIZE);
     }
 
-    void configure () {
+    void reset () {
       writeUInt8(EEADDR_EE_SET_1, EE_SET_1);
       writeUInt8(EEADDR_EE_SET_2, EE_SET_2);
-      writeUInt16(EEADDR_ENC_OUT_OFFSET, 0);
-      writeUInt16(EEADDR_ENC_TRQ_OFFSET, 0);
+
       writeBool(EEADDR_MTR_FLIP, false);
-      writeUInt16(EEADDR_SEA_SPRING_RATE, 75);
+      writeFloat(EEADDR_SEA_SPRING_RATE, -350);
+
+      writeUInt16(EEADDR_ENC_OUT_OFFSET, 0);
       writeBool(EEADDR_ENC_OUT_UP, false);
-      writeFloat(EEADDR_ENC_OUT_POS, 0.0);
+      writeFloat(EEADDR_ENC_OUT_POS, 0);
+      writeFloat(EEADDR_ENC_OUT_LAP, 0);
+
+      writeUInt16(EEADDR_ENC_TRQ_OFFSET, 0);
       writeBool(EEADDR_ENC_TRQ_UP, false);
-      writeFloat(EEADDR_ENC_TRQ_POS, 0.0);
+      writeFloat(EEADDR_ENC_TRQ_LAP, 0);
+
+      writeFloat(EEADDR_PID_POS_P, DEFAULT_PID_POS_P);
+      writeFloat(EEADDR_PID_POS_I, DEFAULT_PID_POS_I);
+      writeFloat(EEADDR_PID_POS_D, DEFAULT_PID_POS_D);
+      writeFloat(EEADDR_PID_VEL_P, DEFAULT_PID_VEL_P);
+      writeFloat(EEADDR_PID_VEL_I, DEFAULT_PID_VEL_I);
+      writeFloat(EEADDR_PID_VEL_D, DEFAULT_PID_VEL_D);
+      writeFloat(EEADDR_PID_TRQ_P, DEFAULT_PID_TRQ_P);
+      writeFloat(EEADDR_PID_TRQ_I, DEFAULT_PID_TRQ_I);
+      writeFloat(EEADDR_PID_TRQ_D, DEFAULT_PID_TRQ_D);
+
+      writeFloat(EEADDR_POSITION_MIN, DEFAULT_POSITION_MIN);
+      writeFloat(EEADDR_POSITION_MAX, DEFAULT_POSITION_MAX);
+      writeFloat(EEADDR_VELOCITY_MIN, DEFAULT_VELOCITY_MIN);
+      writeFloat(EEADDR_VELOCITY_MAX, DEFAULT_VELOCITY_MAX);
+      writeFloat(EEADDR_TORQUE_MIN, DEFAULT_TORQUE_MIN);
+      writeFloat(EEADDR_TORQUE_MAX, DEFAULT_TORQUE_MAX);
+
       commit();
     }
 
