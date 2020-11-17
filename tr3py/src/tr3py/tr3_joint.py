@@ -13,6 +13,8 @@ import rospy
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Bool
 from std_msgs.msg import UInt8
+from std_msgs.msg import UInt8MultiArray
+from std_msgs.msg import UInt32
 from std_msgs.msg import Float64
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
