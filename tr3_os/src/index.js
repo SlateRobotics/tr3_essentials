@@ -39,16 +39,26 @@ var rostopics = [
 var joints = ["a0", "a1", "a2", "a3", "a4", "g0", "h0", "h1", "b0", "b1"];
 for (var i = 0; i < joints.length; i++) {
   var j = joints[i];
-  rostopics.push({ name: "/tr3/joints/" + j + "/control/position", type: "tr3_msgs/ActuatorPositionCommand"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/control/velocity", type: "std_msgs/Float64"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/control/torque", type: "std_msgs/Float64"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/control/voltage", type: "std_msgs/Float64"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/mode", type: "std_msgs/UInt8"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/reset", type: "std_msgs/Bool"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/flip", type: "std_msgs/Bool"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/pid_pos/set", type: "std_msgs/Float32MultiArray"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/pid_vel/set", type: "std_msgs/Float32MultiArray"});
-  rostopics.push({ name: "/tr3/joints/" + j + "/pid_trq/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/" + j + "/mode", type: "std_msgs/UInt8"});
+  rostopics.push({ name: "/tr3/" + j + "/reset", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/reset/position", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/reset/torque", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/shutdown", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/flip", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/stop", type: "std_msgs/Bool"});
+  rostopics.push({ name: "/tr3/" + j + "/pid_pos/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/" + j + "/pid_vel/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/" + j + "/pid_trq/set", type: "std_msgs/Float32MultiArray"});
+  rostopics.push({ name: "/tr3/" + j + "/control/position", type: "tr3_msgs/ActuatorPositionCommand"});
+  rostopics.push({ name: "/tr3/" + j + "/control/velocity", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/control/torque", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/control/voltage", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/position/min", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/position/max", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/velocity/min", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/velocity/max", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/torque/min", type: "std_msgs/Float64"});
+  rostopics.push({ name: "/tr3/" + j + "/limit/torque/max", type: "std_msgs/Float64"});
 }
 
 var io = require('socket.io')(httpServer);
@@ -58,22 +68,25 @@ io.on('connection', function (socket) {
     var srvForwardIk = nh.serviceClient('/forward_ik', tr3Msgs.srv.ForwardIK);
     var srvInverseIk = nh.serviceClient('/inverse_ik', tr3Msgs.srv.InverseIK);
 
-    nh.subscribe('/tr3/state', 'sensor_msgs/JointState', function (msg) {
-      socket.emit('/tr3/state', msg);
-    });
+    function sub_n_pub (aid, name, type) {
+      nh.subscribe(name, type, function (msg) {
+        socket.emit(name, msg);
+      }.bind(aid));
+    }
+
+    sub_n_pub("", "/tr3/joint_states", "sensor_msgs/JointState");
 
     var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
     for (var i = 0; i < aids.length; i++) {
       let aid = aids[i];
-      nh.subscribe("/tr3/joints/" + aid + "/pid_pos", "std_msgs/Float32MultiArray", function (msg) {
-        socket.emit("/tr3/joints/" + aid + "/pid_pos", msg.data);
-      }.bind(aid));
-      nh.subscribe("/tr3/joints/" + aid + "/pid_vel", "std_msgs/Float32MultiArray", function (msg) {
-        socket.emit("/tr3/joints/" + aid + "/pid_vel", msg.data);
-      }.bind(aid));
-      nh.subscribe("/tr3/joints/" + aid + "/pid_trq", "std_msgs/Float32MultiArray", function (msg) {
-        socket.emit("/tr3/joints/" + aid + "/pid_trq", msg.data);
-      }.bind(aid));
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/ip", "std_msgs/String");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/log", "std_msgs/String");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/version", "std_msgs/String");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/state", "tr3_msgs/ActuatorState");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_pos", "std_msgs/Float32MultiArray");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_vel", "std_msgs/Float32MultiArray");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_trq", "std_msgs/Float32MultiArray");
+      sub_n_pub.bind(aid, "/tr3/" + aid + "/limit", "std_msgs/Float32MultiArray");
     }
 
     socket.on('/readFile', function (msg) {

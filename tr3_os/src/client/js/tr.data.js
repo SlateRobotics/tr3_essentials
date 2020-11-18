@@ -2,7 +2,7 @@ if (!tr) tr = {};
 if (!tr.data) tr.data = {};
 
 tr.data.socket = '';
-tr.data.robotState = {
+tr.data.joint_states = {
   header: {},
   name: [],
   position: [],
@@ -25,8 +25,8 @@ tr.data.lidar = {
 tr.data.setup = function() {
   tr.data.socket = io();
 
-  tr.data.socket.on('/tr3/state', function(data) {
-    tr.data.robotState = data;
+  tr.data.socket.on('/tr3/joint_states', function(data) {
+    tr.data.joint_states = data;
   });
 
   var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
@@ -38,16 +38,32 @@ tr.data.setup = function() {
       pid_trq: [0, 0, 0]
     }
 
-    tr.data.socket.on("/tr3/joints/" + aid + "/pid_pos", function (data) {
-      tr.data.joints[aid].pid_pos = data;
+    tr.data.socket.on("/tr3/" + aid + "/ip", function (msg) {
+      tr.data.joints[aid].ip = msg.data;
     }.bind(aid))
 
-    tr.data.socket.on("/tr3/joints/" + aid + "/pid_vel", function (data) {
-      tr.data.joints[aid].pid_vel = data;
+    tr.data.socket.on("/tr3/" + aid + "/log", function (msg) {
+      tr.data.joints[aid].log = msg.data;
     }.bind(aid))
 
-    tr.data.socket.on("/tr3/joints/" + aid + "/pid_trq", function (data) {
-      tr.data.joints[aid].pid_trq = data;
+    tr.data.socket.on("/tr3/" + aid + "/version", function (msg) {
+      tr.data.joints[aid].version = msg.data;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/" + aid + "/state", function (msg) {
+      tr.data.joints[aid].state = msg;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/" + aid + "/pid_vel", function (msg) {
+      tr.data.joints[aid].pid_vel = msg.data;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/" + aid + "/pid_trq", function (msg) {
+      tr.data.joints[aid].pid_trq = msg.data;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/" + aid + "/pid_trq", function (msg) {
+      tr.data.joints[aid].pid_trq = msg.data;
     }.bind(aid))
   }
 
@@ -81,23 +97,19 @@ tr.data.setup = function() {
 }
 
 tr.data.getState = function(aid, _state) {
-  var s = tr.data.robotState;
-
   if (_state) {
-    s = _state;
-  }
-
-  for (var i = 0; i < s.name.length; i++) {
-    if (s.name[i] == aid) {
-      return {
-        position: s.position[i],
-        velocity: s.velocity[i],
-        effort: s.effort[i]
+    for (var i = 0; i < _state.name.length; i++) {
+      if (_state.name[i] == aid) {
+        return {
+          position: _state.position[i],
+          velocity: _state.velocity[i],
+          effort: _state.effort[i]
+        }
       }
     }
+  } else {
+    return tr.data.joints[aid].state;
   }
-
-  return {};
 }
 
 tr.data.getForwardIk = function (state, callback) {

@@ -306,7 +306,7 @@ tr.gui.tr2 = {
     }
 
     if (this.useLiveState) {
-      var s = tr.data.robotState;
+      var s = tr.data.joint_states;
       for (var i = 0; i < s.name.length; i++) {
         this.state[s.name[i]] = s.position[i];
       }
