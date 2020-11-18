@@ -32,11 +32,11 @@ tr.controls.controlPanel.controlVoltage = function() {
           h: "RIGHT"
         },
         onDraw: function () {
-          var app = this.getApp();
-          var page = app.getCurrentPage();
           var id = tr.controlPanel.state.currentActuator;
-          var slider = page.getChild("slider-control-voltage").element;
-          this.text = (slider.value() * 12.6).toFixed(2) + " V";
+          var state = tr.data.getState(id);
+          var vol = state.effort || 0;
+          vol = vol / 100.0 * 12.6;
+          this.text = vol.toFixed(2) + " V";
         },
       }, c.slider("voltage")],
     }]

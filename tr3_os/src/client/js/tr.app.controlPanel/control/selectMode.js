@@ -37,7 +37,7 @@ tr.controls.controlPanel.selectMode = function() {
 
           var i = 0;
           if (val == "VOLTAGE") {
-            i = 0;
+            i = 4;
             var slider = page.getChild("slider-control-voltage");
             slider.setval(0);
 
@@ -47,7 +47,7 @@ tr.controls.controlPanel.selectMode = function() {
             page.getChild("slider-control-voltage").disabled = false;
 
           } else if (val == "TORQUE") {
-            i = 1;
+            i = 3;
             var slider = page.getChild("slider-control-torque");
             slider.setval(0);
 
@@ -56,7 +56,7 @@ tr.controls.controlPanel.selectMode = function() {
             page.getChild("slider-control-torque").disabled = false;
             page.getChild("slider-control-voltage").disabled = true;
           } else if (val == "POSITION") {
-            i = 2;
+            i = 1;
             var state = tr.data.getState(id).position;
             var slider = page.getChild("slider-control-position");
             slider.setval(state / Math.PI / 2.0);
@@ -66,7 +66,7 @@ tr.controls.controlPanel.selectMode = function() {
             page.getChild("slider-control-torque").disabled = true;
             page.getChild("slider-control-voltage").disabled = true;
           } else if (val == "VELOCITY") {
-            i = 3;
+            i = 2;
             var slider = page.getChild("slider-control-velocity");
             slider.setval(0);
 
@@ -76,7 +76,7 @@ tr.controls.controlPanel.selectMode = function() {
             page.getChild("slider-control-voltage").disabled = true;
           }
 
-          tr.data.socket.emit("/tr3/joints/" + id + "/mode", i);
+          tr.data.socket.emit("/tr3/" + id + "/mode", i);
         },
         Size: {
           w: 1,

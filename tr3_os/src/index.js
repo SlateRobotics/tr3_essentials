@@ -79,14 +79,14 @@ io.on('connection', function (socket) {
     var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
     for (var i = 0; i < aids.length; i++) {
       let aid = aids[i];
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/ip", "std_msgs/String");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/log", "std_msgs/String");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/version", "std_msgs/String");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/state", "tr3_msgs/ActuatorState");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_pos", "std_msgs/Float32MultiArray");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_vel", "std_msgs/Float32MultiArray");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/pid_trq", "std_msgs/Float32MultiArray");
-      sub_n_pub.bind(aid, "/tr3/" + aid + "/limit", "std_msgs/Float32MultiArray");
+      sub_n_pub(aid, "/tr3/" + aid + "/ip", "std_msgs/String");
+      sub_n_pub(aid, "/tr3/" + aid + "/log", "std_msgs/String");
+      sub_n_pub(aid, "/tr3/" + aid + "/version", "std_msgs/String");
+      sub_n_pub(aid, "/tr3/" + aid + "/state", "tr3_msgs/ActuatorState");
+      sub_n_pub(aid, "/tr3/" + aid + "/pid_pos", "std_msgs/Float32MultiArray");
+      sub_n_pub(aid, "/tr3/" + aid + "/pid_vel", "std_msgs/Float32MultiArray");
+      sub_n_pub(aid, "/tr3/" + aid + "/pid_trq", "std_msgs/Float32MultiArray");
+      sub_n_pub(aid, "/tr3/" + aid + "/limit", "std_msgs/Float32MultiArray");
     }
 
     socket.on('/readFile', function (msg) {

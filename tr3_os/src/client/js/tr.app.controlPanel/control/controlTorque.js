@@ -34,7 +34,7 @@ tr.controls.controlPanel.controlTorque = function() {
         onDraw: function () {
           var id = tr.controlPanel.state.currentActuator;
           var state = tr.data.getState(id);
-          var trq = state.effort || 0;
+          var trq = state.torque || 0;
           this.text = trq.toFixed(2) + " Nm";
         },
       }, c.slider("torque")],
