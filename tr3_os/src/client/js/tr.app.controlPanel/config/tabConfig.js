@@ -4,7 +4,7 @@ tr.controls.controlPanel.tabConfig = function() {
   var children = [];
   children.push(c.btnMotorDir());
   children.push(c.btnResetPos());
-  children.push(c.btnCalibrate());
+  children.push(c.btnResetTrq());
   children.push(c.gains("position"));
   children.push(c.gains("velocity"));
   children.push(c.gains("torque"));

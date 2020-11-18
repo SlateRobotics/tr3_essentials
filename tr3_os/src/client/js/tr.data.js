@@ -10,6 +10,8 @@ tr.data.joint_states = {
   effort: []
 };
 
+tr.data.power = false;
+
 tr.data.joints = {};
 
 tr.data.stopped = false;
@@ -54,6 +56,10 @@ tr.data.setup = function() {
       tr.data.joints[aid].state = msg;
     }.bind(aid))
 
+    tr.data.socket.on("/tr3/" + aid + "/pid_pos", function (msg) {
+      tr.data.joints[aid].pid_pos = msg.data;
+    }.bind(aid))
+
     tr.data.socket.on("/tr3/" + aid + "/pid_vel", function (msg) {
       tr.data.joints[aid].pid_vel = msg.data;
     }.bind(aid))
@@ -61,11 +67,11 @@ tr.data.setup = function() {
     tr.data.socket.on("/tr3/" + aid + "/pid_trq", function (msg) {
       tr.data.joints[aid].pid_trq = msg.data;
     }.bind(aid))
-
-    tr.data.socket.on("/tr3/" + aid + "/pid_trq", function (msg) {
-      tr.data.joints[aid].pid_trq = msg.data;
-    }.bind(aid))
   }
+
+  tr.data.socket.on("/tr3/power/state", function (msg) {
+    tr.data.power = msg.data;
+  });
 
   tr.data.socket.on('/tr3/lidar', function(data) {
     tr.data.lidar = data;

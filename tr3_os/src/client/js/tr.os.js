@@ -22,7 +22,8 @@ function preload() {
 
 var documentFullScreenInit = false;
 document.onclick = function () {
-  if (!documentFullScreenInit) {
+  var fs = new URLSearchParams(window.location.search).get("fullscreen") || "1";
+  if (!documentFullScreenInit && fs == "1") {
     document.documentElement.requestFullscreen();
     documentFullScreenInit = true;
   }

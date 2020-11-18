@@ -75,6 +75,7 @@ io.on('connection', function (socket) {
     }
 
     sub_n_pub("", "/tr3/joint_states", "sensor_msgs/JointState");
+    sub_n_pub("", "/tr3/power/state", "std_msgs/Bool");
 
     var aids = ["a0","a1","a2","a3","a4","g0","h0","h1","b0","b1"];
     for (var i = 0; i < aids.length; i++) {

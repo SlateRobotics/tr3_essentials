@@ -9,8 +9,7 @@ tr.controls.settings.btnTogglePower = function() {
     margin: 15,
     background: "green",
     onDraw: function () {
-      var p0 = tr.data.getState("p0");
-      if (p0 && p0.position > 0) {
+      if (tr.data.power) {
         this.mode = "ON";
       } else {
         this.mode = "OFF";

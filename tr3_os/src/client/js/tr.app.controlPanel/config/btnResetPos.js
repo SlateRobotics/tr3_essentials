@@ -13,14 +13,14 @@ tr.controls.controlPanel.btnResetPos = function() {
     margin: 15,
     onClick: function() {
       var id = tr.controlPanel.state.currentActuator;
-      tr.data.socket.emit("/tr3/joints/" + id + "/reset", true);
+      tr.data.socket.emit("/tr3/" + id + "/reset/position", true);
     },
     children: [{
       type: "container",
       border: false,
       children: [{
         type: "text",
-        text: "RESET",
+        text: "RESET POSITION",
         textSize: 18,
         align: {
           v: "CENTER",

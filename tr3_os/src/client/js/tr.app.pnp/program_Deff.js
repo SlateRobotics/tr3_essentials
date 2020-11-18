@@ -55,7 +55,7 @@ tr.controls.pnp2.waypoint = function(config) {
 
   this.send = function () {
     for (var i = 0; i < this.positions.length; i++) {
-      tr.data.socket.emit("/tr3/joints/" + this.joints[i] + "/control/position", {position: this.positions[i], duration: Math.floor(this.speed * 1000)});
+      tr.data.socket.emit("/tr3/" + this.joints[i] + "/control/position", {position: this.positions[i], duration: Math.floor(this.speed * 1000)});
     }
   }
 
