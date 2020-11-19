@@ -137,9 +137,21 @@ namespace RosHandleBase {
     ros::Subscriber<std_msgs::UInt8MultiArray> sub_ota_data(RT_OTA_DATA, &sub_cb_ota_data);
     ros::Subscriber<std_msgs::Bool> sub_ota_end(RT_OTA_END, &sub_cb_ota_end);
 
+    bool waitForConnect (long timems) {
+        long later = millis() + timems;
+        while (later > millis()) {
+            nh->spinOnce();
+            if (nh->connected()) {
+                return true;
+            }
+            delay(1);
+        }
+        return false;
+    }
+
     void setup (ros::NodeHandle_<ESP32Hardware>* _nh) {
         nh = _nh;
-        
+
         // subscribers
         nh->subscribe(sub_ota_start);
         nh->subscribe(sub_ota_data);
@@ -149,6 +161,16 @@ namespace RosHandleBase {
         nh->advertise(pub_ip);
         nh->advertise(pub_log);
         nh->advertise(pub_version);
+
+        // config & connect
+        nh->initNode();
+        nh->setSpinTimeout(50);
+
+        Serial.println("Establishing connection...");
+        bool result = waitForConnect(2000);
+        if (result == true) {
+            Serial.println("Successfully connected to ROS master.");
+        }
     }
     
     void step () {
@@ -165,25 +187,22 @@ namespace RosHandleBase {
         }
     }
 
-
     void connectRecovery () {
+        waitForConnect(conn_failure_delay);
         while (!nh->connected()) {
             if (conn_failure_count < max_conn_failure_count) {
                 RosHandleEvents::handle_ConnectionFailure();
                 conn_failure_count++;
-                Serial.print("Failed to connect... trying again in ");
-                Serial.print(conn_failure_delay);
-                Serial.print(" ms... [Attempt ");
+                Serial.print("Connection failed. Attempting to re-establish... [");
                 Serial.print(conn_failure_count);
                 Serial.print(" of ");
                 Serial.print(max_conn_failure_count);
                 Serial.println("]");
-                delay(conn_failure_delay);
+                waitForConnect(conn_failure_delay);
             } else {
                 Serial.println("Max try limit reached. Restarting...");
                 ESP.restart();
             }
-            nh->spinOnce();
         }
 
         RosHandleEvents::handle_ConnectionRecovery();

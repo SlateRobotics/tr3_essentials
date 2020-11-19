@@ -47,10 +47,7 @@ namespace RosHandle {
   ros::Publisher pub_state(RT_STATE, &state);
 
   void setup(Controller* c) {
-    RosHandleBase::setup(&nh);
     controller = c;
-
-    nh.initNode();
 
     // subscribers
     nh.subscribe(sub_poweron);
@@ -58,24 +55,32 @@ namespace RosHandle {
 
     // publishers
     nh.advertise(pub_state);
+
+    RosHandleBase::setup(&nh);
   }
 
   void step() {
     RosHandleBase::step();
 
-    if (nhTimer.ready()) {
-      if (configTimer.ready()) {
+    std_msgs::Bool p;
+    p.data = controller->poweredOn();
+    pub_state.publish(&p);
+    
+    // the issue is that nh.connected()
+    // returns true even if no connection
+    // update node_handle.h to mark as unconnected
+    // if write() or read() error on ESP32Hardware.h
 
-      }
+    // also, result from spinOnce() returns OK
+    // when an error occurs here as well...
 
-      std_msgs::Bool p;
-      p.data = controller->poweredOn();
-      pub_state.publish(&p);
-
+    if (nh.connected()) {
       int result = nh.spinOnce();
-      if (result != ros::SPIN_OK || !nh.connected()) {
+      if (result != ros::SPIN_OK) {
         RosHandleBase::connectRecovery();
       }
+    } else {
+      RosHandleBase::connectRecovery();
     }
   }
 }

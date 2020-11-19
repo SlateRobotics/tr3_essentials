@@ -121,20 +121,21 @@ void ros_tcp_connect(const char* host_ip, int port_num)
     ESP_LOGI(TAG, "Successfully connected");
 }
 
-void ros_tcp_send(uint8_t* data, int length)
+int ros_tcp_send(uint8_t* data, int length)
 {
     int err = send(sock, data, length, 0);
     if (err < 0) {
-        ESP_LOGE(TAG, "Error occured during sending: errno %d", errno);
+        //ESP_LOGE(TAG, "Error occured during sending: errno %d", errno);
     }
+    return err;
 }
 
 int ros_tcp_read(uint8_t* buf, int length)
 {
     int len = recv(sock, buf, length, 0);
     if (len < 0 && errno != 11) {
-        ESP_LOGE(TAG, "Error receiving data: errno %d", errno);
-        return -1;
+        //ESP_LOGE(TAG, "Error receiving data: errno %d", errno);
+        return -2;
     }
     return len;
 }

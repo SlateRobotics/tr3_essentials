@@ -20,39 +20,22 @@ extern "C" {
 #define UART_TX_PIN         GPIO_NUM_1
 #define UART_RX_PIN         GPIO_NUM_3
 
-class ESP32Hardware
-{
+class ESP32Hardware {
     protected:
-        uint8_t rx_buf[1024];
+        uint8_t rx_buf[8192];
 
     public:
-        ESP32Hardware()
-        {
-        }
+        ESP32Hardware() { }
 
         // Initialization code for ESP32
-        void init()
-        {
-#ifdef CONFIG_ROSSERIAL_OVER_WIFI
+        void init() {
             esp_ros_wifi_init();
             ros_tcp_connect(ROS_SERVER_IP, ROS_SERVER_PORT);
-#else
-            uart_driver_install(UART_PORT, 1024, 1024, 0, NULL, 0);
-
-            //Changing the baudrate will change the baudrate of serial monitor as well
-            //uart_set_baudrate(UART_PORT, 57600);
-#endif
         }
 
         // read a byte from the serial port. -1 = failure
-        int read()
-        {
-            int read_len;
-#ifdef CONFIG_ROSSERIAL_OVER_WIFI
-            read_len = ros_tcp_read(rx_buf, 1);
-#else
-            read_len = uart_read_bytes(UART_PORT, (uint8_t *)rx_buf, 1, 0);
-#endif
+        int read() {
+            int read_len = ros_tcp_read(rx_buf, 1);
             if (read_len == 1) {
                 return rx_buf[0];
             } else {
@@ -61,18 +44,12 @@ class ESP32Hardware
         }
 
         // write data to the connection to ROS
-        void write(uint8_t* data, int length)
-        {
-#ifdef CONFIG_ROSSERIAL_OVER_WIFI
-            ros_tcp_send(data, length);
-#else
-            uart_write_bytes(UART_PORT, (char*)data, (size_t)length);
-#endif
+        int write(uint8_t* data, int length) {
+            return ros_tcp_send(data, length);
         }
 
         // returns milliseconds since start of program
-        unsigned long time()
-        {
+        unsigned long time() {
             return esp_timer_get_time() / 1000;
         }
 };

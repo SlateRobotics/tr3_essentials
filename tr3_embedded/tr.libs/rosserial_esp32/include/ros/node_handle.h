@@ -99,8 +99,8 @@ using rosserial_msgs::TopicInfo;
 template<class Hardware,
          int MAX_SUBSCRIBERS = 25,
          int MAX_PUBLISHERS = 25,
-         int INPUT_SIZE = 512,
-         int OUTPUT_SIZE = 512>
+         int INPUT_SIZE = 8192,
+         int OUTPUT_SIZE = 8192>
 class NodeHandle_ : public NodeHandleBase_
 {
 protected:
@@ -244,8 +244,15 @@ public:
         }
       }
       int data = hardware_.read();
-      if (data < 0)
+      if (data < 0) {
+        // socket receive failure, no connection
+        if (data == -2) {
+          configured_ = false;
+          return SPIN_ERR;
+        }
         break;
+      }
+
       checksum_ += data;
       if (mode_ == MODE_MESSAGE)          /* message data being recieved */
       {
@@ -490,7 +497,11 @@ public:
         ti.message_type = (char *) publishers[i]->msg_->getType();
         ti.md5sum = (char *) publishers[i]->msg_->getMD5();
         ti.buffer_size = OUTPUT_SIZE;
-        publish(publishers[i]->getEndpointType(), &ti);
+        int result = publish(publishers[i]->getEndpointType(), &ti);
+        if (result < 0) {
+          configured_ = false;
+          return;
+        }
       }
     }
     for (i = 0; i < MAX_SUBSCRIBERS; i++)
@@ -502,7 +513,11 @@ public:
         ti.message_type = (char *) subscribers[i]->getMsgType();
         ti.md5sum = (char *) subscribers[i]->getMsgMD5();
         ti.buffer_size = INPUT_SIZE;
-        publish(subscribers[i]->getEndpointType(), &ti);
+        int result = publish(subscribers[i]->getEndpointType(), &ti);
+        if (result < 0) {
+          configured_ = false;
+          return;
+        }
       }
     }
     configured_ = true;
@@ -534,8 +549,13 @@ public:
 
     if (l <= OUTPUT_SIZE)
     {
-      hardware_.write(message_out, l);
-      return l;
+      int result = hardware_.write(message_out, l);
+      if (result < 0) {
+        configured_ = false;
+        return result;
+      } else {
+        return l;
+      }
     }
     else
     {
