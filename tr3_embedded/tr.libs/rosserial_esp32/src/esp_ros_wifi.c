@@ -56,9 +56,11 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
                 esp_wifi_connect();
                 xEventGroupClearBits(wifi_event_group, IPV4_GOTIP_BIT);
                 s_retry_num++;
-                ESP_LOGI(TAG,"Retrying connection to AP");
+                ESP_LOGE(TAG,"AP connection error. Retrying...");
+            } else {
+                ESP_LOGE(TAG,"Failed to connect to AP. Restarting...");
+                esp_restart();
             }
-            ESP_LOGE(TAG,"Failed to connect to AP");
             break;
         }
     default:
