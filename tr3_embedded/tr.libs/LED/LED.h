@@ -12,6 +12,7 @@
 #define LED_WHITE 6
 
 #include "FastLED.h"
+#include "Timer.h"
 
 class LED {
   private:
@@ -29,6 +30,7 @@ class LED {
     bool blinkStarted = false;
 
     float ledBrightness = 0.25;
+    Timer ledTimer = Timer(24); // hz
   
   public:
     void setUp() {
@@ -36,12 +38,14 @@ class LED {
     }
 
     void show (int i, int r, int g, int b) {
-      for (int j = 0; j < 2; j++) {
-        leds[i].red = r;
-        leds[i].green = g;
-        leds[i].blue = b;
-        leds[i] /= int(1.0 / ledBrightness);
-        FastLED.show();
+      if (ledTimer.ready()) {
+        for (int j = 0; j < NUM_LEDS; j++) {
+          leds[i].red = r;
+          leds[i].green = g;
+          leds[i].blue = b;
+          leds[i] /= int(1.0 / ledBrightness);
+          FastLED.show();
+        }
       }
     }
 

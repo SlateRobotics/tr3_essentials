@@ -25,7 +25,7 @@ namespace RosHandle {
   const int max_failures = 5;
 
   Timer configTimer(0.5); // hz
-  Timer nhTimer(200); // hz
+  Timer stateTimer(150); // hz
 
   tr3_msgs::ActuatorState state;
   std_msgs::Float32MultiArray limits;
@@ -156,10 +156,7 @@ namespace RosHandle {
 
   void setup(Controller* c) {
     RosHandleEvents::setup(c);
-    RosHandleBase::setup(&nh);
     controller = c;
-
-    nh.initNode();
 
     // subscribers
     nh.subscribe(sub_mode);
@@ -189,14 +186,14 @@ namespace RosHandle {
     nh.advertise(pub_pid_pos);
     nh.advertise(pub_pid_vel);
     nh.advertise(pub_pid_trq);
+
+    RosHandleBase::setup(&nh);
   }
 
   void step() {
     RosHandleBase::step();
 
-    if (nhTimer.ready()) {
-       controller->setActuatorState(&RosHandle::state);
-
+    if (nh.connected()) {
       if (configTimer.ready()) {
         controller->setLimits(&limits);
         controller->setPidPosTunings(&pid_pos);
@@ -209,15 +206,17 @@ namespace RosHandle {
         RosHandle::pub_pid_trq.publish(&RosHandle::pid_trq);
       }
 
-      RosHandle::pub_state.publish(&RosHandle::state);
+      if (stateTimer.ready()) {
+        controller->setActuatorState(&RosHandle::state);
+        RosHandle::pub_state.publish(&RosHandle::state);
+      }
 
-      // error when esp32 spins, then we start rosserial server
-      // we need to figure out how to intelligently restart connection
-      // if we fail to send/receive data
       int result = nh.spinOnce();
-      if (result != ros::SPIN_OK || !nh.connected()) {
+      if (result != ros::SPIN_OK) {
         RosHandleBase::connectRecovery();
       }
+    } else {
+      RosHandleBase::connectRecovery();
     }
   }
 }

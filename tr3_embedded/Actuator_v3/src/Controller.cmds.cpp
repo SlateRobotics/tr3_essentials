@@ -55,8 +55,6 @@ void Controller::cmd_setTorque (float torque) {
 }
 
 void Controller::cmd_setVoltage (float voltage) {
-    Serial.println(voltage);
-    
     motor.prepareCommand(floor(voltage / 12.6 * 100.0), 200);
 
     if (mode != MODE_STOP) {

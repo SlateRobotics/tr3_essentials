@@ -39,67 +39,14 @@ namespace RosHandleBase {
     uint32_t fileSize = 0;
     long uploadStart = 0;
 
-    char log_data[256];
-
     std_msgs::String msg_ip_addr;
     std_msgs::String msg_version;
-    std_msgs::String msg_log;
 
     ros::Publisher pub_ip(RT_IP, &msg_ip_addr);
-    ros::Publisher pub_log(RT_LOG, &msg_log);
     ros::Publisher pub_version(RT_VERSION, &msg_version);
 
-    void print (const char* val) {
-        strcat(log_data, val);
-    }
-
-    void print (const double val) {
-        char v[16];
-        sprintf(v, "%f", val);
-        print(v);
-    }
-
-    void print (const long val) {
-        char v[16];
-        sprintf(v, "%d", val);
-        print(v);
-    }
-
-    void print (const int val) {
-        char v[16];
-        sprintf(v, "%d", val);
-        print(v);
-    }
-
-    void println () {
-        msg_log.data = log_data;
-        pub_log.publish(&msg_log);
-        Serial.println(log_data);
-        memset(log_data, 0, sizeof log_data);
-    }
-
-    void println (const char* val) {
-        print(val);
-        println();
-    }
-
-    void println (const double val) {
-        print(val);
-        println();
-    }
-
-    void println (const long val) {
-        print(val);
-        println();
-    }
-
-    void println (const int val) {
-        print(val);
-        println();
-    }
-
     void sub_cb_ota_start (const std_msgs::UInt32 &msg) {
-        println("Firmware upload started...");
+        Serial.println("Firmware upload started...");
         size_t packet_len = msg.data;
         Update.begin(packet_len);
         
@@ -114,22 +61,22 @@ namespace RosHandleBase {
         Update.write(msg.data, packet_len);
 
         long duration = millis() - uploadStart;
-        print("Uploading - ");
-        print(duration);
-        print(" - ");
-        print((int)bytesWritten);
-        print(" of ");
-        println((int)fileSize);
+        Serial.print("Uploading - ");
+        Serial.print(duration);
+        Serial.print(" - ");
+        Serial.print((int)bytesWritten);
+        Serial.print(" of ");
+        Serial.println((int)fileSize);
     }
 
     void sub_cb_ota_end (const std_msgs::Bool &msg) {
         bool result = Update.end(true);
 
         if (result == true) {
-            println("Firmware upload successful. Restarting...");
+            Serial.println("Firmware upload successful. Restarting...");
             ESP.restart();
         } else {
-            println("Firmware upload failed. Please try again...");
+            Serial.println("Firmware upload failed. Please try again...");
         }
     }
 
@@ -159,7 +106,6 @@ namespace RosHandleBase {
 
         // publishers
         nh->advertise(pub_ip);
-        nh->advertise(pub_log);
         nh->advertise(pub_version);
 
         // config & connect
@@ -206,7 +152,7 @@ namespace RosHandleBase {
         }
 
         RosHandleEvents::handle_ConnectionRecovery();
-        println("Succesfully recovered connection");
+        Serial.println("Succesfully recovered connection");
         conn_failure_count = 0;
     }
 }

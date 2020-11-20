@@ -8,41 +8,36 @@ void Controller::step () {
 
     fanOn();
 
-    if (mode == MODE_UPDATE_FIRMWARE) {
-        motor.stop();
-    } else if (mode == MODE_STOP) {
-        step_stop();
-    } else if (mode == MODE_ROTATE) {
-        step_rotate();
-    } else if (mode == MODE_BACKDRIVE) {
-        pidTrqSetpoint = 0;
-        step_torque();
-    } else if (mode == MODE_TORQUE) {
-        step_torque();
-    } else if (mode == MODE_SERVO) {
-        step_servo();
-    } else if (mode == MODE_VELOCITY) {
-        step_velocity();
-    } else if (mode == MODE_CALIBRATE) {
-        step_calibrate();
-    } else {
-        step_stop();
+    switch (mode) {
+        case MODE_UPDATE_FIRMWARE:
+            motor.stop();
+            break;
+        case MODE_STOP:
+            step_stop();
+            break;
+        case MODE_ROTATE:
+            step_rotate();
+            break;
+        case MODE_BACKDRIVE:
+            pidTrqSetpoint = 0;
+            step_torque();
+            break;
+        case MODE_TORQUE:
+            step_torque();
+            break;
+        case MODE_SERVO:
+            step_servo();
+            break;
+        case MODE_VELOCITY:
+            step_velocity();
+            break;
+        case MODE_CALIBRATE:
+            step_calibrate();
+            break;
+        default:
+            step_stop();
+            break;
     }
-
-    /*if (logTimer.ready()) {
-        Serial.print(millis());
-        Serial.print("::");
-        Serial.print(encoderOutput.pos);
-        Serial.print(", ");
-        Serial.print(encoderOutput.getPrevPosition());
-        Serial.print(", ");
-        Serial.print(encoderOutput.getOffset());
-        Serial.print(", ");
-        Serial.print(encoderOutput.getLap());
-        Serial.print(", ");
-        Serial.print(encoderOutput.getAngleRadians());
-        Serial.println();
-    }*/
 
     //if (logTimer.ready()) {
     if (!trajectory.complete()) {
@@ -113,10 +108,6 @@ void Controller::step_servo () {
     pidVelInput = state.velocity;
     pidVelSetpoint = trajectory.getTargetVelocity();
     step_velocity(false);
-
-    // gravity compensation if assigned appropriate torque limits
-    // possible
-    // pidTrqSetpoint = pidTrqInput;
 
     pidTrqSetpoint = pidPosOutput + pidTrqInput;
     step_torque(false);

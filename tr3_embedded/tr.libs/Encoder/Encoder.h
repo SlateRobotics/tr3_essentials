@@ -11,15 +11,15 @@ class Encoder {
 
     uint16_t encoderResolution = 4096;
 
-    static const int prevAngleN = 4;
+    static const int prevAngleN = 32;
     double prevAngle[prevAngleN];
     long prevAngleTS[prevAngleN];
 
-    static const int prevPositionN = 16;
+    static const int prevPositionN = 32;
     uint16_t prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
 
-    static const int prevVelocityN = 4;
+    static const int prevVelocityN = 32;
     double prevVelocity[prevVelocityN];
     long prevVelocityTS[prevVelocityN];
 
@@ -125,7 +125,7 @@ class Encoder {
         dif = dif - encoderResolution;
       }
 
-      long timeDiff = getPrevPositionTS(0) - getPrevPositionTS(1);
+      double timeDiff = getTimeDiffMs();
       double posDiff = dif / (getRatio() * getEncoderResolution()) * TAU;
       float vel = posDiff / (timeDiff / 1000.0);
       recordVelocity(vel);
@@ -177,7 +177,7 @@ class Encoder {
       }
 
       prevPosition[0] = data;
-      prevPositionTS[0] = millis();
+      prevPositionTS[0] = micros();
     }
 
     void recordVelocity (double vel) {
@@ -194,7 +194,7 @@ class Encoder {
       velocity = newVel;
 
       prevVelocity[0] = vel;
-      prevVelocityTS[0] = millis();
+      prevVelocityTS[0] = micros();
     }
 
     double getAcceleration () {
@@ -241,8 +241,15 @@ class Encoder {
       return prevPosition[i];
     }
 
-    long getPrevPositionTS(int i) {
-      return prevPositionTS[i];
+    double getTimeDiffMs () {
+      unsigned long t1 = getPrevPositionTS(0);
+      unsigned long t2 = getPrevPositionTS(1);
+      double diff = (double)(t1 - t2);
+      return diff / 1000.0;
+    }
+
+    unsigned long getPrevPositionTS(int i) {
+      return prevPositionTS[i]; // microseconds
     }
 
     void resetPos () {
@@ -270,7 +277,7 @@ class Encoder {
       }
 
       prevAngle[0] = a;
-      prevAngleTS[0] = millis();
+      prevAngleTS[0] = micros();
     }
 
     double getAverageAngle() {
