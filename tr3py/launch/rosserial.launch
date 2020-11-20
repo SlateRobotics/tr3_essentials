@@ -2,4 +2,5 @@
   <node pkg="rosserial_server" type="socket_node" name="rosserial_server">
     <param name="port" type="int" value="11411" />
   </node>
+  <node pkg="rosserial_python" type="message_info_service.py" name="rosserial_message_info" />
 </launch>
