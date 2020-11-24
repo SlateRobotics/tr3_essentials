@@ -40,7 +40,6 @@ class PID {
     bool Compute () {
       double _input = *input;
       double _setpoint = *setpoint;
-      double _output = 0;
 
       double error = *setpoint - _input;
       double dInput = _input - lastInput;
@@ -50,6 +49,7 @@ class PID {
       outputSum += (ki * dTimeSec) * error;
       outputSum = constrain(outputSum, -iClamp, iClamp);
   
+      double _output = 0;
       _output += _setpoint * feedforward;
       _output += kp * error;
       _output += outputSum;
