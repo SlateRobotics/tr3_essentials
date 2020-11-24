@@ -35,8 +35,11 @@ tr.data.setup = function() {
   for (var i = 0; i < aids.length; i++) {
     let aid = aids[i];
     tr.data.joints[aid] = {
+      pid_pos_set: false,
       pid_pos: [0, 0, 0],
+      pid_vel_set: false,
       pid_vel: [0, 0, 0],
+      pid_trq_set: false,
       pid_trq: [0, 0, 0]
     }
 
@@ -57,15 +60,24 @@ tr.data.setup = function() {
     }.bind(aid))
 
     tr.data.socket.on("/tr3/" + aid + "/pid_pos", function (msg) {
-      tr.data.joints[aid].pid_pos = msg.data;
+      if (!tr.data.joints[aid].pid_pos_set) {
+        tr.data.joints[aid].pid_pos = msg.data;
+        tr.data.joints[aid].pid_pos_set = true;
+      }
     }.bind(aid))
 
     tr.data.socket.on("/tr3/" + aid + "/pid_vel", function (msg) {
-      tr.data.joints[aid].pid_vel = msg.data;
+      if (!tr.data.joints[aid].pid_vel_set) {
+        tr.data.joints[aid].pid_vel = msg.data;
+        tr.data.joints[aid].pid_vel_set = true;
+      }
     }.bind(aid))
 
     tr.data.socket.on("/tr3/" + aid + "/pid_trq", function (msg) {
-      tr.data.joints[aid].pid_trq = msg.data;
+      if (!tr.data.joints[aid].pid_trq_set) {
+        tr.data.joints[aid].pid_trq = msg.data;
+        tr.data.joints[aid].pid_trq_set = true;
+      }
     }.bind(aid))
   }
 
