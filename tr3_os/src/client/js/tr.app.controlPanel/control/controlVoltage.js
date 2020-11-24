@@ -6,7 +6,7 @@ tr.controls.controlPanel.controlVoltage = function() {
     type: "container",
     size: {
       w: 1.0,
-      h: 115
+      h: 90
     },
     children: [{
       type: "container",
@@ -14,8 +14,8 @@ tr.controls.controlPanel.controlVoltage = function() {
       children: [{
         type: "text",
         text: "Voltage",
-        size: { w: 0.5, h: 70 },
-        textSize: 20,
+        size: { w: 0.5, h: 50 },
+        textSize: 18,
         padding: 15,
         align: {
           v: "CENTER",
@@ -24,7 +24,7 @@ tr.controls.controlPanel.controlVoltage = function() {
       }, {
         type: "text",
         text: "0.00 V",
-        size: { w: 0.5, h: 70 },
+        size: { w: 0.5, h: 50 },
         textSize: 18,
         padding: 15,
         align: {
@@ -39,6 +39,9 @@ tr.controls.controlPanel.controlVoltage = function() {
           this.text = vol.toFixed(2) + " V";
         },
       }, c.slider("voltage")],
-    }]
+    }],
+    onDraw: function () {
+      this.size.h = this.parent.size.h / this.parent.children.length;
+    }
   }
 }

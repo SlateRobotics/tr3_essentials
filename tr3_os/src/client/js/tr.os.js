@@ -30,19 +30,20 @@ document.onclick = function () {
 }
 
 window.onload = function () {
-  resizeCanvas();
+  setCanvasSize();
+  resizeCanvas(canvasWidth, canvasHeight);
 }
 
-var canvasWidth = 640;
-var canvasHeight = 480;
+var TR3_SCREEN_WIDTH = 1024;
+var TR3_SCREEN_HEIGHT = 600;
+
+var canvasWidth = TR3_SCREEN_WIDTH;
+var canvasHeight = TR3_SCREEN_HEIGHT;
 
 function setup() {
   tr.data.setup();
 
-  canvasWidth = windowWidth;
-  canvasHeight = windowHeight;
-  if (canvasWidth < 640) canvasWidth = 640;
-  if (canvasHeight < 480) canvasHeight = 480;
+  setCanvasSize();
   createCanvas(canvasWidth, canvasHeight, WEBGL);
 
   // for some stupid reason this is necessary to get certain font sizes to load correctly
@@ -91,12 +92,20 @@ function mouseReleased() {
   lastReleaseEvent = event.type;
 }
 
+function setCanvasSize () {
+  var dev = new URLSearchParams(window.location.search).get("dev") || "0";
+  if (dev == "0") {
+    canvasWidth = windowWidth;
+    canvasHeight = windowHeight;
+  }
+
+  if (canvasWidth < 768) canvasWidth = 768;
+  if (canvasHeight < 450) canvasHeight = 450;
+}
+
 function windowResized() {
-  canvasWidth = windowWidth;
-  canvasHeight = windowHeight;
-  if (canvasWidth < 640) canvasWidth = 640;
-  if (canvasHeight < 480) canvasHeight = 480;
-  resizeCanvas(canvasWidth, canvasHeight)
+  setCanvasSize();
+  resizeCanvas(canvasWidth, canvasHeight);
 }
 
 function mouseClicked() {

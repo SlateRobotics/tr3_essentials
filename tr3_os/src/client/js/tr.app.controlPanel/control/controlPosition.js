@@ -6,7 +6,7 @@ tr.controls.controlPanel.controlPosition = function() {
     type: "container",
     size: {
       w: 1.0,
-      h: 115
+      h: 90
     },
     children: [{
       type: "container",
@@ -14,8 +14,8 @@ tr.controls.controlPanel.controlPosition = function() {
       children: [{
         type: "text",
         text: "Position",
-        size: { w: 0.5, h: 70 },
-        textSize: 20,
+        size: { w: 0.5, h: 50 },
+        textSize: 18,
         padding: 15,
         align: {
           v: "CENTER",
@@ -24,7 +24,7 @@ tr.controls.controlPanel.controlPosition = function() {
       }, {
         type: "text",
         text: "0.00 rad",
-        size: { w: 0.5, h: 70 },
+        size: { w: 0.5, h: 50 },
         textSize: 18,
         padding: 15,
         align: {
@@ -38,6 +38,9 @@ tr.controls.controlPanel.controlPosition = function() {
           this.text = pos.toFixed(2) + " rad";
         },
       }, c.slider("position")],
-    }]
+    }],
+    onDraw: function () {
+      this.size.h = this.parent.size.h / this.parent.children.length;
+    }
   }
 }

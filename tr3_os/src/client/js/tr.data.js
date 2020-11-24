@@ -114,8 +114,12 @@ tr.data.getState = function(aid, _state) {
       }
     }
   } else {
-    return tr.data.joints[aid].state;
+    if (tr.data.joints[aid]) {
+      return tr.data.joints[aid].state || {};
+    }
   }
+
+  return {};
 }
 
 tr.data.getForwardIk = function (state, callback) {

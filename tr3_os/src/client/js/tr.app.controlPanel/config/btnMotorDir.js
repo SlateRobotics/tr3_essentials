@@ -8,9 +8,9 @@ tr.controls.controlPanel.btnMotorDir = function() {
     background: "rgb(75,75,75)",
     size: {
       w: 1/3,
-      h: 100
+      h: 75
     },
-    margin: 15,
+    margin: 5,
     onClick: function() {
       var id = tr.controlPanel.state.currentActuator;
       tr.data.socket.emit("/tr3/" + id + "/flip", true);

@@ -53,7 +53,7 @@ tr.controls.controlPanel.gains = function(type) {
       h: "fill",
     },
     border: false,
-    margin: 15,
+    margin: 5,
     children: children,
   }
 }

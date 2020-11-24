@@ -10,7 +10,7 @@ tr.controls.controlPanel.btnCalibrate = function() {
       w: 0.333,
       h: 100
     },
-    margin: 15,
+    margin: 5,
     onClick: function() {
       var id = tr.controlPanel.state.currentActuator;
       tr.data.socket.emit("/tr3/joints/" + id + "/calibrate", true);

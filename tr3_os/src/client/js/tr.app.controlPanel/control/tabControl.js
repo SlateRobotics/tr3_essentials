@@ -6,7 +6,7 @@ tr.controls.controlPanel.tabControl = function() {
   var c = tr.controls.controlPanel;
 
   var children = [];
-  children.push(c.selectMode());
+  //children.push(c.selectMode());
   children.push(c.controlPosition());
   children.push(c.controlVelocity());
   children.push(c.controlTorque());
@@ -20,6 +20,16 @@ tr.controls.controlPanel.tabControl = function() {
     },
     padding: 10,
     background: "rgba(255, 255, 255, 0.2)",
-    children: children,
+    children: [
+      c.selectMode(), {
+        type: "container",
+        size: {
+          w: 1.0,
+          h: 0.85
+        },
+        padding: 0,
+        margin: 0,
+        children: children,
+      }]
   }
 }

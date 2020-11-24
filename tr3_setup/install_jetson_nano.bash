@@ -27,13 +27,15 @@ echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 sudo apt-get update
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential -y
-sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs ros-melodic-slam-gmapping ros-melodic-navigation ros-melodic-joint-state-publisher-gui ros-melodic-rplidar-ros ros-melodic-trac-ik-kinematics-plugin -y
+sudo apt-get install ros-melodic-moveit ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-gazebo-ros-control ros-melodic-navigation ros-melodic-web-video-server ros-melodic-ros-numpy ros-melodic-tf2-sensor-msgs ros-melodic-slam-gmapping ros-melodic-navigation ros-melodic-joint-state-publisher-gui ros-melodic-rplidar-ros ros-melodic-trac-ik ros-melodic-trac-ik-kinematics-plugin -y
 
 echo "Installing TR3 Packages"
 mkdir ~/ros_ws
 mkdir ~/ros_ws/src
 cd ~/ros_ws/src
 echo "source ~/ros_ws/devel/setup.bash" >> ~/.bashrc
+echo "export ROS_MASTER_URI=http://192.168.8.100:11411/" >> ~/.bashrc
+echo "export ROS_IP=192.168.8.1" >> ~/.bashrc
 git clone https://github.com/slaterobotics/tr3_essentials
 git clone https://github.com/roboticsgroup/roboticsgroup_gazebo_plugins
 cd ~/ros_ws

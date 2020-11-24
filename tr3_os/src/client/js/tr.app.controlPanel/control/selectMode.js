@@ -89,6 +89,6 @@ tr.controls.controlPanel.selectMode = function() {
           h: "CENTER"
         },
       }],
-    }]
+    }],
   }
 }

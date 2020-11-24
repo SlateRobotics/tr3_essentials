@@ -4,6 +4,7 @@ tr.gui.listBox = {
       this.itemPadding = this.config.itemPadding || 15;
       this.items = this.config.items;
       this.title = this.config.title;
+      this.upperCase = this.config.upperCase;
       this.currentItem = this.items[0];
     },
 
@@ -61,6 +62,11 @@ tr.gui.listBox = {
     },
 
     createItem: function(label) {
+      var l = label;
+      if (this.upperCase) {
+        l = label.toUpperCase();
+      }
+
       return {
         id: "listBox-item-" + label,
         type: "container",
@@ -73,7 +79,7 @@ tr.gui.listBox = {
           border: false,
           children: [{
             type: "text",
-            text: label,
+            text: l,
             textSize: 16,
             padding: this.itemPadding,
             align: {
@@ -81,7 +87,10 @@ tr.gui.listBox = {
               h: "LEFT"
             },
           }],
-        }]
+        }],
+        onDraw: function () {
+          this.size.h = this.parent.size.h / this.parent.children.length;
+        },
       };
     },
   }

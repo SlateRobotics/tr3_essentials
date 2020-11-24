@@ -14,9 +14,11 @@ tr.app.controlPanel = function() {
         children: [{
           type: "listBox",
           size: { w: 0.2, h: 1.0 },
+          upperCase: true,
           items: ["a0", "a1", "a2", "a3", "a4", "g0", "h0", "h1", "b0", "b1"],
           onChange: function (item) {
             tr.controlPanel.state.currentActuator = item;
+            this.parent.getPage().children[0].text = "Control Panel   >>   Node " + item.toUpperCase();
           },
         }, {
           type: "tabControl",
