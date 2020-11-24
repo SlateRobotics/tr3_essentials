@@ -126,11 +126,11 @@ namespace RosHandle {
   }
   
   void ros_callback_pid_vel_set (const std_msgs::Float32MultiArray &msg) {
-    controller->cmd_updatePidPos(msg.data[0], msg.data[1], msg.data[2]);
+    controller->cmd_updatePidVel(msg.data[0], msg.data[1], msg.data[2]);
   }
   
   void ros_callback_pid_trq_set (const std_msgs::Float32MultiArray &msg) {
-    controller->cmd_updatePidPos(msg.data[0], msg.data[1], msg.data[2]);
+    controller->cmd_updatePidTrq(msg.data[0], msg.data[1], msg.data[2]);
   }
 
   ros::Subscriber<std_msgs::UInt8> sub_mode(RT_MODE, &ros_callback_mode);

@@ -2,6 +2,7 @@
 #include "Trajectory.h"
 
 void Controller::step () {
+    led.step();
     encoderTorque.step();
     encoderOutput.step();
     computeState();
@@ -105,9 +106,14 @@ void Controller::step_servo () {
     pidPosSetpoint = constrain(pidPosSetpoint, MIN_POSITION, MAX_POSITION);
     pidPos.Compute();
 
-    pidVelInput = state.velocity;
-    pidVelSetpoint = trajectory.getTargetVelocity();
-    step_velocity(false);
+    if (!trajectory.complete()) {
+        pidVelInput = state.velocity;
+        pidVelSetpoint = trajectory.getTargetVelocity();
+        step_velocity(false);
+    } else {
+        pidVelOutput = 0;
+        pidVel.clear();
+    }
 
     pidTrqSetpoint = pidPosOutput + pidTrqInput;
     step_torque(false);
@@ -148,6 +154,7 @@ void Controller::step_torque (bool pulseLED) {
 
     pidPwrSetpoint = pidVelOutput + pidTrqOutput;
     pidPwrSetpoint = constrain(pidPwrSetpoint, DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
+
     motor.step(pidPwrSetpoint * 100.0);
 }
 

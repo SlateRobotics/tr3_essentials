@@ -42,9 +42,9 @@ class Controller {
     double pidTrqOutput = 0.0;
     double pidPwrSetpoint = 0.0;
 
-    PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint, 8.500, 0.000, 0.000, DIRECT);
-    PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint, 4.000, 4.000, 0.000, DIRECT);
-    PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint, 0.250, 0.050, 0.000, DIRECT);
+    PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint, 8.500, 0.000, 0.000);
+    PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint, 4.000, 4.000, 0.000);
+    PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint, 0.250, 0.050, 0.000);
 
     float SEA_SPRING_RATE = -350.0; // Newton-Meters per Radian
 

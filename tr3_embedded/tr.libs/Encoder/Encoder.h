@@ -2,6 +2,7 @@
 #define EMS22A_H
 
 #include "Storage.h"
+#include "Timer.h"
 
 class Encoder {
   private:
@@ -15,11 +16,11 @@ class Encoder {
     double prevAngle[prevAngleN];
     long prevAngleTS[prevAngleN];
 
-    static const int prevPositionN = 32;
+    static const int prevPositionN = 8;
     uint16_t prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
 
-    static const int prevVelocityN = 32;
+    static const int prevVelocityN = 8;
     double prevVelocity[prevVelocityN];
     long prevVelocityTS[prevVelocityN];
 
@@ -125,15 +126,18 @@ class Encoder {
         dif = dif - encoderResolution;
       }
 
-      double timeDiff = getTimeDiffMs();
-      double posDiff = dif / (getRatio() * getEncoderResolution()) * TAU;
-      float vel = posDiff / (timeDiff / 1000.0);
-      recordVelocity(vel);
-
       pos += dif;
       
-      double a = getAngleRadians();
       recordAngle();
+
+      double timeDiff = prevAngleTS[0] - prevAngleTS[prevAngleN - 1];
+      double posDiff = prevAngle[0] - prevAngle[prevAngleN - 1];
+      float vel = posDiff / (timeDiff / 1000000.0);
+
+      //double timeDiff = getTimeDiffMs();
+      //double posDiff = dif / (getRatio() * getEncoderResolution()) * TAU;
+      //float vel = posDiff / (timeDiff / 1000.0);
+      recordVelocity(vel);
       
       return dataOut;
     }
@@ -152,7 +156,7 @@ class Encoder {
 
     bool lapChanged () {
       int lap = getLap();
-      if (abs(prevLap - lap) > 0) {
+      if (prevLap != lap) {
         prevLap = lap;
         return true;
       } else {
@@ -202,7 +206,8 @@ class Encoder {
     }
 
     double getVelocity () {
-      return velocity;
+      //return velocity;
+      return prevVelocity[0];
     }
 
     bool isUp() {
@@ -253,11 +258,20 @@ class Encoder {
     }
 
     void resetPos () {
-      offset = readPosition();
+      step();
+      step();
+      offset = prevPosition[0];
       pos = 0;
-      prevPosition[1] = prevPosition[0];
+      prevUp = isUp();
+      prevLap = getLap();
+
+      storage->writeUInt16(EEADDR_ENC_OFFSET, offset);
+      storage->writeBool(EEADDR_ENC_UP, prevUp);
+      storage->writeDouble(EEADDR_ENC_LAP, prevLap);
+      storage->commit();
     }
 
+    // estimate the integral non-linearity error
     double getErrorEstimate() {
       double angle = (double)prevPosition[0] / (double)encoderResolution * PI * 2.0;
       return inl * sin(-angle + PI);
@@ -268,8 +282,7 @@ class Encoder {
     }
 
     void recordAngle () {
-      double err_estimate = getErrorEstimate();
-      double a = pos / (ratio * encoderResolution) * TAU - err_estimate;
+      double a = pos / (ratio * encoderResolution) * TAU;
       
       for (int i = prevAngleN - 1; i > 0; i--) {
         prevAngle[i] = prevAngle[i - 1];

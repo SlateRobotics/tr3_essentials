@@ -22,17 +22,14 @@ void Controller::setUp () {
 
     setUpConfig();
     
-    pidPos.SetMode(AUTOMATIC);
     pidPos.SetOutputLimits(MIN_TORQUE, MAX_TORQUE);
     pidPos.SetIClamp(MAX_TORQUE * 0.25);
     pidPos.SetFeedforward(0.0);
     
-    pidVel.SetMode(AUTOMATIC);
     pidVel.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     pidVel.SetIClamp(0.50);
     pidVel.SetFeedforward(0.2);
     
-    pidTrq.SetMode(AUTOMATIC);
     pidTrq.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     pidTrq.SetIClamp(0.50);
     pidTrq.SetFeedforward(0.0);

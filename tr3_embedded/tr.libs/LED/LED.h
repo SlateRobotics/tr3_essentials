@@ -37,16 +37,17 @@ class LED {
       FastLED.addLeds<WS2812B, LED_DATA_PIN, GRB>(leds, NUM_LEDS);
     }
 
-    void show (int i, int r, int g, int b) {
+    void step () {
       if (ledTimer.ready()) {
-        for (int j = 0; j < NUM_LEDS; j++) {
-          leds[i].red = r;
-          leds[i].green = g;
-          leds[i].blue = b;
-          leds[i] /= int(1.0 / ledBrightness);
-          FastLED.show();
-        }
+        FastLED.show();
       }
+    }
+
+    void show (int i, int r, int g, int b) {
+      leds[i].red = r;
+      leds[i].green = g;
+      leds[i].blue = b;
+      leds[i] /= int(1.0 / ledBrightness);
     }
 
     void red () {
