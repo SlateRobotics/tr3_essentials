@@ -66,6 +66,8 @@ void Controller::cmd_reset () {
     storage.reset();
     cmd_resetPosition();
     cmd_resetTorque();
+    motor.stop();
+    ESP.restart();
 }
 
 void Controller::cmd_resetPosition () {
@@ -140,6 +142,8 @@ void Controller::cmd_shutdown() {
     storage.commit();
 
     while (1) {
+        led.off();
+        led.step();
         motor.stop();
     }
 }
