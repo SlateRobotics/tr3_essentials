@@ -68,9 +68,20 @@ io.on('connection', function (socket) {
     var srvForwardIk = nh.serviceClient('/forward_ik', tr3Msgs.srv.ForwardIK);
     var srvInverseIk = nh.serviceClient('/inverse_ik', tr3Msgs.srv.InverseIK);
 
+    socket._ros = {};
     function sub_n_pub (aid, name, type) {
+      socket._ros[name] = {};
+      socket._ros[name].timer = {};
+      socket._ros[name].timer.delayMs = 1000.0 / 10.0;
+      socket._ros[name].timer.last = new Date();
       nh.subscribe(name, type, function (msg) {
-        socket.emit(name, msg);
+        var now = new Date().getTime();
+        var diff = now - socket._ros[name].timer.last.getTime();
+	var delayMs = socket._ros[name].timer.delayMs;
+        if (diff >= delayMs) {
+	  socket.emit(name, msg);
+          socket._ros[name].timer.last = new Date();
+        }
       }.bind(aid));
     }
 
