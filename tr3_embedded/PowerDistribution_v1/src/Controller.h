@@ -29,20 +29,7 @@ class Controller {
     }
 
     void setUpConfig () {
-        if (!storage.begin()) {
-            Serial.println("Failed to initialise EEPROM");
-            Serial.println("Restarting in 3000 ms...");
-            long start = millis();
-
-            while (millis() - start < 3000) {
-              led.blink(255, 0, 0);
-              led.step();
-              delay(50);
-            };
-            
-            ESP.restart();
-        }
-
+        storage.begin();
         if (storage.isConfigured()) {
           powerOn = storage.readBool(EEADDR_ENC_OUT_POS);
         } else {

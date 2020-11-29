@@ -54,14 +54,7 @@ void Controller::setUpImu() {
 }
 
 void Controller::setUpConfig () {
-    if (!storage.begin()) {
-        Serial.println("Failed to initialise EEPROM");
-        Serial.println("Restarting in 3000 ms...");
-        long start = millis();
-        while (millis() - start < 3000) { led.blink(255, 0, 0); delay(50); };
-        ESP.restart();
-    }
-
+    storage.begin();
     if (storage.isConfigured()) {
         SEA_SPRING_RATE = storage.readFloat(EEADDR_SEA_SPRING_RATE);
 

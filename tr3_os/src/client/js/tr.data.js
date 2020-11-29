@@ -40,7 +40,9 @@ tr.data.setup = function() {
       pid_vel_set: false,
       pid_vel: [0, 0, 0],
       pid_trq_set: false,
-      pid_trq: [0, 0, 0]
+      pid_trq: [0, 0, 0],
+      limit_set: false,
+      limit: [0, 0, 0, 0, 0, 0],
     }
 
     tr.data.socket.on("/tr3/" + aid + "/ip", function (msg) {
@@ -57,6 +59,13 @@ tr.data.setup = function() {
 
     tr.data.socket.on("/tr3/" + aid + "/state", function (msg) {
       tr.data.joints[aid].state = msg;
+    }.bind(aid))
+
+    tr.data.socket.on("/tr3/" + aid + "/limit", function (msg) {
+      if (!tr.data.joints[aid].limit_set) {
+        tr.data.joints[aid].limit = msg.data;
+        tr.data.joints[aid].limit_set = true;
+      }
     }.bind(aid))
 
     tr.data.socket.on("/tr3/" + aid + "/pid_pos", function (msg) {

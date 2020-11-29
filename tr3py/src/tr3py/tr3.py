@@ -82,6 +82,7 @@ class TR3:
         rospy.Subscriber("/tr3/shutdown", Bool, self._sub_shutdown)
         rospy.Subscriber("/tr3/powerup", Bool, self._sub_powerup)
         rospy.Subscriber("/tr3/stop", Bool, self._sub_stop)
+        rospy.Subscriber("/tr3/home", Bool, self._sub_home)
         rospy.Subscriber("/tr3/base/diff/cmd_vel", Twist, self._sub_base_cmd)
         rospy.Subscriber("/tr3/power/state", Bool, self._sub_power_state)
         rospy.Subscriber("/tr3/power/firmware/update", String, self._sub_power_firmware_update)
@@ -119,6 +120,15 @@ class TR3:
             self.stop()
         else:
             self.release()
+
+    def _sub_home (self, msg):
+        if msg.data == True:
+            self.a0.setPosition(0.0, 10000)
+            self.a1.setPosition(0.0, 10000)
+            self.a2.setPosition(0.0, 10000)
+            self.a3.setPosition(0.0, 10000)
+            self.a4.setPosition(0.0, 10000)
+            self.g0.setPosition(1.0, 10000)
 
     def _sub_base_cmd (self, msg):
         x, th = (msg.linear.x, msg.angular.z)

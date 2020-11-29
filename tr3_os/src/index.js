@@ -94,6 +94,7 @@ io.on('connection', function (socket) {
       sub_n_pub(aid, "/tr3/" + aid + "/ip", "std_msgs/String");
       sub_n_pub(aid, "/tr3/" + aid + "/log", "std_msgs/String");
       sub_n_pub(aid, "/tr3/" + aid + "/version", "std_msgs/String");
+      sub_n_pub(aid, "/tr3/" + aid + "/limit", "std_msgs/Float32MultiArray");
       sub_n_pub(aid, "/tr3/" + aid + "/state", "tr3_msgs/ActuatorState");
       sub_n_pub(aid, "/tr3/" + aid + "/pid_pos", "std_msgs/Float32MultiArray");
       sub_n_pub(aid, "/tr3/" + aid + "/pid_vel", "std_msgs/Float32MultiArray");

@@ -12,7 +12,7 @@ tr.controls.controlPanel.gains = function(type) {
     background: "rgb(50,50,50)",
     children: [{
       type: "text",
-      text: type.toUpperCase() + " GAINS",
+      text: type.toUpperCase(),
       textSize: 18,
       align: {
         v: "CENTER",
@@ -36,15 +36,15 @@ tr.controls.controlPanel.gains = function(type) {
   children.push(c.txtPID(type, "D"));
   children.push(c.btnPID(type, "D", "▶"))
   
-  children.push(c.lblPID(type, "Dead Zone"));
-  children.push(c.btnPID(type, "DZ", "◀"))
-  children.push(c.txtPID(type, "DZ"));
-  children.push(c.btnPID(type, "DZ", "▶"))
+  children.push(c.lblPID(type, "MIN"));
+  children.push(c.btnPID(type, "MIN", "◀"))
+  children.push(c.txtPID(type, "MIN"));
+  children.push(c.btnPID(type, "MIN", "▶"))
   
-  children.push(c.lblPID(type, "I Clamp"));
-  children.push(c.btnPID(type, "IC", "◀"))
-  children.push(c.txtPID(type, "IC"));
-  children.push(c.btnPID(type, "IC", "▶"))
+  children.push(c.lblPID(type, "MAX"));
+  children.push(c.btnPID(type, "MAX", "◀"))
+  children.push(c.txtPID(type, "MAX"));
+  children.push(c.btnPID(type, "MAX", "▶"))
 
   return {
     type: "container",

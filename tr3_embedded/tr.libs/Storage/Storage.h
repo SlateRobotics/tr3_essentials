@@ -61,8 +61,20 @@ class Storage {
   private:
 
   public:
-    bool begin () {
-      return EEPROM.begin(EEPROM_SIZE);
+    void begin () {
+      if (!EEPROM.begin(EEPROM_SIZE)) {
+        Serial.println("Failed to initialise EEPROM");
+        Serial.println("Restarting in 3000 ms...");
+        long start = millis();
+
+        while (millis() - start < 3000) {
+          led.blink(255, 0, 0);
+          led.step();
+          delay(50);
+        };
+        
+        ESP.restart();
+      }
     }
 
     void reset () {
