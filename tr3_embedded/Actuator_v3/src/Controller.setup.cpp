@@ -23,16 +23,8 @@ void Controller::setUp () {
     setUpConfig();
     
     pidPos.SetOutputLimits(MIN_TORQUE, MAX_TORQUE);
-    pidPos.SetIClamp(MAX_TORQUE * 0.25);
-    pidPos.SetFeedforward(0.0);
-    
-    pidVel.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
-    pidVel.SetIClamp(0.50);
-    pidVel.SetFeedforward(0.2);
-    
+    pidVel.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX); 
     pidTrq.SetOutputLimits(DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
-    pidTrq.SetIClamp(0.50);
-    pidTrq.SetFeedforward(0.0);
     
     //setUpImu();
     //step_imu();
@@ -54,7 +46,7 @@ void Controller::setUpImu() {
 }
 
 void Controller::setUpConfig () {
-    storage.begin();
+    storage.begin(&led);
     if (storage.isConfigured()) {
         SEA_SPRING_RATE = storage.readFloat(EEADDR_SEA_SPRING_RATE);
 
@@ -76,18 +68,23 @@ void Controller::setUpConfig () {
         MIN_TORQUE = storage.readFloat(EEADDR_TORQUE_MIN);
         MAX_TORQUE = storage.readFloat(EEADDR_TORQUE_MAX);
 
-        double p_pos = storage.readFloat(EEADDR_PID_POS_P);
-        double i_pos = storage.readFloat(EEADDR_PID_POS_I);
-        double d_pos = storage.readFloat(EEADDR_PID_POS_D);
-        double p_vel = storage.readFloat(EEADDR_PID_VEL_P);
-        double i_vel = storage.readFloat(EEADDR_PID_VEL_I);
-        double d_vel = storage.readFloat(EEADDR_PID_VEL_D);
-        double p_trq = storage.readFloat(EEADDR_PID_TRQ_P);
-        double i_trq = storage.readFloat(EEADDR_PID_TRQ_I);
-        double d_trq = storage.readFloat(EEADDR_PID_TRQ_D);
-        pidPos.SetTunings(p_pos, i_pos, d_pos);
-        pidVel.SetTunings(p_vel, i_vel, d_vel);
-        pidTrq.SetTunings(p_trq, i_trq, d_trq);
+        pidPos.SetTunings(0, storage.readFloat(EEADDR_PID_POS_P));
+        pidPos.SetTunings(1, storage.readFloat(EEADDR_PID_POS_I));
+        pidPos.SetTunings(2, storage.readFloat(EEADDR_PID_POS_D));
+        pidPos.SetTunings(3, storage.readFloat(EEADDR_PID_POS_IC));
+        pidPos.SetTunings(4, storage.readFloat(EEADDR_PID_POS_FF));
+
+        pidVel.SetTunings(0, storage.readFloat(EEADDR_PID_VEL_P));
+        pidVel.SetTunings(1, storage.readFloat(EEADDR_PID_VEL_I));
+        pidVel.SetTunings(2, storage.readFloat(EEADDR_PID_VEL_D));
+        pidVel.SetTunings(3, storage.readFloat(EEADDR_PID_VEL_IC));
+        pidVel.SetTunings(4, storage.readFloat(EEADDR_PID_VEL_FF));
+
+        pidTrq.SetTunings(0, storage.readFloat(EEADDR_PID_TRQ_P));
+        pidTrq.SetTunings(1, storage.readFloat(EEADDR_PID_TRQ_I));
+        pidTrq.SetTunings(2, storage.readFloat(EEADDR_PID_TRQ_D));
+        pidTrq.SetTunings(3, storage.readFloat(EEADDR_PID_TRQ_IC));
+        pidTrq.SetTunings(4, storage.readFloat(EEADDR_PID_TRQ_FF));
     } else {
         storage.reset();
     }

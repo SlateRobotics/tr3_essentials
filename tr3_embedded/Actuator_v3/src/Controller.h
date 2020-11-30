@@ -42,9 +42,9 @@ class Controller {
     double pidTrqOutput = 0.0;
     double pidPwrSetpoint = 0.0;
 
-    PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint, 8.500, 0.000, 0.000);
-    PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint, 4.000, 4.000, 0.000);
-    PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint, 0.250, 0.050, 0.000);
+    PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint);
+    PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint);
+    PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint);
 
     float SEA_SPRING_RATE = -350.0; // Newton-Meters per Radian
 
@@ -107,9 +107,9 @@ class Controller {
     void cmd_setLimitVelocityMax(float v);
     void cmd_setLimitTorqueMin(float v);
     void cmd_setLimitTorqueMax(float v);
-    void cmd_updatePidPos(float p, float i, float d);
-    void cmd_updatePidVel(float p, float i, float d);
-    void cmd_updatePidTrq(float p, float i, float d);
+    void cmd_updatePidPos(int i, float v);
+    void cmd_updatePidVel(int i, float v);
+    void cmd_updatePidTrq(int i, float v);
 };
 
 #endif

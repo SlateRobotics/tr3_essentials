@@ -16,6 +16,10 @@ class Encoder {
     double prevAngle[prevAngleN];
     long prevAngleTS[prevAngleN];
 
+    static const int prevDiffN = 64;
+    double prevDiff[prevDiffN];
+    long prevDiffTS[prevDiffN];
+
     static const int prevPositionN = 8;
     uint16_t prevPosition[prevPositionN];
     long prevPositionTS[prevPositionN];
@@ -116,8 +120,6 @@ class Encoder {
     
       digitalWrite(PIN_CS, HIGH);
       delayMicroseconds(1);
-
-      recordPosition(dataOut);
       
       int16_t dif = prevPosition[0] - prevPosition[1];
       if (dif < -encoderResolution / 2) {
@@ -127,17 +129,11 @@ class Encoder {
       }
 
       pos += dif;
-      
+
+      recordPosition(dataOut);
+      recordDiff(dif);
       recordAngle();
-
-      double timeDiff = prevAngleTS[0] - prevAngleTS[prevAngleN - 1];
-      double posDiff = prevAngle[0] - prevAngle[prevAngleN - 1];
-      float vel = posDiff / (timeDiff / 1000000.0);
-
-      //double timeDiff = getTimeDiffMs();
-      //double posDiff = dif / (getRatio() * getEncoderResolution()) * TAU;
-      //float vel = posDiff / (timeDiff / 1000.0);
-      recordVelocity(vel);
+      recordVelocity();
       
       return dataOut;
     }
@@ -174,6 +170,16 @@ class Encoder {
       }
     }
  
+    void recordDiff (double data) {
+      for (int i = prevDiffN - 1; i > 0; i--) {
+        prevDiff[i] = prevDiff[i - 1];
+        prevDiffTS[i] = prevDiffTS[i - 1];
+      }
+
+      prevDiff[0] = data;
+      prevDiffTS[0] = micros();
+    }
+ 
     void recordPosition (unsigned int data) {
       for (int i = prevPositionN - 1; i > 0; i--) {
         prevPosition[i] = prevPosition[i - 1];
@@ -184,18 +190,21 @@ class Encoder {
       prevPositionTS[0] = micros();
     }
 
-    void recordVelocity (double vel) {
-      double velSum = vel;
+    void recordVelocity () {
+      double diffSum = 0;
+      long diffTSSum = 0;
+      for (int i = 0; i < prevDiffN - 1; i++) {
+        diffSum += prevDiff[i];
+        diffTSSum += prevDiffTS[i] - prevDiffTS[i + 1];
+      }
+
+      double angleDiff = diffSum / (getRatio() * getEncoderResolution()) * TAU;
+      double vel = angleDiff / ((double)diffTSSum / 1000000.0);
 
       for (int i = prevVelocityN - 1; i > 0; i--) {
         prevVelocity[i] = prevVelocity[i - 1];
         prevVelocityTS[i] = prevVelocityTS[i - 1];
-        velSum += prevVelocity[i];
       }
-
-      double newVel = velSum / (double)prevVelocityN;
-      acceleration = newVel - velocity;
-      velocity = newVel;
 
       prevVelocity[0] = vel;
       prevVelocityTS[0] = micros();

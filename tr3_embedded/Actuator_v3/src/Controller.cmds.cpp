@@ -184,26 +184,80 @@ void Controller::cmd_setLimitTorqueMax (float v) {
     storage.commit();
 }
 
-void Controller::cmd_updatePidPos (float p, float i, float d) {
-    pidPos.SetTunings(p, i, d);
-    storage.writeFloat(EEADDR_PID_POS_P, p);
-    storage.writeFloat(EEADDR_PID_POS_I, i);
-    storage.writeFloat(EEADDR_PID_POS_D, d);
+void Controller::cmd_updatePidPos (int i, float val) {
+    pidPos.SetTunings(i, val);
+
+    switch (i) {
+        case 0:
+            storage.writeFloat(EEADDR_PID_POS_P, val);
+            break;
+        case 1:
+            storage.writeFloat(EEADDR_PID_POS_I, val);
+            break;
+        case 2:
+            storage.writeFloat(EEADDR_PID_POS_D, val);
+            break;
+        case 3:
+            storage.writeFloat(EEADDR_PID_POS_IC, val);
+            break;
+        case 4:
+            storage.writeFloat(EEADDR_PID_POS_FF, val);
+            break;
+        default:
+            break;
+    }
+    
     storage.commit();
 }
 
-void Controller::cmd_updatePidVel (float p, float i, float d) {
-    pidVel.SetTunings(p, i, d);
-    storage.writeFloat(EEADDR_PID_VEL_P, p);
-    storage.writeFloat(EEADDR_PID_VEL_I, i);
-    storage.writeFloat(EEADDR_PID_VEL_D, d);
+void Controller::cmd_updatePidVel (int i, float val) {
+    pidVel.SetTunings(i, val);
+
+    switch (i) {
+        case 0:
+            storage.writeFloat(EEADDR_PID_VEL_P, val);
+            break;
+        case 1:
+            storage.writeFloat(EEADDR_PID_VEL_I, val);
+            break;
+        case 2:
+            storage.writeFloat(EEADDR_PID_VEL_D, val);
+            break;
+        case 3:
+            storage.writeFloat(EEADDR_PID_VEL_IC, val);
+            break;
+        case 4:
+            storage.writeFloat(EEADDR_PID_VEL_FF, val);
+            break;
+        default:
+            break;
+    }
+    
     storage.commit();
 }
 
-void Controller::cmd_updatePidTrq (float p, float i, float d) {
-    pidTrq.SetTunings(p, i, d);
-    storage.writeFloat(EEADDR_PID_TRQ_P, p);
-    storage.writeFloat(EEADDR_PID_TRQ_I, i);
-    storage.writeFloat(EEADDR_PID_TRQ_D, d);
+void Controller::cmd_updatePidTrq (int i, float val) {
+    pidTrq.SetTunings(i, val);
+
+    switch (i) {
+        case 0:
+            storage.writeFloat(EEADDR_PID_TRQ_P, val);
+            break;
+        case 1:
+            storage.writeFloat(EEADDR_PID_TRQ_I, val);
+            break;
+        case 2:
+            storage.writeFloat(EEADDR_PID_TRQ_D, val);
+            break;
+        case 3:
+            storage.writeFloat(EEADDR_PID_TRQ_IC, val);
+            break;
+        case 4:
+            storage.writeFloat(EEADDR_PID_TRQ_FF, val);
+            break;
+        default:
+            break;
+    }
+    
     storage.commit();
 }

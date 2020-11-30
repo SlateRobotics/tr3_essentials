@@ -3,20 +3,21 @@
 
 class PID {
   private:
-    double kp;
-    double ki;
-    double kd;
+    // gains
+    double kp = 1.0;
+    double ki = 0.0;
+    double kd = 0.0;
+    double iClamp = 0.25;
+    double feedforward = 0.0;
 
     double *input;
     double *output;
     double *setpoint;
 
-    double feedforward;
     double outputSum;
 
     double outMin;
     double outMax;
-    double iClamp = 0.25;
 
     unsigned long lastTime;
     double lastInput;
@@ -25,13 +26,12 @@ class PID {
   public:
     PID () { }
     
-    PID(double* _input, double* _output, double* _setpoint, double _kp, double _ki, double _kd) {
+    PID(double* _input, double* _output, double* _setpoint) {
       output = _output;
       input = _input;
       setpoint = _setpoint;
     
       PID::SetOutputLimits(-1.0, 1.0);
-      PID::SetTunings(_kp, _ki, _kd);
     
       lastTime = micros();
     }
@@ -47,7 +47,11 @@ class PID {
       dTimeSec = constrain(dTimeSec, 0.0, 1.0);
   
       outputSum += (ki * dTimeSec) * error;
-      outputSum = constrain(outputSum, -iClamp, iClamp);
+
+      // iClamp of 0.0 assumes no iClamp
+      if (iClamp > 0.01) {
+        outputSum = constrain(outputSum, -iClamp, iClamp);
+      }
   
       double _output = 0;
       _output += _setpoint * feedforward;
@@ -70,17 +74,33 @@ class PID {
     }
 
     double GetTunings(int i) {
-      double gains[3];
+      double gains[5];
       gains[0] = kp;
       gains[1] = ki;
       gains[2] = kd;
+      gains[3] = iClamp;
+      gains[4] = feedforward;
       return gains[i];
     }
     
-    void SetTunings(double Kp, double Ki, double Kd) {
-      kp = Kp;
-      ki = Ki;
-      kd = Kd;
+    void SetTunings(int i, double val) {
+      switch (i) {
+        case 0:
+          kp = val;
+          break;
+        case 1:
+          ki = val;
+          break;
+        case 2:
+          kd = val;
+          break;
+        case 3:
+          iClamp = val;
+          break;
+        case 4:
+          feedforward = val;
+          break;
+      }
     }
 
     void SetFeedforward (double ff) {

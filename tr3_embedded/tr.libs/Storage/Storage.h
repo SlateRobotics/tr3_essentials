@@ -18,12 +18,18 @@
 #define EEADDR_PID_POS_P 71
 #define EEADDR_PID_POS_I 87
 #define EEADDR_PID_POS_D 91
+#define EEADDR_PID_POS_IC 135
+#define EEADDR_PID_POS_FF 139
 #define EEADDR_PID_VEL_P 75
 #define EEADDR_PID_VEL_I 79
 #define EEADDR_PID_VEL_D 83
+#define EEADDR_PID_VEL_IC 143
+#define EEADDR_PID_VEL_FF 147
 #define EEADDR_PID_TRQ_P 95
 #define EEADDR_PID_TRQ_I 99
 #define EEADDR_PID_TRQ_D 103
+#define EEADDR_PID_TRQ_IC 151
+#define EEADDR_PID_TRQ_FF 155
 #define EEADDR_POSITION_MIN 111
 #define EEADDR_POSITION_MAX 115
 #define EEADDR_VELOCITY_MIN 119
@@ -32,44 +38,51 @@
 #define EEADDR_TORQUE_MAX 131
 
 // DEFAULT PID GAINS
-#define DEFAULT_PID_POS_P 5.000
-#define DEFAULT_PID_POS_I 0.000
-#define DEFAULT_PID_POS_D 0.000
-#define DEFAULT_PID_VEL_P 0.500
-#define DEFAULT_PID_VEL_I 1.000
-#define DEFAULT_PID_VEL_D 0.000
-#define DEFAULT_PID_TRQ_P 0.450
-#define DEFAULT_PID_TRQ_I 0.050
-#define DEFAULT_PID_TRQ_D 0.000
+#define DEFAULT_PID_POS_P 5.00
+#define DEFAULT_PID_POS_I 0.00
+#define DEFAULT_PID_POS_D 0.00
+#define DEFAULT_PID_POS_IC 0.00
+#define DEFAULT_PID_POS_FF 0.00
+#define DEFAULT_PID_VEL_P 0.50
+#define DEFAULT_PID_VEL_I 1.00
+#define DEFAULT_PID_VEL_D 0.00
+#define DEFAULT_PID_VEL_IC 0.50
+#define DEFAULT_PID_VEL_FF 0.20
+#define DEFAULT_PID_TRQ_P 0.45
+#define DEFAULT_PID_TRQ_I 0.05
+#define DEFAULT_PID_TRQ_D 0.00
+#define DEFAULT_PID_TRQ_IC 0.50
+#define DEFAULT_PID_TRQ_FF 0.00
 
 // DEFAULT LIMITS
 #define DEFAULT_POSITION_MIN -6.28
 #define DEFAULT_POSITION_MAX 6.28
 #define DEFAULT_VELOCITY_MIN -0.942
 #define DEFAULT_VELOCITY_MAX 0.942
-#define DEFAULT_TORQUE_MIN -60.0
-#define DEFAULT_TORQUE_MAX 60.0
+#define DEFAULT_TORQUE_MIN -75.0
+#define DEFAULT_TORQUE_MAX 75.0
 #define DEFAULT_MOTOR_MIN -1.0
 #define DEFAULT_MOTOR_MAX 1.0
 
 #define EE_SET_1 0x51
 #define EE_SET_2 0x22
 
+#include "LED.h"
 #include "EEPROM.h"
 
 class Storage {
   private:
 
   public:
-    void begin () {
+    void begin (LED* led) {
       if (!EEPROM.begin(EEPROM_SIZE)) {
         Serial.println("Failed to initialise EEPROM");
         Serial.println("Restarting in 3000 ms...");
         long start = millis();
 
         while (millis() - start < 3000) {
-          led.blink(255, 0, 0);
-          led.step();
+          led->blink(255, 0, 0);
+          led->step();
           delay(50);
         };
         
@@ -96,12 +109,20 @@ class Storage {
       writeFloat(EEADDR_PID_POS_P, DEFAULT_PID_POS_P);
       writeFloat(EEADDR_PID_POS_I, DEFAULT_PID_POS_I);
       writeFloat(EEADDR_PID_POS_D, DEFAULT_PID_POS_D);
+      writeFloat(EEADDR_PID_POS_IC, DEFAULT_PID_POS_IC);
+      writeFloat(EEADDR_PID_POS_FF, DEFAULT_PID_POS_FF);
+
       writeFloat(EEADDR_PID_VEL_P, DEFAULT_PID_VEL_P);
       writeFloat(EEADDR_PID_VEL_I, DEFAULT_PID_VEL_I);
       writeFloat(EEADDR_PID_VEL_D, DEFAULT_PID_VEL_D);
+      writeFloat(EEADDR_PID_VEL_IC, DEFAULT_PID_VEL_IC);
+      writeFloat(EEADDR_PID_VEL_FF, DEFAULT_PID_VEL_FF);
+
       writeFloat(EEADDR_PID_TRQ_P, DEFAULT_PID_TRQ_P);
       writeFloat(EEADDR_PID_TRQ_I, DEFAULT_PID_TRQ_I);
       writeFloat(EEADDR_PID_TRQ_D, DEFAULT_PID_TRQ_D);
+      writeFloat(EEADDR_PID_TRQ_IC, DEFAULT_PID_TRQ_IC);
+      writeFloat(EEADDR_PID_TRQ_FF, DEFAULT_PID_TRQ_FF);
 
       writeFloat(EEADDR_POSITION_MIN, DEFAULT_POSITION_MIN);
       writeFloat(EEADDR_POSITION_MAX, DEFAULT_POSITION_MAX);

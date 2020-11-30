@@ -52,27 +52,27 @@ void Controller::setLimits (std_msgs::Float32MultiArray* msg) {
 }
 
 void Controller::setPidPosTunings (std_msgs::Float32MultiArray* msg) {
-    msg->data_length = 3;
+    msg->data_length = 5;
     msg->data = (float*)malloc(sizeof(float) * msg->data_length);
-    msg->data[0] = (float)pidPos.GetTunings(0);
-    msg->data[1] = (float)pidPos.GetTunings(1);
-    msg->data[2] = (float)pidPos.GetTunings(2);
+    for (int i = 0; i < msg->data_length; i++) {
+        msg->data[i] = (float)pidPos.GetTunings(i);
+    }
 }
 
 void Controller::setPidVelTunings (std_msgs::Float32MultiArray* msg) {
-    msg->data_length = 3;
+    msg->data_length = 5;
     msg->data = (float*)malloc(sizeof(float) * msg->data_length);
-    msg->data[0] = (float)pidVel.GetTunings(0);
-    msg->data[1] = (float)pidVel.GetTunings(1);
-    msg->data[2] = (float)pidVel.GetTunings(2);
+    for (int i = 0; i < msg->data_length; i++) {
+        msg->data[i] = (float)pidVel.GetTunings(i);
+    }
 }
 
 void Controller::setPidTrqTunings (std_msgs::Float32MultiArray* msg) {
-    msg->data_length = 3;
+    msg->data_length = 5;
     msg->data = (float*)malloc(sizeof(float) * msg->data_length);
-    msg->data[0] = (float)pidTrq.GetTunings(0);
-    msg->data[1] = (float)pidTrq.GetTunings(1);
-    msg->data[2] = (float)pidTrq.GetTunings(2);
+    for (int i = 0; i < msg->data_length; i++) {
+        msg->data[i] = (float)pidTrq.GetTunings(i);
+    }
 }
 
 void Controller::fanOn () {
