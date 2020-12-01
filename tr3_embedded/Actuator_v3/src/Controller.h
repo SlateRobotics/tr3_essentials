@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <tr3_msgs/ActuatorState.h>
 
@@ -63,6 +64,9 @@ class Controller {
 
   public:
     bool requireImu = true;
+    double a2_pos = 0.0;
+    double a3_pos = 0.0;
+    double expected_torque = 0.0;
 
     Controller () { }
 
@@ -71,10 +75,13 @@ class Controller {
     void setUpConfig();
 
     void setActuatorState(tr3_msgs::ActuatorState* state);
+    void setActuatorStatePos(std_msgs::Float64* state_pos);
     void setLimits(std_msgs::Float32MultiArray* limits);
     void setPidPosTunings(std_msgs::Float32MultiArray* gains);
     void setPidVelTunings(std_msgs::Float32MultiArray* gains);
     void setPidTrqTunings(std_msgs::Float32MultiArray* gains);
+
+    void updateExpectedTorque();
 
     void fanOn();
     void fanOff();
@@ -101,6 +108,7 @@ class Controller {
     void cmd_stop();
     void cmd_calibrate();
     void cmd_shutdown();
+    void cmd_setSpringRate(float v);
     void cmd_setLimitPositionMin(float v);
     void cmd_setLimitPositionMax(float v);
     void cmd_setLimitVelocityMin(float v);

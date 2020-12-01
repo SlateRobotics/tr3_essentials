@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include "Dynamics.h"
 
 void Controller::computeState () {
     if (NODE_ID == "g0") {
@@ -30,6 +31,10 @@ void Controller::computeState () {
     //}
 }
 
+void Controller::updateExpectedTorque () {
+    expected_torque = Dynamics::torque_a1(state.position, a2_pos, a3_pos);
+}
+
 void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
     msg->id = NODE_ID;
     msg->mode = state.mode;
@@ -38,6 +43,10 @@ void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
     msg->velocity = state.velocity;
     msg->effort = state.effort;
     msg->torque = state.torque;
+}
+
+void Controller::setActuatorStatePos (std_msgs::Float64* msg) {
+    msg->data = state.position;
 }
 
 void Controller::setLimits (std_msgs::Float32MultiArray* msg) {

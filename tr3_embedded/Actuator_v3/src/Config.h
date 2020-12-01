@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // NODE DETAILS
-#define NODE_ID "a2"
+#define NODE_ID "a1"
 #define NODE_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG
@@ -17,6 +17,7 @@
 
 // ROSTOPICS USED BY ACTUATOR
 #define RT_STATE              "/tr3/" NODE_ID "/state"
+#define RT_STATE_POS          "/tr3/" NODE_ID "/state_position"
 #define RT_MODE               "/tr3/" NODE_ID "/mode"
 #define RT_RESET              "/tr3/" NODE_ID "/reset"
 #define RT_RESET_POS          "/tr3/" NODE_ID "/reset/position"
@@ -24,6 +25,7 @@
 #define RT_FLIP               "/tr3/" NODE_ID "/flip"
 #define RT_STOP               "/tr3/" NODE_ID "/stop"
 #define RT_SHUTDOWN           "/tr3/" NODE_ID "/shutdown"
+#define RT_SPRING_RATE        "/tr3/" NODE_ID "/spring_rate/set"
 #define RT_CONTROL_POSITION   "/tr3/" NODE_ID "/control/position"
 #define RT_CONTROL_VELOCITY   "/tr3/" NODE_ID "/control/velocity"
 #define RT_CONTROL_TORQUE     "/tr3/" NODE_ID "/control/torque"

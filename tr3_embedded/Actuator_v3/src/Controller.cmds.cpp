@@ -82,7 +82,7 @@ void Controller::cmd_resetPosition () {
 }
 
 void Controller::cmd_resetTorque () {
-    encoderTorque.resetPos();
+    encoderTorque.resetPos(expected_torque / SEA_SPRING_RATE);
 
     pidPos.clear();
     pidVel.clear();
@@ -146,6 +146,12 @@ void Controller::cmd_shutdown() {
         led.step();
         motor.stop();
     }
+}
+
+void Controller::cmd_setSpringRate (float v) {
+    SEA_SPRING_RATE = v;
+    storage.writeFloat(EEADDR_SEA_SPRING_RATE, v);
+    storage.commit();
 }
 
 void Controller::cmd_setLimitPositionMin (float v) {

@@ -7,6 +7,8 @@ void Controller::step () {
     encoderOutput.step();
     computeState();
 
+    Serial.println(expected_torque, 4);
+
     fanOn();
 
     switch (mode) {
@@ -115,6 +117,8 @@ void Controller::step_servo () {
         pidVel.clear();
     }
 
+    MIN_TORQUE = expected_torque - 7.5;
+    MAX_TORQUE = expected_torque + 7.5;
     pidTrqSetpoint = pidPosOutput + pidTrqInput;
     step_torque(false);
 }

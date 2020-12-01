@@ -266,11 +266,18 @@ class Encoder {
       return prevPositionTS[i]; // microseconds
     }
 
-    void resetPos () {
+    void resetPos (double angle = 0.0) {
       step();
       step();
       offset = prevPosition[0];
-      pos = 0;
+      pos = angle / TAU * (ratio * encoderResolution);
+
+      if (offset >= pos) {
+        offset = prevPosition[0] - pos;
+      } else if (offset < pos) {
+        offset = encoderResolution - (pos - offset);
+      } 
+
       prevUp = isUp();
       prevLap = getLap();
 
