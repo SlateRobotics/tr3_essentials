@@ -1,13 +1,10 @@
 #include "Controller.h"
-#include "Trajectory.h"
 
 void Controller::step () {
     led.step();
     encoderTorque.step();
     encoderOutput.step();
     computeState();
-
-    Serial.println(expected_torque, 4);
 
     fanOn();
 
@@ -24,15 +21,19 @@ void Controller::step () {
         case MODE_BACKDRIVE:
             pidTrqSetpoint = 0;
             step_torque();
+            step_motor();
             break;
         case MODE_TORQUE:
             step_torque();
+            step_motor();
             break;
         case MODE_SERVO:
             step_servo();
+            step_motor();
             break;
         case MODE_VELOCITY:
             step_velocity();
+            step_motor();
             break;
         case MODE_CALIBRATE:
             step_calibrate();
@@ -43,12 +44,20 @@ void Controller::step () {
     }
 
     //if (logTimer.ready()) {
-    if (!trajectory.complete()) {
+    //if (!trajectory.complete()) {
         Serial.print(millis());
+        Serial.print("::");
+        Serial.print(expected_torque);
+        Serial.print(", ");
+        Serial.print(expected_torque_min);
+        Serial.print(", ");
+        Serial.print(expected_torque_max);
         Serial.print("::");
         Serial.print(pidPosSetpoint);
         Serial.print(", ");
         Serial.print(state.position);
+        Serial.print(", ");
+        Serial.print(pidPos.getIntegralSum());
         Serial.print(", ");
         Serial.print(pidPosOutput);
         Serial.print("::");
@@ -62,10 +71,12 @@ void Controller::step () {
         Serial.print(", ");
         Serial.print(state.torque);
         Serial.print(", ");
+        Serial.print(pidTrq.getIntegralSum());
+        Serial.print(", ");
         Serial.print(pidTrqOutput);
         Serial.print(", ");
         Serial.println(pidPwrSetpoint);
-    }
+    //}
 }
 
 void Controller::step_imu () {
@@ -106,6 +117,26 @@ void Controller::step_servo () {
     pidPosInput = state.position;
     pidPosSetpoint = trajectory.getTargetPosition();
     pidPosSetpoint = constrain(pidPosSetpoint, MIN_POSITION, MAX_POSITION);
+
+    // compute limits for torque based on set position
+    if (limitTimer.ready()) {
+        if (NODE_ID == "a1") {
+            if (a2_pos_recv && a3_pos_recv) {
+                double et = Dynamics::torque_a1(pidPosSetpoint, a2_pos, a3_pos);
+                expected_torque_min = et - 10.0;
+                expected_torque_max = et + 10.0;
+            }
+        } else if (NODE_ID == "a2") {
+            if (a1_pos_recv && a3_pos_recv) {
+                double et = Dynamics::torque_a2(a1_pos, pidPosSetpoint, a3_pos);
+                expected_torque_min = et - 10.0;
+                expected_torque_max = et + 10.0;
+            }
+        } else if (NODE_ID == "a3") {
+            //expected_torque = Dynamics::torque_a3(a1_pos, a2_pos, state.position);
+        }
+    }
+
     pidPos.Compute();
 
     if (!trajectory.complete()) {
@@ -117,9 +148,7 @@ void Controller::step_servo () {
         pidVel.clear();
     }
 
-    MIN_TORQUE = expected_torque - 7.5;
-    MAX_TORQUE = expected_torque + 7.5;
-    pidTrqSetpoint = pidPosOutput + pidTrqInput;
+    pidTrqSetpoint = pidPosOutput + (expected_torque * 0.50) + (state.torque * 0.50);
     step_torque(false);
 }
 
@@ -141,6 +170,8 @@ void Controller::step_velocity (bool pulseLED) {
         pidVelOutput = 0;
         pidVel.clear();
     }
+
+    pidPwrSetpoint = pidVelOutput;
 }
 
 void Controller::step_torque (bool pulseLED) {
@@ -154,11 +185,14 @@ void Controller::step_torque (bool pulseLED) {
 
     pidTrqInput = state.torque;
     pidTrqSetpoint = constrain(pidTrqSetpoint, MIN_TORQUE, MAX_TORQUE);
+    pidTrqSetpoint = constrain(pidTrqSetpoint, expected_torque_min, expected_torque_max);
     pidTrq.Compute();
 
     pidPwrSetpoint = pidVelOutput + pidTrqOutput;
-    pidPwrSetpoint = constrain(pidPwrSetpoint, DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
+}
 
+void Controller::step_motor () {
+    pidPwrSetpoint = constrain(pidPwrSetpoint, DEFAULT_MOTOR_MIN, DEFAULT_MOTOR_MAX);
     motor.step(pidPwrSetpoint * 100.0);
 }
 

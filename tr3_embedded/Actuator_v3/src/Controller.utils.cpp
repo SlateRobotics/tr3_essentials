@@ -1,5 +1,4 @@
 #include "Controller.h"
-#include "Dynamics.h"
 
 void Controller::computeState () {
     if (NODE_ID == "g0") {
@@ -32,7 +31,15 @@ void Controller::computeState () {
 }
 
 void Controller::updateExpectedTorque () {
-    expected_torque = Dynamics::torque_a1(state.position, a2_pos, a3_pos);
+    if (NODE_ID == "a1") {
+        if (!a2_pos_recv || !a3_pos_recv) return;
+        expected_torque = Dynamics::torque_a1(state.position, a2_pos, a3_pos);
+    } else if (NODE_ID == "a2") {
+        if (!a1_pos_recv || !a3_pos_recv) return;
+        expected_torque = Dynamics::torque_a2(a1_pos, state.position, a3_pos);
+    } else if (NODE_ID == "a3") {
+        //expected_torque = Dynamics::torque_a3(a1_pos, a2_pos, state.position);
+    }
 }
 
 void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {

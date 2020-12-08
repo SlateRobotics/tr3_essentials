@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // NODE DETAILS
-#define NODE_ID "a1"
+#define NODE_ID "a2"
 #define NODE_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG
@@ -22,6 +22,7 @@
 #define RT_RESET              "/tr3/" NODE_ID "/reset"
 #define RT_RESET_POS          "/tr3/" NODE_ID "/reset/position"
 #define RT_RESET_TRQ          "/tr3/" NODE_ID "/reset/torque"
+#define RT_CALIBRATE          "/tr3/" NODE_ID "/calibrate"
 #define RT_FLIP               "/tr3/" NODE_ID "/flip"
 #define RT_STOP               "/tr3/" NODE_ID "/stop"
 #define RT_SHUTDOWN           "/tr3/" NODE_ID "/shutdown"

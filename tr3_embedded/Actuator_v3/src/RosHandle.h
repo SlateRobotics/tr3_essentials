@@ -58,13 +58,21 @@ namespace RosHandle {
     controller->cmd_setVoltage(msg.data);
   }
   
+  void ros_callback_a1_pos (const std_msgs::Float64 &msg) {
+    controller->a1_pos = msg.data;
+    controller->a1_pos_recv = true;
+    controller->updateExpectedTorque();
+  }
+  
   void ros_callback_a2_pos (const std_msgs::Float64 &msg) {
     controller->a2_pos = msg.data;
+    controller->a2_pos_recv = true;
     controller->updateExpectedTorque();
   }
   
   void ros_callback_a3_pos (const std_msgs::Float64 &msg) {
     controller->a3_pos = msg.data;
+    controller->a3_pos_recv = true;
     controller->updateExpectedTorque();
   }
   
@@ -87,6 +95,12 @@ namespace RosHandle {
   void ros_callback_reset_trq (const std_msgs::Bool &msg) {
     if (msg.data == true) {
       controller->cmd_resetTorque();
+    }
+  }
+
+  void ros_callback_calibrate (const std_msgs::Bool &msg) {
+    if (msg.data == true) {
+      controller->cmd_calibrate();
     }
   }
   
@@ -156,6 +170,7 @@ namespace RosHandle {
     controller->cmd_setSpringRate(msg.data);
   }
 
+  ros::Subscriber<std_msgs::Float64> sub_a1_pos("/tr3/a1/state_position", &ros_callback_a1_pos);
   ros::Subscriber<std_msgs::Float64> sub_a2_pos("/tr3/a2/state_position", &ros_callback_a2_pos);
   ros::Subscriber<std_msgs::Float64> sub_a3_pos("/tr3/a3/state_position", &ros_callback_a3_pos);
 
@@ -163,6 +178,7 @@ namespace RosHandle {
   ros::Subscriber<std_msgs::Bool> sub_reset(RT_RESET, &ros_callback_reset);
   ros::Subscriber<std_msgs::Bool> sub_reset_pos(RT_RESET_POS, &ros_callback_reset_pos);
   ros::Subscriber<std_msgs::Bool> sub_reset_trq(RT_RESET_TRQ, &ros_callback_reset_trq);
+  ros::Subscriber<std_msgs::Bool> sub_calibrate(RT_CALIBRATE, &ros_callback_calibrate);
   ros::Subscriber<std_msgs::Bool> sub_flip(RT_FLIP, &ros_callback_flip);
   ros::Subscriber<std_msgs::Bool> sub_stop(RT_STOP, &ros_callback_stop);
   ros::Subscriber<std_msgs::Bool> sub_shutdown(RT_SHUTDOWN, &ros_callback_shutdown);
@@ -186,12 +202,22 @@ namespace RosHandle {
     controller = c;
 
     // subscribers
-    nh.subscribe(sub_a2_pos);
-    nh.subscribe(sub_a3_pos);
+    if (NODE_ID == "a1") {
+      nh.subscribe(sub_a2_pos);
+      nh.subscribe(sub_a3_pos);
+    } else if (NODE_ID == "a2") {
+      nh.subscribe(sub_a1_pos);
+      nh.subscribe(sub_a3_pos);
+    } else if (NODE_ID == "a3") {
+      nh.subscribe(sub_a2_pos);
+      nh.subscribe(sub_a3_pos);
+    }
+
     nh.subscribe(sub_mode);
     nh.subscribe(sub_reset);
     nh.subscribe(sub_reset_pos);
     nh.subscribe(sub_reset_trq);
+    nh.subscribe(sub_calibrate);
     nh.subscribe(sub_flip);
     nh.subscribe(sub_stop);
     nh.subscribe(sub_shutdown);

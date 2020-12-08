@@ -19,6 +19,7 @@
 #include "Trajectory.h"
 #include "Timer.h"
 #include "Storage.h"
+#include "Dynamics.h"
 
 class Controller {
   private:
@@ -59,14 +60,21 @@ class Controller {
     Trajectory trajectory = Trajectory(&state);
     Timer imuTimer = Timer(5); // hz
     Timer logTimer = Timer(4);
+    Timer limitTimer = Timer(4);
 
     void computeState();
 
   public:
     bool requireImu = true;
+    double a1_pos = 0.0;
     double a2_pos = 0.0;
     double a3_pos = 0.0;
+    bool a1_pos_recv = false;
+    bool a2_pos_recv = false;
+    bool a3_pos_recv = false;
     double expected_torque = 0.0;
+    double expected_torque_min = MIN_TORQUE;
+    double expected_torque_max = MAX_TORQUE;
 
     Controller () { }
 
@@ -92,6 +100,7 @@ class Controller {
     void step_servo();
     void step_velocity(bool pulseLED = true);
     void step_torque(bool pulseLED = true);
+    void step_motor();
     void step_calibrate();
     void step_stop();
 
