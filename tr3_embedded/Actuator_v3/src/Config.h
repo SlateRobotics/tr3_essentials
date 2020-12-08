@@ -6,7 +6,7 @@
 #define TAU (PI * 2)
 
 // NODE DETAILS
-#define NODE_ID "a2"
+#define NODE_ID "a1"
 #define NODE_VERSION "v3.0.0"
 
 // ROSSERIAL CONFIG

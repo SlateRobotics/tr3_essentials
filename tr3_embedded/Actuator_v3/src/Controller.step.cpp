@@ -43,9 +43,16 @@ void Controller::step () {
             break;
     }
 
-    //if (logTimer.ready()) {
+    if (logTimer.ready()) {
     //if (!trajectory.complete()) {
-        Serial.print(millis());
+        Serial.print(SEA_SPRING_RATE, 8);
+        Serial.print(", ");
+        Serial.print(state.position, 8);
+        Serial.print(", ");
+        Serial.print(expected_torque, 8);
+        Serial.print(", ");
+        Serial.println(encoderTorque.getAngleRadians(), 8);
+        /*Serial.print(millis());
         Serial.print("::");
         Serial.print(expected_torque);
         Serial.print(", ");
@@ -75,8 +82,8 @@ void Controller::step () {
         Serial.print(", ");
         Serial.print(pidTrqOutput);
         Serial.print(", ");
-        Serial.println(pidPwrSetpoint);
-    //}
+        Serial.println(pidPwrSetpoint);*/
+    }
 }
 
 void Controller::step_imu () {

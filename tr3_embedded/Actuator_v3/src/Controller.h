@@ -59,7 +59,7 @@ class Controller {
     MPU9250 imu = MPU9250(Wire,0x68);
     Trajectory trajectory = Trajectory(&state);
     Timer imuTimer = Timer(5); // hz
-    Timer logTimer = Timer(4);
+    Timer logTimer = Timer(1);
     Timer limitTimer = Timer(4);
 
     void computeState();
