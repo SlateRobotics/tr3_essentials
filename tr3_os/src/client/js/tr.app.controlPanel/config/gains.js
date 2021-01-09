@@ -7,7 +7,7 @@ tr.controls.controlPanel.gains = function(type) {
     type: "container",
     size: {
       w: 1.0,
-      h: 60
+      h: 40
     },
     background: "rgb(50,50,50)",
     children: [{
@@ -35,6 +35,16 @@ tr.controls.controlPanel.gains = function(type) {
   children.push(c.btnPID(type, "D", "◀"))
   children.push(c.txtPID(type, "D"));
   children.push(c.btnPID(type, "D", "▶"))
+  
+  children.push(c.lblPID(type, "IC"));
+  children.push(c.btnPID(type, "IC", "◀"))
+  children.push(c.txtPID(type, "IC"));
+  children.push(c.btnPID(type, "IC", "▶"))
+  
+  children.push(c.lblPID(type, "FF"));
+  children.push(c.btnPID(type, "FF", "◀"))
+  children.push(c.txtPID(type, "FF"));
+  children.push(c.btnPID(type, "FF", "▶"))
   
   children.push(c.lblPID(type, "MIN"));
   children.push(c.btnPID(type, "MIN", "◀"))

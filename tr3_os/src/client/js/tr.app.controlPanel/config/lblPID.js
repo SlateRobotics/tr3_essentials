@@ -7,7 +7,7 @@ tr.controls.controlPanel.lblPID = function(controller, text) {
     type: "container",
     size: {
       w: 1 / 4,
-      h: 60
+      h: 45
     },
     children: [{
       type: "container",

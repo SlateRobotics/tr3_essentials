@@ -7,7 +7,7 @@ tr.controls.controlPanel.btnPID = function(controller, type, lbl) {
     type: "container",
     size: {
       w: 1/4,
-      h: 60
+      h: 45
     },
     onClick: function() {
       var app = this.getApp();
@@ -72,6 +72,12 @@ tr.controls.controlPanel.btnPID = function(controller, type, lbl) {
         tr.data.socket.emit("/tr3/" + id + "/" + pid + "/set", tr.data.joints[id][pid]);
       } else if (type == "D") {
         tr.data.joints[id][pid][2] = r(tr.data.joints[id][pid][2] + inc);
+        tr.data.socket.emit("/tr3/" + id + "/" + pid + "/set", tr.data.joints[id][pid]);
+      } else if (type == "IC") {
+        tr.data.joints[id][pid][3] = r(tr.data.joints[id][pid][3] + inc);
+        tr.data.socket.emit("/tr3/" + id + "/" + pid + "/set", tr.data.joints[id][pid]);
+      } else if (type == "FF") {
+        tr.data.joints[id][pid][4] = r(tr.data.joints[id][pid][4] + inc);
         tr.data.socket.emit("/tr3/" + id + "/" + pid + "/set", tr.data.joints[id][pid]);
       } else if (type == "MIN") {
         tr.data.joints[id].limit[limitIdx] = r(tr.data.joints[id].limit[limitIdx] + inc);

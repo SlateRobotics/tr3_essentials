@@ -7,7 +7,7 @@ tr.controls.controlPanel.txtPID = function(controller, type) {
     type: "container",
     size: {
       w: 1 / 4,
-      h: 60
+      h: 45
     },
     children: [{
       type: "container",
@@ -40,6 +40,10 @@ tr.controls.controlPanel.txtPID = function(controller, type) {
               this.text = (tr.data.joints[id][pid][1] || 0.0).toFixed(2);
             } else if (type == "D") {
               this.text = (tr.data.joints[id][pid][2] || 0.0).toFixed(2);
+            } else if (type == "IC") {
+              this.text = (tr.data.joints[id][pid][3] || 0.0).toFixed(2);
+            } else if (type == "FF") {
+              this.text = (tr.data.joints[id][pid][4] || 0.0).toFixed(2);
             } else if (type == "MIN") {
               this.text = (tr.data.joints[id].limit[limitIdx] || 0.0).toFixed(2);
             } else if (type == "MAX") {
