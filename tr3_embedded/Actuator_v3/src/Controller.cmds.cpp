@@ -1,4 +1,3 @@
-#include "Config.h"
 #include "Controller.h"
 
 void Controller::cmd_setMode (uint8_t m) {
@@ -8,7 +7,9 @@ void Controller::cmd_setMode (uint8_t m) {
     } else if (mode == MODE_VELOCITY) {
         pidVelSetpoint = 0;
     } else if (mode == MODE_TORQUE) {
-        pidTrqSetpoint = 0;
+        pidTrqSetpoint = expected_torque;
+        expected_torque_min = MIN_TORQUE;
+        expected_torque_max = MAX_TORQUE;
     } else if (mode == MODE_BACKDRIVE) {
         pidTrqSetpoint = 0;
     }
@@ -82,7 +83,7 @@ void Controller::cmd_resetPosition () {
 }
 
 void Controller::cmd_resetTorque () {
-    encoderTorque.resetPos();
+    encoderTorque.resetPos(expected_torque / SEA_SPRING_RATE);
 
     pidPos.clear();
     pidVel.clear();
@@ -100,7 +101,9 @@ void Controller::cmd_flipMotorPins () {
 }
 
 void Controller::cmd_release () {
-    mode = MODE_ROTATE;
+    if (mode == MODE_STOP) {
+        mode = MODE_ROTATE;
+    }
 }
 
 void Controller::cmd_stop () {
@@ -113,7 +116,18 @@ void Controller::cmd_stop () {
 }
 
 void Controller::cmd_calibrate() {
-    encoderOutput.resetPos();
+    double pos = encoderOutput.getAngleRadians();
+    double trq = encoderTorque.getAngleRadians();
+    double sea = expected_torque / trq;
+    Serial.print(pos, 8);
+    Serial.print(", ");
+    Serial.print(trq, 8);
+    Serial.print(", ");
+    Serial.print(expected_torque, 4);
+    Serial.print(", ");
+    Serial.println(sea, 4);
+
+    /*encoderOutput.resetPos();
     encoderTorque.resetPos();
 
     if (NODE_ID == "a0" || NODE_ID == "a1" || NODE_ID == "a2" || NODE_ID == "b0" || NODE_ID == "b1") {
@@ -127,7 +141,7 @@ void Controller::cmd_calibrate() {
     uint16_t encD_offset = encoderTorque.getOffset();
     storage.writeUInt16(EEADDR_ENC_OUT_OFFSET, encO_offset);
     storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, encD_offset);
-    storage.commit();
+    storage.commit();*/
 }
 
 void Controller::cmd_shutdown() {
@@ -146,6 +160,12 @@ void Controller::cmd_shutdown() {
         led.step();
         motor.stop();
     }
+}
+
+void Controller::cmd_setSpringRate (float v) {
+    SEA_SPRING_RATE = v;
+    storage.writeFloat(EEADDR_SEA_SPRING_RATE, v);
+    storage.commit();
 }
 
 void Controller::cmd_setLimitPositionMin (float v) {

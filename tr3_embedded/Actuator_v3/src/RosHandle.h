@@ -25,15 +25,18 @@ namespace RosHandle {
   const int max_failures = 5;
 
   Timer configTimer(0.5); // hz
+  Timer posTimer(20); // hz
   Timer stateTimer(150); // hz
 
   tr3_msgs::ActuatorState state;
+  std_msgs::Float64 state_pos;
   std_msgs::Float32MultiArray limits;
   std_msgs::Float32MultiArray pid_pos;
   std_msgs::Float32MultiArray pid_vel;
   std_msgs::Float32MultiArray pid_trq;
 
   ros::Publisher pub_state(RT_STATE, &state);
+  ros::Publisher pub_state_pos(RT_STATE_POS, &state_pos);
   ros::Publisher pub_limit(RT_LIMIT, &limits);
   ros::Publisher pub_pid_pos(RT_PID_POS, &pid_pos);
   ros::Publisher pub_pid_vel(RT_PID_VEL, &pid_vel);
@@ -55,6 +58,24 @@ namespace RosHandle {
     controller->cmd_setVoltage(msg.data);
   }
   
+  void ros_callback_a1_pos (const std_msgs::Float64 &msg) {
+    controller->a1_pos = msg.data;
+    controller->a1_pos_recv = true;
+    controller->updateExpectedTorque();
+  }
+  
+  void ros_callback_a2_pos (const std_msgs::Float64 &msg) {
+    controller->a2_pos = msg.data;
+    controller->a2_pos_recv = true;
+    controller->updateExpectedTorque();
+  }
+  
+  void ros_callback_a3_pos (const std_msgs::Float64 &msg) {
+    controller->a3_pos = msg.data;
+    controller->a3_pos_recv = true;
+    controller->updateExpectedTorque();
+  }
+  
   void ros_callback_mode (const std_msgs::UInt8 &msg) {
     controller->cmd_setMode(msg.data);
   }
@@ -74,6 +95,12 @@ namespace RosHandle {
   void ros_callback_reset_trq (const std_msgs::Bool &msg) {
     if (msg.data == true) {
       controller->cmd_resetTorque();
+    }
+  }
+
+  void ros_callback_calibrate (const std_msgs::Bool &msg) {
+    if (msg.data == true) {
+      controller->cmd_calibrate();
     }
   }
   
@@ -139,13 +166,23 @@ namespace RosHandle {
     }
   }
 
+  void ros_callback_spring_rate (const std_msgs::Float64 &msg) {
+    controller->cmd_setSpringRate(msg.data);
+  }
+
+  ros::Subscriber<std_msgs::Float64> sub_a1_pos("/tr3/a1/state_position", &ros_callback_a1_pos);
+  ros::Subscriber<std_msgs::Float64> sub_a2_pos("/tr3/a2/state_position", &ros_callback_a2_pos);
+  ros::Subscriber<std_msgs::Float64> sub_a3_pos("/tr3/a3/state_position", &ros_callback_a3_pos);
+
   ros::Subscriber<std_msgs::UInt8> sub_mode(RT_MODE, &ros_callback_mode);
   ros::Subscriber<std_msgs::Bool> sub_reset(RT_RESET, &ros_callback_reset);
   ros::Subscriber<std_msgs::Bool> sub_reset_pos(RT_RESET_POS, &ros_callback_reset_pos);
   ros::Subscriber<std_msgs::Bool> sub_reset_trq(RT_RESET_TRQ, &ros_callback_reset_trq);
+  ros::Subscriber<std_msgs::Bool> sub_calibrate(RT_CALIBRATE, &ros_callback_calibrate);
   ros::Subscriber<std_msgs::Bool> sub_flip(RT_FLIP, &ros_callback_flip);
   ros::Subscriber<std_msgs::Bool> sub_stop(RT_STOP, &ros_callback_stop);
   ros::Subscriber<std_msgs::Bool> sub_shutdown(RT_SHUTDOWN, &ros_callback_shutdown);
+  ros::Subscriber<std_msgs::Float64> sub_spring_rate(RT_SPRING_RATE, &ros_callback_spring_rate);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_pos_set(RT_PID_POS_SET, &ros_callback_pid_pos_set);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_vel_set(RT_PID_VEL_SET, &ros_callback_pid_vel_set);
   ros::Subscriber<std_msgs::Float32MultiArray> sub_pid_trq_set(RT_PID_TRQ_SET, &ros_callback_pid_trq_set);
@@ -165,13 +202,26 @@ namespace RosHandle {
     controller = c;
 
     // subscribers
+    if (NODE_ID == "a1") {
+      nh.subscribe(sub_a2_pos);
+      nh.subscribe(sub_a3_pos);
+    } else if (NODE_ID == "a2") {
+      nh.subscribe(sub_a1_pos);
+      nh.subscribe(sub_a3_pos);
+    } else if (NODE_ID == "a3") {
+      nh.subscribe(sub_a2_pos);
+      nh.subscribe(sub_a3_pos);
+    }
+
     nh.subscribe(sub_mode);
     nh.subscribe(sub_reset);
     nh.subscribe(sub_reset_pos);
     nh.subscribe(sub_reset_trq);
+    nh.subscribe(sub_calibrate);
     nh.subscribe(sub_flip);
     nh.subscribe(sub_stop);
     nh.subscribe(sub_shutdown);
+    nh.subscribe(sub_spring_rate);
     nh.subscribe(sub_pid_pos_set);
     nh.subscribe(sub_pid_vel_set);
     nh.subscribe(sub_pid_trq_set);
@@ -188,6 +238,7 @@ namespace RosHandle {
 
     // publishers
     nh.advertise(pub_state);
+    nh.advertise(pub_state_pos);
     nh.advertise(pub_limit);
     nh.advertise(pub_pid_pos);
     nh.advertise(pub_pid_vel);
@@ -210,6 +261,11 @@ namespace RosHandle {
         RosHandle::pub_pid_pos.publish(&RosHandle::pid_pos);
         RosHandle::pub_pid_vel.publish(&RosHandle::pid_vel);
         RosHandle::pub_pid_trq.publish(&RosHandle::pid_trq);
+      }
+
+      if (posTimer.ready()) {
+        controller->setActuatorStatePos(&RosHandle::state_pos);
+        RosHandle::pub_state_pos.publish(&RosHandle::state_pos);
       }
 
       if (stateTimer.ready()) {

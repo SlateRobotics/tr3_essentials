@@ -73,6 +73,10 @@ class PID {
       outMax = Max;
     }
 
+    double getIntegralSum () {
+      return outputSum;
+    }
+
     double GetTunings(int i) {
       double gains[5];
       gains[0] = kp;

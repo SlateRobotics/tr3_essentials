@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <tr3_msgs/ActuatorState.h>
 
@@ -18,6 +19,7 @@
 #include "Trajectory.h"
 #include "Timer.h"
 #include "Storage.h"
+#include "Dynamics.h"
 
 class Controller {
   private:
@@ -57,12 +59,22 @@ class Controller {
     MPU9250 imu = MPU9250(Wire,0x68);
     Trajectory trajectory = Trajectory(&state);
     Timer imuTimer = Timer(5); // hz
-    Timer logTimer = Timer(4);
+    Timer logTimer = Timer(1);
+    Timer limitTimer = Timer(4);
 
     void computeState();
 
   public:
     bool requireImu = true;
+    double a1_pos = 0.0;
+    double a2_pos = 0.0;
+    double a3_pos = 0.0;
+    bool a1_pos_recv = false;
+    bool a2_pos_recv = false;
+    bool a3_pos_recv = false;
+    double expected_torque = 0.0;
+    double expected_torque_min = MIN_TORQUE;
+    double expected_torque_max = MAX_TORQUE;
 
     Controller () { }
 
@@ -71,10 +83,13 @@ class Controller {
     void setUpConfig();
 
     void setActuatorState(tr3_msgs::ActuatorState* state);
+    void setActuatorStatePos(std_msgs::Float64* state_pos);
     void setLimits(std_msgs::Float32MultiArray* limits);
     void setPidPosTunings(std_msgs::Float32MultiArray* gains);
     void setPidVelTunings(std_msgs::Float32MultiArray* gains);
     void setPidTrqTunings(std_msgs::Float32MultiArray* gains);
+
+    void updateExpectedTorque();
 
     void fanOn();
     void fanOff();
@@ -85,6 +100,7 @@ class Controller {
     void step_servo();
     void step_velocity(bool pulseLED = true);
     void step_torque(bool pulseLED = true);
+    void step_motor();
     void step_calibrate();
     void step_stop();
 
@@ -101,6 +117,7 @@ class Controller {
     void cmd_stop();
     void cmd_calibrate();
     void cmd_shutdown();
+    void cmd_setSpringRate(float v);
     void cmd_setLimitPositionMin(float v);
     void cmd_setLimitPositionMax(float v);
     void cmd_setLimitVelocityMin(float v);

@@ -67,6 +67,8 @@ void Controller::setUpConfig () {
         MAX_VELOCITY = storage.readFloat(EEADDR_VELOCITY_MAX);
         MIN_TORQUE = storage.readFloat(EEADDR_TORQUE_MIN);
         MAX_TORQUE = storage.readFloat(EEADDR_TORQUE_MAX);
+        expected_torque_min = MIN_TORQUE;
+        expected_torque_max = MAX_TORQUE;
 
         pidPos.SetTunings(0, storage.readFloat(EEADDR_PID_POS_P));
         pidPos.SetTunings(1, storage.readFloat(EEADDR_PID_POS_I));
