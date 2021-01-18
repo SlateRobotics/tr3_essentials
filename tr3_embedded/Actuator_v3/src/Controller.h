@@ -20,11 +20,13 @@
 #include "Timer.h"
 #include "Storage.h"
 #include "Dynamics.h"
+#include "LinearRegression.h"
 
 class Controller {
   private:
     int mode = MODE_ROTATE;
     int modePrev = MODE_ROTATE;
+    bool calibrate = false;
 
     float MIN_POSITION = DEFAULT_POSITION_MIN;
     float MAX_POSITION = DEFAULT_POSITION_MAX;
@@ -48,19 +50,24 @@ class Controller {
     PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint);
     PID pidTrq = PID(&pidTrqInput, &pidTrqOutput, &pidTrqSetpoint);
 
-    float SEA_SPRING_RATE = -350.0; // Newton-Meters per Radian
+    LinearRegression regression;
+
+    float SEA_SPRING_RATE = -340.0; // Newton-Meters per Radian
+    float SEA_COEFF_M = -504.51;
+    float SEA_COEFF_B = -6.4775;
 
     ControllerState state;
     Encoder encoderTorque = Encoder(PIN_ENC_TRQ_CS, PIN_ENC_TRQ_CLK, PIN_ENC_TRQ_DO);
     Encoder encoderOutput = Encoder(PIN_ENC_OUT_CS, PIN_ENC_OUT_CLK, PIN_ENC_OUT_DO);
     LED led;
     Motor motor = Motor(PIN_MTR_PWM, PIN_MTR_IN1, PIN_MTR_IN2);
-    Storage storage;
     MPU9250 imu = MPU9250(Wire,0x68);
     Trajectory trajectory = Trajectory(&state);
     Timer imuTimer = Timer(5); // hz
     Timer logTimer = Timer(1);
     Timer limitTimer = Timer(4);
+    Timer calibrateTimer = Timer(5);
+    Timer dynamicsTimer = Timer(4);
 
     void computeState();
 
@@ -75,6 +82,8 @@ class Controller {
     double expected_torque = 0.0;
     double expected_torque_min = MIN_TORQUE;
     double expected_torque_max = MAX_TORQUE;
+
+    Storage storage;
 
     Controller () { }
 
@@ -97,7 +106,7 @@ class Controller {
     void step();
     void step_imu();
     void step_rotate();
-    void step_servo();
+    void step_servo(bool pulseLED = true);
     void step_velocity(bool pulseLED = true);
     void step_torque(bool pulseLED = true);
     void step_motor();
@@ -115,7 +124,8 @@ class Controller {
     void cmd_flipMotorPins();
     void cmd_release();
     void cmd_stop();
-    void cmd_calibrate();
+    void cmd_calibrateStart();
+    void cmd_calibrateEnd();
     void cmd_shutdown();
     void cmd_setSpringRate(float v);
     void cmd_setLimitPositionMin(float v);

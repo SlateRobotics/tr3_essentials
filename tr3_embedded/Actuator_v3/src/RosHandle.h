@@ -98,9 +98,15 @@ namespace RosHandle {
     }
   }
 
-  void ros_callback_calibrate (const std_msgs::Bool &msg) {
+  void ros_callback_calibrate_start (const std_msgs::Bool &msg) {
     if (msg.data == true) {
-      controller->cmd_calibrate();
+      controller->cmd_calibrateStart();
+    }
+  }
+
+  void ros_callback_calibrate_end (const std_msgs::Bool &msg) {
+    if (msg.data == true) {
+      controller->cmd_calibrateEnd();
     }
   }
   
@@ -178,7 +184,8 @@ namespace RosHandle {
   ros::Subscriber<std_msgs::Bool> sub_reset(RT_RESET, &ros_callback_reset);
   ros::Subscriber<std_msgs::Bool> sub_reset_pos(RT_RESET_POS, &ros_callback_reset_pos);
   ros::Subscriber<std_msgs::Bool> sub_reset_trq(RT_RESET_TRQ, &ros_callback_reset_trq);
-  ros::Subscriber<std_msgs::Bool> sub_calibrate(RT_CALIBRATE, &ros_callback_calibrate);
+  ros::Subscriber<std_msgs::Bool> sub_calibrate_start(RT_CALIBRATE_START, &ros_callback_calibrate_start);
+  ros::Subscriber<std_msgs::Bool> sub_calibrate_end(RT_CALIBRATE_END, &ros_callback_calibrate_end);
   ros::Subscriber<std_msgs::Bool> sub_flip(RT_FLIP, &ros_callback_flip);
   ros::Subscriber<std_msgs::Bool> sub_stop(RT_STOP, &ros_callback_stop);
   ros::Subscriber<std_msgs::Bool> sub_shutdown(RT_SHUTDOWN, &ros_callback_shutdown);
@@ -202,22 +209,23 @@ namespace RosHandle {
     controller = c;
 
     // subscribers
-    if (NODE_ID == "a1") {
+    #if (NODE_ID == NODE_A1)
       nh.subscribe(sub_a2_pos);
       nh.subscribe(sub_a3_pos);
-    } else if (NODE_ID == "a2") {
+    #elif (NODE_ID == NODE_A2)
       nh.subscribe(sub_a1_pos);
       nh.subscribe(sub_a3_pos);
-    } else if (NODE_ID == "a3") {
+    #elif (NODE_ID == NODE_A3)
       nh.subscribe(sub_a2_pos);
       nh.subscribe(sub_a3_pos);
-    }
+    #endif
 
     nh.subscribe(sub_mode);
     nh.subscribe(sub_reset);
     nh.subscribe(sub_reset_pos);
     nh.subscribe(sub_reset_trq);
-    nh.subscribe(sub_calibrate);
+    nh.subscribe(sub_calibrate_start);
+    nh.subscribe(sub_calibrate_end);
     nh.subscribe(sub_flip);
     nh.subscribe(sub_stop);
     nh.subscribe(sub_shutdown);

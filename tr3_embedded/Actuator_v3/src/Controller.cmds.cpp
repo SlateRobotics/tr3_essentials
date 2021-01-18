@@ -16,7 +16,7 @@ void Controller::cmd_setMode (uint8_t m) {
 }
 
 void Controller::cmd_setPosition (float position, int duration) {
-    if (NODE_ID == "g0") {
+    #if (NODE_ID == NODE_G0)
         if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
                 motor.prepareCommand(100, 1750);
@@ -30,9 +30,9 @@ void Controller::cmd_setPosition (float position, int duration) {
             state.position = 1;
             storage.writeFloat(EEADDR_ENC_OUT_POS, 1.0);
         }
-    } else {
+    #else
         trajectory.begin(position, duration);
-    }
+    #endif
 
     if (mode != MODE_STOP) {
         mode = MODE_SERVO;
@@ -84,6 +84,11 @@ void Controller::cmd_resetPosition () {
 
 void Controller::cmd_resetTorque () {
     encoderTorque.resetPos(expected_torque / SEA_SPRING_RATE);
+    if (abs(SEA_COEFF_M) < 0.1) {
+        //encoderTorque.resetPos(expected_torque / -350.0);
+    } else {
+        //encoderTorque.resetPos((expected_torque - SEA_COEFF_B) / SEA_COEFF_M);
+    }
 
     pidPos.clear();
     pidVel.clear();
@@ -115,33 +120,27 @@ void Controller::cmd_stop () {
     mode = MODE_STOP;
 }
 
-void Controller::cmd_calibrate() {
-    double pos = encoderOutput.getAngleRadians();
-    double trq = encoderTorque.getAngleRadians();
-    double sea = expected_torque / trq;
-    Serial.print(pos, 8);
-    Serial.print(", ");
-    Serial.print(trq, 8);
-    Serial.print(", ");
-    Serial.print(expected_torque, 4);
-    Serial.print(", ");
-    Serial.println(sea, 4);
-
-    /*encoderOutput.resetPos();
+void Controller::cmd_calibrateStart () {
+    calibrate = true;
     encoderTorque.resetPos();
+}
 
-    if (NODE_ID == "a0" || NODE_ID == "a1" || NODE_ID == "a2" || NODE_ID == "b0" || NODE_ID == "b1") {
-        SEA_SPRING_RATE = -350;
-    } else {
-        SEA_SPRING_RATE = -350;
-    }
-    storage.writeFloat(EEADDR_SEA_SPRING_RATE, SEA_SPRING_RATE);
+void Controller::cmd_calibrateEnd () {
+    calibrate = false;
 
-    uint16_t encO_offset = encoderOutput.getOffset();
-    uint16_t encD_offset = encoderTorque.getOffset();
-    storage.writeUInt16(EEADDR_ENC_OUT_OFFSET, encO_offset);
-    storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, encD_offset);
-    storage.commit();*/
+    double values[3];
+    regression.getValues(values);
+    SEA_COEFF_M = values[0];
+    SEA_COEFF_B = values[1];
+
+    Serial.print("M: ");
+    Serial.print(SEA_COEFF_M);
+    Serial.print(", B: ");
+    Serial.println(SEA_COEFF_B);
+
+    storage.writeFloat(EEADDR_SEA_M, SEA_COEFF_M);
+    storage.writeFloat(EEADDR_SEA_B, SEA_COEFF_B);
+    storage.commit();
 }
 
 void Controller::cmd_shutdown() {

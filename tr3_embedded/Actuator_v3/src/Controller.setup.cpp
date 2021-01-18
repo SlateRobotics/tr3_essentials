@@ -49,10 +49,12 @@ void Controller::setUpConfig () {
     storage.begin(&led);
     if (storage.isConfigured()) {
         SEA_SPRING_RATE = storage.readFloat(EEADDR_SEA_SPRING_RATE);
+        SEA_COEFF_M = storage.readFloat(EEADDR_SEA_M);
+        SEA_COEFF_B = storage.readFloat(EEADDR_SEA_B);
 
-        if (NODE_ID == "g0") {
+        #if (NODE_ID == NODE_G0)
             state.position = storage.readFloat(EEADDR_ENC_OUT_POS);
-        }
+        #endif
 
         encoderTorque.configure();
         encoderOutput.configure();

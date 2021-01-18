@@ -16,6 +16,7 @@ namespace Dynamics {
     const double a3_mass = 2.598; // kg
     const double a4_mass = 3.080; // kg
     const double g0_mass = 2.000; // kg
+    
 
     inline double torque_a1 (double a1_pos, double a2_pos, double a3_pos) {
         // a1 -> l0 : torques from link between a1 and a2
@@ -114,6 +115,24 @@ namespace Dynamics {
         double a1_g0_y = a4_g0_y3 + a1_a3_y;
         double d_a2_g0 = a1_g0_x - d_a1_a2;
         double t_a2_g0 = d_a2_g0 * (g0_mass * grav_accel);
+
+        /*Serial.print(a1_pos, 6);
+        Serial.print(", ");
+        Serial.print(a2_pos, 6);
+        Serial.print(", ");
+        Serial.print(a3_pos, 6);
+        Serial.print(", ");
+        Serial.print(d_a1_a2 * 1000.0);
+        Serial.print(", ");
+        Serial.print(d_a2_l1 * 1000.0);
+        Serial.print(", ");
+        Serial.print(d_a2_a3 * 1000.0);
+        Serial.print(", ");
+        Serial.print(d_a2_a4 * 1000.0);
+        Serial.print(", ");
+        Serial.print(d_a2_g0 * 1000.0);
+        Serial.print(", ");
+        Serial.println(t_a2_l1 + t_a2_a3 + t_a2_a4 + t_a2_g0);*/
 
         return t_a2_l1 + t_a2_a3 + t_a2_a4 + t_a2_g0;
     }

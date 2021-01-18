@@ -14,8 +14,8 @@ class Trajectory {
     double limitVelocity = 0.95;
     double limitAcceleration = 0.75;
 
-    long targetDuration;
-    long trajectoryStart;
+    long targetDuration = 0;
+    long trajectoryStart = 0;
     double trajectoryPosStart;
     double trajectoryPosGoal;
     long lastStep;

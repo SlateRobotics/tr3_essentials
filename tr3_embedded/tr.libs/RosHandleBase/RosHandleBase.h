@@ -16,12 +16,12 @@
 #include "RosHandleEvents.h"
 #include "Timer.h"
 
-#define RT_IP               "/tr3/" NODE_ID "/ip"
-#define RT_VERSION          "/tr3/" NODE_ID "/version"
-#define RT_LOG              "/tr3/" NODE_ID "/log"
-#define RT_OTA_START        "/tr3/" NODE_ID "/ota/start"
-#define RT_OTA_DATA         "/tr3/" NODE_ID "/ota/data"
-#define RT_OTA_END          "/tr3/" NODE_ID "/ota/end"
+#define RT_IP               "/tr3/" NODE_ID_STR "/ip"
+#define RT_VERSION          "/tr3/" NODE_ID_STR "/version"
+#define RT_LOG              "/tr3/" NODE_ID_STR "/log"
+#define RT_OTA_START        "/tr3/" NODE_ID_STR "/ota/start"
+#define RT_OTA_DATA         "/tr3/" NODE_ID_STR "/ota/data"
+#define RT_OTA_END          "/tr3/" NODE_ID_STR "/ota/end"
 
 // Generic handle for communicating with ROS. Contains basic interfaces
 // all ESP32-ROS nodes utilize as well as defining connection recovery behavior

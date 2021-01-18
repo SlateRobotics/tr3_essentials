@@ -62,11 +62,13 @@ class Encoder {
       digitalWrite(PIN_CLOCK, HIGH);
       digitalWrite(PIN_CS, HIGH);
 
-      if (NODE_ID == "a0" || NODE_ID == "a1" || NODE_ID == "a2" || NODE_ID == "b0" || NODE_ID == "b1") {
+      #if (NODE_ID == NODE_A0 || NODE_ID == NODE_A1 || NODE_ID == NODE_A2 || NODE_ID == NODE_B0 || NODE_ID == NODE_B1)
+        // large actuators
         ratio = 124.0 / 25.0;
-      } else {
+      #else
+        // small actuators
         ratio = 104.0 / 25.0;
-      }
+      #endif
       
       readPosition();
       readPosition();
@@ -211,7 +213,7 @@ class Encoder {
     }
 
     double getAcceleration () {
-      return acceleration;
+      return prevVelocity[0] - prevVelocity[1];
     }
 
     double getVelocity () {
@@ -293,8 +295,8 @@ class Encoder {
       return inl * sin(-angle + PI);
     }
     
-    double getAngleRadians() {
-      return prevAngle[0];
+    double getAngleRadians(int i = 0) {
+      return prevAngle[i];
     }
 
     void recordAngle () {

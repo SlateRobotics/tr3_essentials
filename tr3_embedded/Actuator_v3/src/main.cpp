@@ -10,17 +10,28 @@ void setup() {
   Serial.begin(115200);
 
   Serial.print("Actuator: ");
-  Serial.print(NODE_ID);
+  Serial.print(NODE_ID_STR);
   Serial.print(", ");
   Serial.println(NODE_VERSION);
 
   controller.requireImu = false;
   controller.setUp();
   
-  RosHandle::setup(&controller);
+  #if NODE_INIT_CALIBRATION == 1
+    controller.storage.reset();
+    controller.cmd_resetTorque();
+    controller.cmd_resetPosition();
+    controller.cmd_setMode(MODE_CALIBRATE);
+  #else
+    RosHandle::setup(&controller);
+  #endif
 }
 
 void loop() {
-  RosHandle::step();
-  controller.step();
+  #if NODE_INIT_CALIBRATION == 1
+    controller.step();
+  #else
+    RosHandle::step();
+    controller.step();
+  #endif
 }
