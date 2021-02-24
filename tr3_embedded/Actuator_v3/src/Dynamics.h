@@ -134,7 +134,7 @@ namespace Dynamics {
         Serial.print(", ");
         Serial.println(t_a2_l1 + t_a2_a3 + t_a2_a4 + t_a2_g0);*/
 
-        return t_a2_l1 + t_a2_a3 + t_a2_a4 + t_a2_g0;
+        return -1.0 * (t_a2_l1 + t_a2_a3 + t_a2_a4 + t_a2_g0);
     }
 }
 

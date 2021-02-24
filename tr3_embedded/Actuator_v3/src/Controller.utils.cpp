@@ -41,6 +41,7 @@ void Controller::updateExpectedTorque () {
         expected_torque = Dynamics::torque_a2(a1_pos, state.position, a3_pos);
     #elif (NODE_ID == NODE_A3)
         //expected_torque = Dynamics::torque_a3(a1_pos, a2_pos, state.position);
+        expected_torque = 0;
     #endif
 }
 
