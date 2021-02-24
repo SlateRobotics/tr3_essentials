@@ -4,6 +4,4 @@
     <param name="port" value="8081" />
   </node>
 
-  <include file="$(find tr3_moveit)/launch/ik_services.launch" />
-
 </launch>

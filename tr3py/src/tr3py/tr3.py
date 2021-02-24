@@ -25,7 +25,8 @@ from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 from nav_msgs.msg import Odometry
 from tr3_msgs.msg import ActuatorState
-from tr3_msgs.msg import ActuatorPositionCommand
+from tr3_msgs.srv import InverseIK
+from tr3_msgs.srv import ForwardIK
 
 TAU = math.pi * 2.0
 
@@ -46,8 +47,13 @@ class TR3:
     _pub_power_ota_start = None
     _pub_power_ota_data = None
     _pub_power_ota_end = None
+    _pub_ik = None
 
     joints = ["b0","b1","a0","a1","a2","a3","a4","g0","h0","h1"]
+    joint_states = []
+
+    _ik_prev_pub = datetime.now()
+    _ik_pub_freq = 1.0 # hz
 
     l_pos_prev = None
     r_pos_prev = None
@@ -75,9 +81,6 @@ class TR3:
         self.g0 = Joint(self, "g0")
         self.h0 = Joint(self, "h0")
         self.h1 = Joint(self, "h1")
-        #self.p0 = Joint(self, "p0")
-        #self.p1 = Joint(self, "p1")
-        #self.p2 = Joint(self, "p2")
 
         rospy.Subscriber("/tr3/shutdown", Bool, self._sub_shutdown)
         rospy.Subscriber("/tr3/powerup", Bool, self._sub_powerup)
@@ -86,6 +89,7 @@ class TR3:
         rospy.Subscriber("/tr3/base/diff/cmd_vel", Twist, self._sub_base_cmd)
         rospy.Subscriber("/tr3/power/state", Bool, self._sub_power_state)
         rospy.Subscriber("/tr3/power/firmware/update", String, self._sub_power_firmware_update)
+        rospy.Subscriber("/tr3/arm/pose/set", Pose, self._sub_ik)
 
         self._pub_poweron = rospy.Publisher("/tr3/power/on", Bool, queue_size=1)
         self._pub_poweroff = rospy.Publisher("/tr3/power/off", Bool, queue_size=1)
@@ -94,6 +98,7 @@ class TR3:
         self._pub_power_ota_start = rospy.Publisher("/tr3/power/ota/start", UInt32, queue_size=1)
         self._pub_power_ota_data = rospy.Publisher("/tr3/power/ota/data", UInt8MultiArray, queue_size=1)
         self._pub_power_ota_end = rospy.Publisher("/tr3/power/ota/end", Bool, queue_size=1)
+        self._pub_ik = rospy.Publisher("/tr3/arm/pose", Pose, queue_size=1)
 
         if _init_node == True:
             rospy.init_node('tr3_node', anonymous=True)
@@ -135,7 +140,15 @@ class TR3:
         self.drive(x, th)
 
     def _sub_power_firmware_update (self, msg):
-        self.updateFirmware("power", msg.data);
+        self.updateFirmware("power", msg.data)
+
+    def _sub_ik (self, msg):
+        inverse_ik = rospy.ServiceProxy('inverse_ik', InverseIK)
+        res = inverse_ik(msg)
+
+        for i in range(len(res.state.name)):
+            print(res.state.name[i], res.state.position[i])
+            self.getJoint(res.state.name[i]).setPosition(res.state.position[i], 6000)
 
     def drive(self, x, th):
         R = 0.3175
@@ -143,8 +156,8 @@ class TR3:
         l = ((2 * x) - (th * L)) / (2 * R)
         r = ((2 * x) + (th * L)) / (2 * R)
 
-        self.tr3.b0.setVelocity(-l)
-        self.tr3.b1.setVelocity(r)
+        self.b0.setVelocity(-l)
+        self.b1.setVelocity(r)
 
     def release(self):
         for j in self.joints:
@@ -190,11 +203,21 @@ class TR3:
                 joint_state.velocity.append(s.velocity)
                 joint_state.effort.append(s.torque)
 
+        self.joint_states = joint_state
         self._pub_joint_states.publish(joint_state)
 
     def step(self):
         self.set_state()
+        self.step_ik()
         self.step_odom()
+
+    def step_ik(self):
+        diff = datetime.now() - self._ik_prev_pub
+        if (diff.total_seconds() >= 1 / self._ik_pub_freq):
+            forward_ik = rospy.ServiceProxy('forward_ik', ForwardIK)
+            res = forward_ik(self.joint_states)
+            self._pub_ik.publish(res.pose)
+            self._ik_prev_pub = datetime.now()
 
     def step_odom(self):
         wheel_dist = 0.6562
@@ -225,14 +248,14 @@ class TR3:
         self.pos_y += dist_c * math.sin(self.pos_th)
         self.pos_th += (dist_r - dist_l) / wheel_dist
 
-    	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.tr3.pos_th)
+    	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.pos_th)
 
     	odom = Odometry()
     	odom.header.stamp = rospy.Time.now()
     	odom.header.frame_id = "odom"
 
     	# set the position
-    	odom.pose.pose = Pose(Point(self.tr3.pos_x, self.tr3.pos_y, 0), Quaternion(*odom_quat))
+    	odom.pose.pose = Pose(Point(self.pos_x, self.pos_y, 0), Quaternion(*odom_quat))
 
     	# set the velocity
     	odom.child_frame_id = "base_link"
@@ -240,7 +263,7 @@ class TR3:
 
         # publish the message
     	br = tf.TransformBroadcaster()
-    	br.sendTransform((self.tr3.pos_x, self.tr3.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
+    	br.sendTransform((self.pos_x, self.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
         #br = tf.TransformBroadcaster()
         #br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
         self._pub_odom.publish(odom)
