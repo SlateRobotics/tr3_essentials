@@ -12,6 +12,7 @@ tr.data.joint_states = {
 
 tr.data.power = false;
 
+tr.data.arm = { pose: {} };
 tr.data.joints = {};
 
 tr.data.stopped = false;
@@ -26,6 +27,10 @@ tr.data.lidar = {
 
 tr.data.setup = function() {
   tr.data.socket = io();
+
+  tr.data.socket.on('/tr3/arm/pose', function (data) {
+    tr.data.arm.pose = data;
+  });
 
   tr.data.socket.on('/tr3/joint_states', function(data) {
     tr.data.joint_states = data;

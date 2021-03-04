@@ -31,6 +31,7 @@ var rostopics = [
   { name: "/tr3/stop", type: "std_msgs/Bool"},
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
+  { name: "/tr3/arm/pose/set", type: "geometry_msgs/Pose"},
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
   { name: "/move_base/cancel", type: "actionlib_msgs/GoalID"},
   { name: "/move_base_simple/goal", type: "geometry_msgs/PoseStamped"}
@@ -221,6 +222,19 @@ io.on('connection', function (socket) {
       socket.emit('/move_base/status', msg);
     });
 
+    nh.subscribe('/tr3/arm/pose', 'geometry_msgs/Pose', function (msg) {
+      var q = msg.orientation;
+      var euler = qte([q.w, q.x, q.y, q.z]);
+      socket.emit('/tr3/arm/pose', {
+        position: msg.position,
+        orientation: {
+          x: euler[0],
+          y: euler[1],
+          z: euler[2],
+        }
+      });
+    });
+
     nh.subscribe('/tr3/base/odom' ,'nav_msgs/Odometry', function (msg) {
       var q = msg.pose.pose.orientation;
       var euler = qte([q.w, q.x, q.y, q.z]);
@@ -278,6 +292,9 @@ io.on('connection', function (socket) {
           rt.publish(d)
         } else if (rt._type == "geometry_msgs/PoseStamped") {
           var d = new geometryMsgs.msg.PoseStamped(data);
+          rt.publish(d)
+        } else if (rt._type == "geometry_msgs/Pose") {
+          var d = new geometryMsgs.msg.Pose(data);
           rt.publish(d)
         } else if (rt._type == "actionlib_msgs/GoalID") {
           var d = new actionlibMsgs.msg.GoalID(data);

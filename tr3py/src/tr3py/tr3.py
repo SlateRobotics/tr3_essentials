@@ -153,8 +153,8 @@ class TR3:
     def drive(self, x, th):
         R = 0.3175
         L = 0.6562
-        l = ((2 * x) - (th * L)) / (2 * R)
-        r = ((2 * x) + (th * L)) / (2 * R)
+        l = ((2 * -x) - (th * L)) / (2 * R)
+        r = ((2 * -x) + (th * L)) / (2 * R)
 
         self.b0.setVelocity(-l)
         self.b1.setVelocity(r)

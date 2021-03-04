@@ -1,7 +1,7 @@
 tr.gui.camera = {
   defaults: function() {
     this.border = false;
-    this.cameraImageUrl = 'http://' + location.hostname + ':8081/stream?topic=/camera/rgb/image_raw&type=ros_compressed';
+    this.cameraImageUrl = 'http://' + location.hostname + ':8081/stream?topic=/camera/rgb/image_rect_color&quality=15';
     this.image = '';
     this.loadingImage = false;
     this.element = '';

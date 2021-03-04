@@ -8,13 +8,12 @@ tr.controls.frv.tabArm = function() {
       h: "fill"
     },
     background: "rgb(80, 80, 80)",
-    children: [{
-      type: "container",
-      size: {
-        w: 1.0,
-        h: "fill",
-      },
-      children: []
-    }],
+    children: [
+      c.btnArm("◤"), c.btnArm("▲"), c.btnArm("◥"),
+      c.btnArm("◀"), c.btnArm("●"), c.btnArm("▶"),
+      c.btnArm("◣"), c.btnArm("▼"), c.btnArm("◢"),
+      c.btnArm("Z+"), c.btnArm("G+"), c.btnArm(""),
+      c.btnArm("Z-"), c.btnArm("G-"), c.btnArm(""),
+    ],
   }
 }
