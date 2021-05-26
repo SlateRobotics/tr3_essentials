@@ -244,8 +244,8 @@ class TR3:
         dist_r = d_r * dist_per_rad
         dist_c = (dist_l + dist_r) / 2.0
 
-        self.pos_x += dist_c * math.cos(self.pos_th)
-        self.pos_y += dist_c * math.sin(self.pos_th)
+        self.pos_x -= dist_c * math.cos(self.pos_th)
+        self.pos_y -= dist_c * math.sin(self.pos_th)
         self.pos_th += (dist_r - dist_l) / wheel_dist
 
     	odom_quat = tf.transformations.quaternion_from_euler(0, 0, self.pos_th)

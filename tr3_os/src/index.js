@@ -206,7 +206,7 @@ io.on('connection', function (socket) {
         }
       }
 
-      //socket.emit('/tr3/depth', result);
+      socket.emit('/tr3/depth', result);
     });
 
     nh.subscribe('/tr3/lidar', 'sensor_msgs/LaserScan', function (msg) {
