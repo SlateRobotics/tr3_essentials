@@ -56,6 +56,7 @@ tr.app.frv = function() {
               type: "tr2",
               displayLidar: true,
               displayMap: true,
+              displayPointCloud: true,
             }]
           }],
         }],

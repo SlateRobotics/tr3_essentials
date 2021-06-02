@@ -485,6 +485,7 @@ tr.gui.tr2 = {
   },
 
   drawPointCloud: function () {
+    this.p5.rotateZ(-1.57)
     this.p5.stroke("white");
     for (var i = 0; i < tr.data.depth.length; i += 3) {
       var d = {
@@ -496,6 +497,7 @@ tr.gui.tr2 = {
       this.p5.sphere(4);
       this.p5.translate(d.x * 200, -d.y * 200, -d.z * 200);
     }
+    this.p5.rotateZ(1.57)
   },
 
   drawWaypoint: function (wp) {

@@ -42,16 +42,12 @@ cd ~/ros_ws
 catkin_make
 source ~/.bashrc
 
-echo "Installing Orbbec Packages"
-cd ~/ros_ws/src
-sudo apt-get install ros-*-rgbd-launch ros-*-libuvc ros-*-libuvc-camera ros-*-libuvc-ros
-git clone https://github.com/orbbec/ros_astra_camera
-git clone https://github.com/orbbec/ros_astra_launch
-cd ~/ros_ws
-catkin_make
-source ~/.bashrc
-roscd astra_camera
-./scripts/create_udev_rules
+echo "Installing Intel Realsense Packages"
+sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 
+sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u
+sudo apt-get install apt-utils -y
+sudo apt-get install librealsense2-utils librealsense2-dev -y
+sudo apt-get install ros-$ROS_DISTRO-realsense2-camera -y
 
 echo "Configuring environment"
 sudo cp local.rules /etc/udev/rules.d/

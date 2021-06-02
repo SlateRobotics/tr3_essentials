@@ -1,3 +1,11 @@
 <launch>
- <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
+    <node pkg="nodelet" type="nodelet" args="manager" name="ct_manager" output="screen" />
+
+    <node pkg="nodelet" type="nodelet" name="cloud_transformer" args="load depth_image_proc/point_cloud_xyz  ct_manager --no-bond" output="screen">
+        <remap from="image_rect" to="/camera/depth/image_rect_raw" />
+        <remap from="camera_info" to="/camera/depth/camera_info" />
+        <remap from="points" to="/camera/depth/points" />
+    </node>
+
+    <node pkg="tr3_navigation" name="tr3_cloud_transformer_node" type="cloud_transformer.py" output="screen" />
 </launch>

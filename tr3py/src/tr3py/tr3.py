@@ -94,7 +94,7 @@ class TR3:
         self._pub_poweron = rospy.Publisher("/tr3/power/on", Bool, queue_size=1)
         self._pub_poweroff = rospy.Publisher("/tr3/power/off", Bool, queue_size=1)
         self._pub_odom = rospy.Publisher("/tr3/base/odom", Odometry, queue_size=10)
-        self._pub_joint_states = rospy.Publisher("/tr3/joint_states", JointState, queue_size=1)
+        self._pub_joint_states = rospy.Publisher("/tr3/joint_states", JointState, queue_size=10)
         self._pub_power_ota_start = rospy.Publisher("/tr3/power/ota/start", UInt32, queue_size=1)
         self._pub_power_ota_data = rospy.Publisher("/tr3/power/ota/data", UInt8MultiArray, queue_size=1)
         self._pub_power_ota_end = rospy.Publisher("/tr3/power/ota/end", Bool, queue_size=1)
@@ -202,7 +202,13 @@ class TR3:
                 joint_state.position.append(s.position)
                 joint_state.velocity.append(s.velocity)
                 joint_state.effort.append(s.torque)
+            else:
+                joint_state.name.append(j)
+                joint_state.position.append(0)
+                joint_state.velocity.append(0)
+                joint_state.effort.append(0)
 
+        joint_state.header.stamp = rospy.Time.now()
         self.joint_states = joint_state
         self._pub_joint_states.publish(joint_state)
 

@@ -78,9 +78,9 @@ io.on('connection', function (socket) {
       nh.subscribe(name, type, function (msg) {
         var now = new Date().getTime();
         var diff = now - socket._ros[name].timer.last.getTime();
-	var delayMs = socket._ros[name].timer.delayMs;
+	      var delayMs = socket._ros[name].timer.delayMs;
         if (diff >= delayMs) {
-	  socket.emit(name, msg);
+	        socket.emit(name, msg);
           socket._ros[name].timer.last = new Date();
         }
       }.bind(aid));

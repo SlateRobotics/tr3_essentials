@@ -1,7 +1,9 @@
 <launch>
   <param name="robot_description" command="$(find xacro)/xacro.py $(find tr3_description)/robots/tr3.urdf.xacro" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="/joint_states" to="/tr3/joint_states" />
+  </node>
 
   <include file="$(find tr3_moveit)/launch/ik_services.launch" />
   
