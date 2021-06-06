@@ -6,6 +6,7 @@ tr.app.butler = new App({
   name: "Butler",
   desc: "Schedule Domestic Services and Chores",
   iconUrl: "/img/icon-app-butler",
+  enabled: false,
   state: {
 
   },

@@ -61,9 +61,8 @@ function setup() {
       a = a();
     }
 
-    a.setup();
-
     if (a.enabled) {
+      a.setup();
       desktop.apps.push(a);
     }
   }
@@ -121,9 +120,16 @@ function keyPressed() {
 }
 
 function getSelectedApp() {
-  if (appSelected < 0 || appSelected >= desktop.apps.length) {
+  if (appSelected < 0) {
     return desktop;
   } else {
-    return desktop.apps[appSelected];
+    for (var i = 0; i < desktop.apps.length; i++) {
+      if (desktop.apps[i].id == appSelected) {
+        return desktop.apps[i];
+      }
+    }
+
+    appSelected = -1;
+    return desktop;
   }
 }

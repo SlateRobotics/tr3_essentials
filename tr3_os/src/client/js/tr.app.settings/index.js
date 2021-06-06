@@ -37,7 +37,8 @@ tr.app.settings = function () {
         margin: 0,
         padding: 10,
         background: "rgba(255, 255, 255, 0.2)",
-        children: [c.btnTogglePower(), c.btnClose()],
+        //children: [c.btnTogglePower(), c.btnClose()],
+        children: [c.btnClose()],
       }],
     }],
   });

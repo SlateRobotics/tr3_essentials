@@ -26,6 +26,8 @@ tr.gui.tr2 = {
     this.state.h1 = 0;
 
     this.waypoints = [];
+    this.depth = [];
+    this.depthFrozen = false;
 
     this.allowDrag = false;
     this.p5 = '';
@@ -101,6 +103,16 @@ tr.gui.tr2 = {
       if (this.cameraRadius <= 25) this.cameraRadius = 25;
     }
 
+    this.freezeDepth = function () {
+      if (!this.depthFrozen) {
+        this.depth = tr.data.depth;
+        this.depthFrozen = true;
+      } else {
+        this.depthFrozen = false;
+        this.depth = [];
+      }
+    }
+
     this.toggleWaypoints = function () {
       this.displayWaypoints = !this.displayWaypoints;
     }
@@ -148,6 +160,25 @@ tr.gui.tr2 = {
       children: [{
         type: "text",
         text: "-",
+        align: { v: "CENTER", h: "CENTER" },
+      }],
+    }));
+
+    this.children.push(new tr.gui.component().setup({
+      id: "btn-toggle-waypoints",
+      type: "container",
+      parent: this,
+      background: "rgb(150,150,150)",
+      size: { w: 40, h: 40 },
+      pos: { x: 55, y: -95 },
+      posType: "fixed",
+      radius: 20,
+      onClick: function () {
+        this.parent.freezeDepth();
+      },
+      children: [{
+        type: "text",
+        text: "F",
         align: { v: "CENTER", h: "CENTER" },
       }],
     }));
@@ -487,11 +518,19 @@ tr.gui.tr2 = {
   drawPointCloud: function () {
     this.p5.rotateZ(-1.57)
     this.p5.stroke("white");
-    for (var i = 0; i < tr.data.depth.length; i += 3) {
+
+    var _depth = [];
+    if (this.depthFrozen) {
+      _depth = this.depth;
+    } else {
+      _depth = tr.data.depth;
+    }
+
+    for (var i = 0; i < _depth.length; i += 3) {
       var d = {
-        x: tr.data.depth[i],
-        y: tr.data.depth[i + 1],
-        z: tr.data.depth[i + 2]
+        x: _depth[i],
+        y: _depth[i + 1],
+        z: _depth[i + 2]
       }
       this.p5.translate(-d.x * 200, d.y * 200, d.z * 200);
       this.p5.sphere(4);
