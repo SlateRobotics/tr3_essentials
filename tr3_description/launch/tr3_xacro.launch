@@ -1,7 +1,7 @@
 <launch>
   <arg name="fake_states" default="false" />
 
-	<param name="robot_description" command="$(find xacro)/xacro.py $(find tr3_description)/robots/tr3.urdf.xacro" />
+	<param name="robot_description" command="$(find xacro)/xacro $(find tr3_description)/robots/tr3.urdf.xacro" />
 
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
   
