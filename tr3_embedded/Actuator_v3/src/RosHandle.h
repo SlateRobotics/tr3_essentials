@@ -30,6 +30,7 @@ namespace RosHandle {
 
   tr3_msgs::ActuatorState state;
   std_msgs::Float64 state_pos;
+  std_msgs::UInt32 send_commands;
   std_msgs::Float32MultiArray limits;
   std_msgs::Float32MultiArray pid_pos;
   std_msgs::Float32MultiArray pid_vel;
@@ -37,6 +38,7 @@ namespace RosHandle {
 
   ros::Publisher pub_state(RT_STATE, &state);
   ros::Publisher pub_state_pos(RT_STATE_POS, &state_pos);
+  ros::Publisher pub_send_commands(RT_SEND_COMMANDS, &send_commands);
   ros::Publisher pub_limit(RT_LIMIT, &limits);
   ros::Publisher pub_pid_pos(RT_PID_POS, &pid_pos);
   ros::Publisher pub_pid_vel(RT_PID_VEL, &pid_vel);
@@ -247,12 +249,17 @@ namespace RosHandle {
     // publishers
     nh.advertise(pub_state);
     nh.advertise(pub_state_pos);
+    nh.advertise(pub_send_commands);
     nh.advertise(pub_limit);
     nh.advertise(pub_pid_pos);
     nh.advertise(pub_pid_vel);
     nh.advertise(pub_pid_trq);
 
     RosHandleBase::setup(&nh);
+
+    // request any messages we missed while booting up or from reset
+    (&RosHandle::send_commands)->data = 10000;
+    RosHandle::pub_send_commands.publish(&RosHandle::send_commands); 
   }
 
   void step() {
