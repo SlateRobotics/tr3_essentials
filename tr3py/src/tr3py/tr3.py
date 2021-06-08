@@ -146,9 +146,31 @@ class TR3:
         inverse_ik = rospy.ServiceProxy('inverse_ik', InverseIK)
         res = inverse_ik(msg)
 
+        # compute duration
+        duration = 3000
         for i in range(len(res.state.name)):
-            print(res.state.name[i], res.state.position[i])
-            self.getJoint(res.state.name[i]).setPosition(res.state.position[i], 6000)
+            j_id = res.state.name[i]
+            j_state = self.getJoint(res.state.name[i]).state()
+
+            j_pos = res.state.position[i]
+            if (j_state != None):
+                j_pos = j_state.position
+
+            j_diff = res.state.position[i] - j_pos
+
+            j_speed = 0.75 # rad/sec
+            if (j_id == "a3" or j_id == "a4"):
+                j_speed = 0.20
+
+            j_dur = (abs(j_diff) / j_speed) * 1000.0 # millis
+            print(j_id, j_dur, j_diff, j_pos, j_speed)
+            if (j_dur > duration):
+                duration = int(j_dur)
+
+        # set positions + durations
+        for i in range(len(res.state.name)):
+            print(res.state.name[i], res.state.position[i], duration)
+            self.getJoint(res.state.name[i]).setPosition(res.state.position[i], duration)
 
     def drive(self, x, th):
         R = 0.3175
