@@ -163,13 +163,11 @@ class TR3:
                 j_speed = 0.20
 
             j_dur = (abs(j_diff) / j_speed) * 1000.0 # millis
-            print(j_id, j_dur, j_diff, j_pos, j_speed)
             if (j_dur > duration):
                 duration = int(j_dur)
 
         # set positions + durations
         for i in range(len(res.state.name)):
-            print(res.state.name[i], res.state.position[i], duration)
             self.getJoint(res.state.name[i]).setPosition(res.state.position[i], duration)
 
     def drive(self, x, th):
