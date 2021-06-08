@@ -19,7 +19,7 @@
 #define NODE_G0 10
 
 // NODE DETAILS
-#define NODE_ID NODE_B0
+#define NODE_ID NODE_A0
 #define NODE_VERSION "v3.0.0"
 #define NODE_INIT_CALIBRATION 0
 

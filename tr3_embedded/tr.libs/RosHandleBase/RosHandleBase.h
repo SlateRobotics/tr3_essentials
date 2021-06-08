@@ -110,7 +110,7 @@ namespace RosHandleBase {
 
         // config & connect
         nh->initNode();
-        nh->setSpinTimeout(50);
+        //nh->setSpinTimeout(100);
 
         Serial.println("Establishing connection...");
         bool result = waitForConnect(2000);
@@ -133,6 +133,11 @@ namespace RosHandleBase {
         }
     }
 
+    // I believe this messes up the position sensing when ESP connection is lost.
+    // Maybe find a less destructive way to recover that is non-blocking
+    // or stop the motor & step through actuator state before restarting?
+    // It would also be nice to step through actuator state while attempting reconnection.
+    
     void connectRecovery () {
         waitForConnect(conn_failure_delay);
         while (!nh->connected()) {

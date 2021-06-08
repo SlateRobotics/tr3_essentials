@@ -283,6 +283,7 @@ namespace RosHandle {
 
       int result = nh.spinOnce();
       if (result != ros::SPIN_OK) {
+        Serial.println(result);
         RosHandleBase::connectRecovery();
       }
     } else {

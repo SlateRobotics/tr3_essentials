@@ -251,6 +251,8 @@ public:
           return SPIN_ERR;
         }
         break;
+      } else if (data > 0) {
+        configured_ = true;
       }
 
       checksum_ += data;
