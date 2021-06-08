@@ -46,48 +46,6 @@ void Controller::step () {
             step_stop();
             break;
     }
-
-    if (logTimer.ready()) {
-    //if (!trajectory.complete()) {
-        /*Serial.print(SEA_SPRING_RATE, 8);
-        Serial.print(", ");
-        Serial.print(state.position, 8);
-        Serial.print(", ");
-        Serial.print(expected_torque, 8);
-        Serial.print(", ");
-        Serial.println(encoderTorque.getAngleRadians(), 8);*/
-        Serial.print(millis());
-        Serial.print("::");
-        Serial.print(expected_torque);
-        Serial.print(", ");
-        Serial.print(expected_torque_min);
-        Serial.print(", ");
-        Serial.print(expected_torque_max);
-        Serial.print("::");
-        Serial.print(pidPosSetpoint);
-        Serial.print(", ");
-        Serial.print(state.position);
-        Serial.print(", ");
-        Serial.print(pidPos.getIntegralSum());
-        Serial.print(", ");
-        Serial.print(pidPosOutput);
-        Serial.print("::");
-        Serial.print(pidVelSetpoint);
-        Serial.print(", ");
-        Serial.print(state.velocity);
-        Serial.print(", ");
-        Serial.print(pidVelOutput);
-        Serial.print("::");
-        Serial.print(pidTrqSetpoint);
-        Serial.print(", ");
-        Serial.print(state.torque);
-        Serial.print(", ");
-        Serial.print(pidTrq.getIntegralSum());
-        Serial.print(", ");
-        Serial.print(pidTrqOutput);
-        Serial.print(", ");
-        Serial.println(pidPwrSetpoint);
-    }
 }
 
 void Controller::step_imu () {

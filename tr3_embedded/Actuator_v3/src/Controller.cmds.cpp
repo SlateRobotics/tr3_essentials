@@ -16,6 +16,7 @@ void Controller::cmd_setMode (uint8_t m) {
 }
 
 void Controller::cmd_setPosition (float position, int duration) {
+    Serial.println(position);
     #if (NODE_ID == NODE_G0)
         if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
