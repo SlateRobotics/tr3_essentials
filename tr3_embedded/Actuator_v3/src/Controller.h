@@ -82,6 +82,7 @@ class Controller {
     double expected_torque = 0.0;
     double expected_torque_min = MIN_TORQUE;
     double expected_torque_max = MAX_TORQUE;
+    bool flag_send_commands = false;
 
     Storage storage;
 

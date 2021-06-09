@@ -30,7 +30,7 @@ namespace RosHandle {
 
   tr3_msgs::ActuatorState state;
   std_msgs::Float64 state_pos;
-  std_msgs::UInt32 send_commands;
+  std_msgs::Bool send_commands;
   std_msgs::Float32MultiArray limits;
   std_msgs::Float32MultiArray pid_pos;
   std_msgs::Float32MultiArray pid_vel;
@@ -258,7 +258,7 @@ namespace RosHandle {
     RosHandleBase::setup(&nh);
 
     // request any messages we missed while booting up or from reset
-    (&RosHandle::send_commands)->data = 10000;
+    (&RosHandle::send_commands)->data = true;
     RosHandle::pub_send_commands.publish(&RosHandle::send_commands); 
   }
 
@@ -288,9 +288,14 @@ namespace RosHandle {
         RosHandle::pub_state.publish(&RosHandle::state);
       }
 
+      if (controller->flag_send_commands == true) {
+        // request any messages we missed while recovering or simply grab prior state
+        RosHandle::pub_send_commands.publish(&RosHandle::send_commands);
+        controller->flag_send_commands = false;
+      }
+
       int result = nh.spinOnce();
       if (result != ros::SPIN_OK) {
-        Serial.println(result);
         RosHandleBase::connectRecovery();
       }
     } else {

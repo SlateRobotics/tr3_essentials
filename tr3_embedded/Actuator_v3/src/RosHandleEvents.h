@@ -18,6 +18,7 @@ namespace RosHandleEvents {
 
     void handle_ConnectionRecovery () {
         controller->cmd_release();
+        controller->flag_send_commands = true;
     }
 }
 
