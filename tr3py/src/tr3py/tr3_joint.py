@@ -129,24 +129,28 @@ class Joint:
         self._command_ts = datetime.datetime.now()
 
     def _sub_control_pos(self, msg):
-        self._command_mode = MODE_SERVO
-        self._command_msg = msg
-        self._command_ts = datetime.datetime.now()
+        if (self._command_mode != MODE_STOP):
+            self._command_mode = MODE_SERVO
+            self._command_msg = msg
+            self._command_ts = datetime.datetime.now()
 
     def _sub_control_vel(self, msg):
-        self._command_mode = MODE_VELOCITY
-        self._command_msg = msg
-        self._command_ts = datetime.datetime.now()
+        if (self._command_mode != MODE_STOP):
+            self._command_mode = MODE_VELOCITY
+            self._command_msg = msg
+            self._command_ts = datetime.datetime.now()
 
     def _sub_control_trq(self, msg):
-        self._command_mode = MODE_TORQUE
-        self._command_msg = msg
-        self._command_ts = datetime.datetime.now()
+        if (self._command_mode != MODE_STOP):
+            self._command_mode = MODE_TORQUE
+            self._command_msg = msg
+            self._command_ts = datetime.datetime.now()
 
     def _sub_control_vol(self, msg):
-        self._command_mode = MODE_ROTATE
-        self._command_msg = msg
-        self._command_ts = datetime.datetime.now()
+        if (self._command_mode != MODE_STOP):
+            self._command_mode = MODE_ROTATE
+            self._command_msg = msg
+            self._command_ts = datetime.datetime.now()
 
     def _sub_send_commands(self, msg):
         if msg.data != True:
