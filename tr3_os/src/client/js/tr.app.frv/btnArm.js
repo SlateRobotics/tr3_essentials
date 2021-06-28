@@ -42,7 +42,7 @@ tr.controls.frv.btnArm = function(lbl) {
       } else if (lbl == "◢") {
 
       } else if (lbl == "●") {
-
+        tr.data.socket.emit("/tr3/home", true);
       } else if (lbl == "Z+") {
         msg.position.z += incr;
       } else if (lbl == "Z-") {

@@ -31,6 +31,7 @@ var rostopics = [
   { name: "/tr3/stop", type: "std_msgs/Bool"},
   { name: "/tr3/shutdown", type: "std_msgs/Bool"},
   { name: "/tr3/powerup", type: "std_msgs/Bool"},
+  { name: "/tr3/home", type: "std_msgs/Bool"},
   { name: "/tr3/arm/pose/set", type: "geometry_msgs/Pose"},
   { name: "/tr3/base/diff/cmd_vel", type: "geometry_msgs/Twist"},
   { name: "/move_base/cancel", type: "actionlib_msgs/GoalID"},

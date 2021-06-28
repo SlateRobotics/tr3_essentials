@@ -98,7 +98,6 @@ class TR3:
         self._pub_power_ota_start = rospy.Publisher("/tr3/power/ota/start", UInt32, queue_size=1)
         self._pub_power_ota_data = rospy.Publisher("/tr3/power/ota/data", UInt8MultiArray, queue_size=1)
         self._pub_power_ota_end = rospy.Publisher("/tr3/power/ota/end", Bool, queue_size=1)
-        self._pub_ik = rospy.Publisher("/tr3/arm/pose", Pose, queue_size=1)
 
         if _init_node == True:
             rospy.init_node('tr3_node', anonymous=True)
@@ -234,27 +233,23 @@ class TR3:
 
     def step(self):
         self.set_state()
-        self.step_ik()
         self.step_odom()
 
-    def step_ik(self):
-        diff = datetime.now() - self._ik_prev_pub
-        if (diff.total_seconds() >= 1 / self._ik_pub_freq):
-            forward_ik = rospy.ServiceProxy('forward_ik', ForwardIK)
-            res = forward_ik(self.joint_states)
-            self._pub_ik.publish(res.pose)
-            self._ik_prev_pub = datetime.now()
-
     def step_odom(self):
-        wheel_dist = 0.6562
+        wheel_dist = 0.674992399999
 
-        if (self.b0.state() == None or self.b1.state() == None):
+        b0_state = self.b0.state()
+        b1_state = self.b1.state()
+
+        if (b0_state == None or b1_state == None):
+            self.l_pos_prev = None
+            self.r_pos_prev = None
             return
 
-        l_pos = -self.b0.state().position
-        r_pos = self.b1.state().position
+        l_pos = -b0_state.position
+        r_pos = b1_state.position
 
-        if (self.l_pos_prev == None or self.r_pos_prev == None):
+        if self.l_pos_prev == None or self.r_pos_prev == None:
             self.l_pos_prev = l_pos
             self.r_pos_prev = r_pos
             return
@@ -265,7 +260,7 @@ class TR3:
             self.l_pos_prev = l_pos
             self.r_pos_prev = r_pos
 
-        dist_per_rad = 0.15875 # meters
+        dist_per_rad = 0.152403590406 # meters
         dist_l = d_l * dist_per_rad
         dist_r = d_r * dist_per_rad
         dist_c = (dist_l + dist_r) / 2.0
@@ -289,9 +284,11 @@ class TR3:
 
         # publish the message
     	br = tf.TransformBroadcaster()
-    	br.sendTransform((self.pos_x, self.pos_y, 0), odom_quat, rospy.Time.now(), "base_link", "odom")
-        #br = tf.TransformBroadcaster()
-        #br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "map", "odom")
+    	br.sendTransform((self.pos_x, self.pos_y, 0), odom_quat, rospy.Time.now(), "dummy_link", "odom")
+
+    	br = tf.TransformBroadcaster()
+    	br.sendTransform((0, 0, 0), (0, 0, 0, 1), rospy.Time.now(), "base_link", "dummy_link")
+        
         self._pub_odom.publish(odom)
 
     def spin(self, condition = True):

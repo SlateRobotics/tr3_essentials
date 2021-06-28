@@ -2,7 +2,7 @@ tr.gui.minimap = {
   defaults: function() {
     this.border = false;
     this.padding = 5;
-    this.scale = 10;
+    this.scale = 25;
 
     this.buttonRadius = 36;
     this.btnCancel = {};
@@ -22,12 +22,12 @@ tr.gui.minimap = {
         }
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomIn, function() {
-        this.scale += 1;
-        if (this.scale >= 20) this.scale = 20;
+        this.scale += 5;
+        if (this.scale >= 50) this.scale = 50;
       }.bind(this)).bind(this)();
       this.componentConfig.handleClick_Button(this.btnZoomOut, function() {
-        this.scale -= 1;
-        if (this.scale <= 1) this.scale = 1;
+        this.scale -= 5;
+        if (this.scale <= 5) this.scale = 5;
       }.bind(this)).bind(this)();
     }
   },

@@ -8,7 +8,8 @@
   <include file="$(find tr3_moveit)/launch/ik_services.launch" />
   
   <include file="$(find tr3py)/launch/rosserial.launch" />
+
   <node pkg="tr3py" name="tr3_node" type="tr3.py" output="screen" required="true" />
-  <!--node pkg="tr3py" name="tr3_action_server" type="tr3_action_server.py" output="screen" /-->
+  <node pkg="tr3py" name="tr3_forward_ik" type="tr3_forward_ik.py" output="screen" required="true" />
 
 </launch>

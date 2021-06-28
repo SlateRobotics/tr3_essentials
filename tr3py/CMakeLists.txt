@@ -16,6 +16,10 @@ catkin_package(CATKIN_DEPENDS
   tr3_msgs
 )
 
-install(PROGRAMS src/tr3/tr3.py
+install(PROGRAMS src/tr3py/tr3.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(PROGRAMS src/tr3py/tr3_forward_ik.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

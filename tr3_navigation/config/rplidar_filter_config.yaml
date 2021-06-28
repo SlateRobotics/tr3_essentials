@@ -5,8 +5,8 @@ scan_filter_chain:
     box_frame: base_link
     max_x: 0.200
     max_y: 25.000
-    max_z: 0.300
+    max_z: 10.000
     min_x: -25.000
     min_y: -25.000
-    min_z: -0.300
+    min_z: -10.000
     invert: false

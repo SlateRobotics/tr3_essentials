@@ -27,16 +27,16 @@ tr.controls.frv.btnBase = function(lbl) {
           }
         }
 
-        if (msg.linear.x > 0.5) {
-          msg.linear.x = 0.5;
-        } else if (msg.linear.x < -0.5) {
-          msg.linear.x = -0.5;
+        if (msg.linear.x > 0.500) {
+          msg.linear.x = 0.500;
+        } else if (msg.linear.x < -0.500) {
+          msg.linear.x = -0.500;
         }
 
-        if (msg.angular.z > 0.5) {
-          msg.angular.z = 0.5;
-        } else if (msg.angular.z < -0.5) {
-          msg.angular.z = -0.5;
+        if (msg.angular.z > 1.000) {
+          msg.angular.z = 1.000;
+        } else if (msg.angular.z < -1.000) {
+          msg.angular.z = -1.000;
         }
 
         console.log(msg.linear.x, msg.angular.z);
@@ -57,25 +57,25 @@ tr.controls.frv.btnBase = function(lbl) {
         }
       }
       if (lbl == "▲") {
-        msg.linear.x = 0.5;
+        msg.linear.x = 0.500;
       } else if (lbl == "▼") {
-        msg.linear.x = -0.5;
+        msg.linear.x = -0.500;
       } else if (lbl == "▶") {
-        msg.angular.z = -0.5;
+        msg.angular.z = -1.000;
       } else if (lbl == "◀") {
-        msg.angular.z = 0.5;
+        msg.angular.z = 1.000;
       } else if (lbl == "◤") {
-        msg.linear.x = 0.5;
-        msg.angular.z = 0.5;
+        msg.linear.x = 0.500;
+        msg.angular.z = 1.000;
       } else if (lbl == "◥") {
-        msg.linear.x = 0.5;
-        msg.angular.z = -0.5;
+        msg.linear.x = 0.500;
+        msg.angular.z = -1.000;
       } else if (lbl == "◣") {
-        msg.linear.x = -0.5;
-        msg.angular.z = 0.5;
+        msg.linear.x = -0.500;
+        msg.angular.z = 1.000;
       } else if (lbl == "◢") {
-        msg.linear.x = -0.5;
-        msg.angular.z = -0.5;
+        msg.linear.x = -0.500;
+        msg.angular.z = -1.000;
       } else if (lbl == "●") {
         this.joystickPressed = true;
         this.startMouseX = mouseX;
