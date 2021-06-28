@@ -16,6 +16,7 @@ void setup() {
 
   controller.requireImu = false;
   controller.setUp();
+  controller.step();
   
   #if NODE_INIT_CALIBRATION == 1
     controller.storage.reset();
