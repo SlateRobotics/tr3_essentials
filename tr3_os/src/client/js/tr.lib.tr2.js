@@ -71,7 +71,7 @@ tr.lib.tr2 = function() {
       id: "h1",
       meshId: "h1",
       axis: "Z",
-      flip: true,
+      flip: false,
       rotate: {
         x: -1.5708,
         y: 3.1415,
