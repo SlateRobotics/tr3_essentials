@@ -1,7 +1,10 @@
 #include "Controller.h"
 
 void Controller::cmd_setMode (uint8_t m) {
-    mode = m;
+    if (mode != MODE_OVERHEAT) {
+        mode = m;
+    }
+
     if (mode == MODE_SERVO) {
         pidPosSetpoint = (double)state.position;
     } else if (mode == MODE_VELOCITY) {

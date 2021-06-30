@@ -52,8 +52,8 @@ void Controller::step () {
 }
 
 void Controller::step_temperature() {
-    static float temp_trip = 40;
-    static float temp_continue = 35;
+    static float temp_trip = 65;
+    static float temp_continue = 50;
 
     if (state.temp >= 35) {
         fanOn();
