@@ -23,11 +23,11 @@ void Controller::computeState () {
         float torque = encoderTorque.getAngleRadians();
         if (torque > PI) { torque -= TAU; }
         state.torque = torque * SEA_SPRING_RATE;
-        //state.torque = SEA_COEFF_M * torque + SEA_COEFF_B;
 
-        //if (imuTimer.ready()) {
-            //step_imu();
-        //}
+        int reading = analogRead(PIN_TMP36);
+        float voltage = reading / 1023.0;
+        float temp = (voltage - 0.5) * 100.0; // celcius
+        state.temp = (state.temp * 0.99) + (temp * 0.01);
     #endif
 }
 
@@ -53,6 +53,7 @@ void Controller::setActuatorState (tr3_msgs::ActuatorState* msg) {
     msg->velocity = state.velocity;
     msg->effort = state.effort;
     msg->torque = state.torque;
+    msg->temperature = state.temp;
 }
 
 void Controller::setActuatorStatePos (std_msgs::Float64* msg) {

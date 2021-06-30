@@ -113,6 +113,7 @@ class Controller {
     void step_motor();
     void step_calibrate();
     void step_stop();
+    void step_temperature();
 
     void cmd_setMode(uint8_t m);
     void cmd_setPosition(float position, int duration);

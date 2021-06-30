@@ -19,7 +19,7 @@
 #define NODE_G0 10
 
 // NODE DETAILS
-#define NODE_ID NODE_B0
+#define NODE_ID NODE_A1
 #define NODE_VERSION "v3.0.0"
 #define NODE_INIT_CALIBRATION 0
 
@@ -98,6 +98,7 @@
 #define PIN_ENC_OUT_DO  34
 #define PIN_FAN 2
 #define LED_DATA_PIN 5
+#define PIN_TMP36 35
 
 // MODES
 #define MODE_STOP 0
@@ -108,5 +109,6 @@
 #define MODE_BACKDRIVE 5
 #define MODE_CALIBRATE 6
 #define MODE_UPDATE_FIRMWARE 7
+#define MODE_OVERHEAT 8
 
 #endif

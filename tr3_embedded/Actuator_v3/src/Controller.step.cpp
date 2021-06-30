@@ -6,7 +6,7 @@ void Controller::step () {
     encoderOutput.step();
     computeState();
 
-    fanOn();
+    step_temperature();
 
     if (calibrate == true) {
         step_calibrate();
@@ -42,9 +42,33 @@ void Controller::step () {
         case MODE_CALIBRATE:
             step_calibrate();
             break;
+        case MODE_OVERHEAT:
+            motor.stop();
+            break;
         default:
             step_stop();
             break;
+    }
+}
+
+void Controller::step_temperature() {
+    static float temp_trip = 40;
+    static float temp_continue = 35;
+
+    if (state.temp >= 35) {
+        fanOn();
+    } else {
+        fanOff();
+    }
+
+    if (mode == MODE_OVERHEAT) {
+        led.blink(255, 0, 0);
+        if (state.temp < temp_continue) {
+            mode = modePrev;
+        }
+    } else if (state.temp >= temp_trip) {
+        modePrev = mode;
+        mode = MODE_OVERHEAT;
     }
 }
 
