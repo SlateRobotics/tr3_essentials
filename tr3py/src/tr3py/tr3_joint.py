@@ -30,6 +30,7 @@ MODE_ROTATE = 4
 MODE_BACKDRIVE = 5
 MODE_CALIBRATE = 6
 MODE_UPDATE_FIRMWARE = 7
+MODE_OVERHEAT = 8
 
 class Joint:
     _tr3 = None
@@ -37,6 +38,8 @@ class Joint:
     
     _state = None
     _state_received = None
+
+    _wait_for_cooldown = False
 
     # tracks the current command for /send_commands
     _command_mode = None
@@ -105,6 +108,15 @@ class Joint:
     def _sub_state(self, msg):
         self._state_received = datetime.datetime.now()
         self._state = msg
+
+        if self._state.mode == MODE_OVERHEAT and self._wait_for_cooldown == False:
+            print(self._id + " has reached an overheat condition. Stopping...")
+            self._wait_for_cooldown = True
+            self._tr3.stop()
+        elif self._state.mode != MODE_OVERHEAT and self._wait_for_cooldown == True:
+            print(self._id + " has cooled down. Releasing...")
+            self._wait_for_cooldown = False
+            self._tr3.release()
 
     def _sub_limits(self, msg):
         self._limits = msg.data
