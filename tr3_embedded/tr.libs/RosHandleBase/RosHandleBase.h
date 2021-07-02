@@ -31,7 +31,7 @@ namespace RosHandleBase {
 
     tcpip_adapter_ip_info_t ipInfo;
 
-    long conn_failure_delay = 200;
+    long conn_failure_delay = 500;
     int conn_failure_count = 0;
     const int max_conn_failure_count = 5;
 
@@ -91,7 +91,7 @@ namespace RosHandleBase {
             if (nh->connected()) {
                 return true;
             }
-            delay(1);
+            delay(50);
         }
         return false;
     }
@@ -132,11 +132,6 @@ namespace RosHandleBase {
             pub_version.publish(&msg_version);
         }
     }
-
-    // I believe this messes up the position sensing when ESP connection is lost.
-    // Maybe find a less destructive way to recover that is non-blocking
-    // or stop the motor & step through actuator state before restarting?
-    // It would also be nice to step through actuator state while attempting reconnection.
     
     void connectRecovery () {
         waitForConnect(conn_failure_delay);
@@ -152,6 +147,7 @@ namespace RosHandleBase {
                 waitForConnect(conn_failure_delay);
             } else {
                 Serial.println("Max try limit reached. Restarting...");
+                delay(2000);
                 ESP.restart();
             }
         }
