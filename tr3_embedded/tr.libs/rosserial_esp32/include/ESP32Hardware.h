@@ -4,17 +4,13 @@
 #include "Config.h"
 
 extern "C" {
-#include "sdkconfig.h"
-#include "stdio.h"
-#include "esp_err.h"
-#include "esp_timer.h"
-#include <driver/uart.h>
-#include "esp_ros_wifi.h"
+    #include "sdkconfig.h"
+    #include "stdio.h"
+    #include "esp_err.h"
+    #include "esp_timer.h"
+    #include <driver/uart.h>
+    #include "esp_ros_wifi.h"
 }
-
-#define CONFIG_ROSSERIAL_OVER_WIFI 1
-#define ROS_SERVER_IP       CONFIG_ROSSERVER_IP
-#define ROS_SERVER_PORT     CONFIG_ROSSERVER_PORT
 
 #define UART_PORT           UART_NUM_0
 #define UART_TX_PIN         GPIO_NUM_1
@@ -29,8 +25,8 @@ class ESP32Hardware {
 
         // Initialization code for ESP32
         void init() {
-            esp_ros_wifi_init();
-            ros_tcp_connect(ROS_SERVER_IP, ROS_SERVER_PORT);
+            esp_ros_wifi_init(CONFIG_ROSSERVER_SSID, CONFIG_ROSSERVER_PASS);
+            ros_tcp_connect(CONFIG_ROSSERVER_IP, CONFIG_ROSSERVER_PORT);
         }
 
         // read a byte from the serial port. -1 = failure

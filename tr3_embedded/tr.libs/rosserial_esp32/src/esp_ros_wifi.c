@@ -18,12 +18,7 @@
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
 
-#include "Config.h"
-
 #define MAXIMUM_RETRY  5
-
-#define ROS_SERVER_AP        CONFIG_ROSSERVER_AP
-#define ROS_SERVER_PASS      CONFIG_ROSSERVER_PASS
 
 static EventGroupHandle_t wifi_event_group;
 
@@ -69,7 +64,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     return ESP_OK;
 }
 
-void esp_ros_wifi_init()
+void esp_ros_wifi_init(const char* ssid, const char* pass)
 {
     nvs_flash_init();
 
@@ -79,17 +74,21 @@ void esp_ros_wifi_init()
     ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL) );
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    esp_wifi_init(&cfg);
+    esp_wifi_set_mode(WIFI_MODE_STA);
+
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = ROS_SERVER_AP,
-            .password = ROS_SERVER_PASS,
+            .ssid = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            .password = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         },
     };
 
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-    ESP_ERROR_CHECK(esp_wifi_start());
+    strcpy((char*)wifi_config.sta.ssid, (char*)ssid);
+    strcpy((char*)wifi_config.sta.password, (char*)pass);
+
+    esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config);
+    esp_wifi_start();
 
     ESP_LOGI(TAG, "Waiting for AP connection...");
     xEventGroupWaitBits(wifi_event_group, IPV4_GOTIP_BIT, false, true, portMAX_DELAY);

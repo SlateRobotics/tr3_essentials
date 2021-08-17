@@ -1,6 +1,6 @@
 #pragma once
 
-void esp_ros_wifi_init();
+void esp_ros_wifi_init(const char* ssid, const char* pass);
 
 void ros_tcp_connect(const char* host_ip, int port_num);
 
