@@ -19,7 +19,7 @@
 
 // NODE DETAILS
 #define NODE_ID NODE_H1
-#define NODE_VERSION "v3.0.0"
+#define NODE_VERSION "v3.1.0"
 #define NODE_INIT_CALIBRATION 0
 
 // SET NODE_ID_STR
@@ -55,7 +55,7 @@
 
  // overrides ssid + pass if file exists (for security)
 #if __has_include("ConfigWifi.h")
-#include "ConfigWifi.h"
+    #include "ConfigWifi.h"
 #endif
 
 // ROSTOPICS USED BY ACTUATOR
