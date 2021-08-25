@@ -117,20 +117,20 @@ void Controller::step_servo (bool pulseLED) {
             #if (NODE_ID == NODE_A1)
                 if (a2_pos_recv && a3_pos_recv) {
                     double et = Dynamics::torque_a1(pidPosSetpoint, a2_pos, a3_pos);
-                    expected_torque_min = et - 10.0;
-                    expected_torque_max = et + 10.0;
+                    expected_torque_min = et - 15.0;
+                    expected_torque_max = et + 15.0;
                 }
             #elif (NODE_ID == NODE_A2)
                 if (a1_pos_recv && a3_pos_recv) {
                     double et = Dynamics::torque_a2(a1_pos, pidPosSetpoint, a3_pos);
-                    expected_torque_min = et - 10.0;
-                    expected_torque_max = et + 10.0;
+                    expected_torque_min = et - 15.0;
+                    expected_torque_max = et + 15.0;
                 }
             #elif (NODE_ID == NODE_A3)
                 //expected_torque = Dynamics::torque_a3(a1_pos, a2_pos, state.position);
                 expected_torque = 0.0;
-                expected_torque_min = -10.0;
-                expected_torque_max = 10.0;
+                expected_torque_min = -15.0;
+                expected_torque_max = 15.0;
             #endif
         }
 
@@ -145,7 +145,7 @@ void Controller::step_servo (bool pulseLED) {
             pidVel.clear();
         }
 
-        pidTrqSetpoint = pidPosOutput + (expected_torque * 0.50) + (state.torque * 0.50);
+        pidTrqSetpoint = pidPosOutput + (expected_torque * 0.33) + (state.torque * 0.67);
         step_torque(false);
     #endif
 }
@@ -178,7 +178,7 @@ void Controller::step_torque (bool pulseLED) {
     #if (NODE_ID != NODE_G0)
         pidTrqInput = state.torque;
         pidTrqSetpoint = constrain(pidTrqSetpoint, MIN_TORQUE, MAX_TORQUE);
-        pidTrqSetpoint = constrain(pidTrqSetpoint, expected_torque_min, expected_torque_max);
+        //pidTrqSetpoint = constrain(pidTrqSetpoint, expected_torque_min, expected_torque_max);
         pidTrq.Compute();
 
         pidPwrSetpoint = pidVelOutput + pidTrqOutput;

@@ -96,9 +96,9 @@ void Controller::setPidTrqTunings (std_msgs::Float32MultiArray* msg) {
 }
 
 void Controller::fanOn () {
-    digitalWrite(PIN_FAN, LOW);
+    digitalWrite(PIN_FAN, HIGH);
 }
 
 void Controller::fanOff () {
-    digitalWrite(PIN_FAN, HIGH);
+    digitalWrite(PIN_FAN, LOW);
 }

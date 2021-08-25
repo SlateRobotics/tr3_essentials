@@ -4,13 +4,12 @@
 #include "Storage.h"
 #include "Timer.h"
 
+#include "ams_as5048b.h"
+
 class Encoder {
   private:
-    int PIN_CLOCK;
-    int PIN_DATA;
-    int PIN_CS;
-
-    uint16_t encoderResolution = 4096;
+    uint16_t encoderResolution = 16384;
+    AMS_AS5048B ams;
 
     static const int prevAngleN = 32;
     double prevAngle[prevAngleN];
@@ -48,19 +47,12 @@ class Encoder {
     Storage* storage;
     long pos = 0;
 
-    Encoder(int pCs, int pClock, int pData) {
-      PIN_CS = pCs;
-      PIN_CLOCK = pClock;
-      PIN_DATA = pData;
+    Encoder(int addr) {
+      ams = AMS_AS5048B(addr);
     }
     
     void setUp () {
-      pinMode(PIN_CS, OUTPUT);
-      pinMode(PIN_CLOCK, OUTPUT);
-      pinMode(PIN_DATA, INPUT);
-    
-      digitalWrite(PIN_CLOCK, HIGH);
-      digitalWrite(PIN_CS, HIGH);
+      ams.begin();
 
       #if (NODE_ID == NODE_A0 || NODE_ID == NODE_A1 || NODE_ID == NODE_A2 || NODE_ID == NODE_B0 || NODE_ID == NODE_B1)
         // large actuators
@@ -108,20 +100,7 @@ class Encoder {
     }
     
     int readPosition() {
-      unsigned int dataOut = 0;
-      digitalWrite(PIN_CS, LOW);
-      delayMicroseconds(1);
-    
-      for(int x = 0; x < 12; x++){
-        digitalWrite(PIN_CLOCK, LOW);
-        delayMicroseconds(1);
-        digitalWrite(PIN_CLOCK, HIGH);
-        delayMicroseconds(1);
-        dataOut = (dataOut << 1) | digitalRead(PIN_DATA);
-      }
-    
-      digitalWrite(PIN_CS, HIGH);
-      delayMicroseconds(1);
+      unsigned int dataOut = ams.angleR(U_RAW, true);
       
       int16_t dif = prevPosition[0] - prevPosition[1];
       if (dif < -encoderResolution / 2) {
@@ -130,7 +109,7 @@ class Encoder {
         dif = dif - encoderResolution;
       }
 
-      pos += dif;
+      pos -= dif;
 
       recordPosition(dataOut);
       recordDiff(dif);

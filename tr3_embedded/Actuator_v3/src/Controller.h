@@ -57,8 +57,8 @@ class Controller {
     float SEA_COEFF_B = -6.4775;
 
     ControllerState state;
-    Encoder encoderTorque = Encoder(PIN_ENC_TRQ_CS, PIN_ENC_TRQ_CLK, PIN_ENC_TRQ_DO);
-    Encoder encoderOutput = Encoder(PIN_ENC_OUT_CS, PIN_ENC_OUT_CLK, PIN_ENC_OUT_DO);
+    Encoder encoderTorque = Encoder(64);
+    Encoder encoderOutput = Encoder(65);
     LED led;
     Motor motor = Motor(PIN_MTR_PWM, PIN_MTR_IN1, PIN_MTR_IN2);
     MPU9250 imu = MPU9250(Wire,0x68);

@@ -23,13 +23,13 @@ void Controller::cmd_setPosition (float position, int duration) {
     #if (NODE_ID == NODE_G0)
         if (abs(position) < 0.5 ) {
             if (state.position > 0.5) {
-                motor.prepareCommand(100, 1750);
+                motor.prepareCommand(100, 3000);
             }
             state.position = 0;
             storage.writeFloat(EEADDR_ENC_OUT_POS, 0.0);
         } else {
             if (state.position < 0.5) {
-                motor.prepareCommand(-100, 1750);
+                motor.prepareCommand(-100, 3000);
             }
             state.position = 1;
             storage.writeFloat(EEADDR_ENC_OUT_POS, 1.0);
