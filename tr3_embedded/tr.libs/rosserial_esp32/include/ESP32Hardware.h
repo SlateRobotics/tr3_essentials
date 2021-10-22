@@ -25,6 +25,8 @@ class ESP32Hardware {
 
         // Initialization code for ESP32
         void init() {
+            Serial.print("Connecting to SSID: ");
+            Serial.println(CONFIG_ROSSERVER_SSID);
             esp_ros_wifi_init(CONFIG_ROSSERVER_SSID, CONFIG_ROSSERVER_PASS);
             ros_tcp_connect(CONFIG_ROSSERVER_IP, CONFIG_ROSSERVER_PORT);
         }

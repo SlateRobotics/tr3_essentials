@@ -1,28 +1,48 @@
 #include "Controller.h"
 
 void Controller::computeState () {
-    #if (NODE_ID == NODE_G0) 
+    if (mode == MODE_STOP) {
+        state.stop = true;
+    } else {
+        state.stop = false;
+    }
+
+    state.mode = mode;
+    state.effort = motor.getEffort();
+
+    #if (NODE_ID == NODE_G0)
         state.rotations = 0;
-        state.effort = 0;
         state.torque = 0;
-        return;
+        state.velocity = 0;
+        state.acceleration = 0;
+        state.temp = 0;
     #else
-        if (mode == MODE_STOP) {
-            state.stop = true;
-        } else {
-            state.stop = false;
-        }
         
-        state.mode = mode;
         state.position = encoderOutput.getAngleRadians();
         state.velocity = encoderOutput.getVelocity();
         state.acceleration = encoderOutput.getAcceleration();
         state.rotations = encoderOutput.getRotations();
-        state.effort = motor.getEffort();
 
-        float torque = encoderTorque.getAngleRadians();
-        if (torque > PI) { torque -= TAU; }
-        state.torque = torque * SEA_SPRING_RATE;
+        //float torque = encoderTorque.getAngleRadians();
+        //if (torque > PI) { torque -= TAU; }
+        //state.torque = torque * SEA_SPRING_RATE;
+
+        acs_readings[0] = analogRead(PIN_ACS712);
+        int sum = acs_readings[0];
+        for (int i = ACS_N - 1; i > 0; i--) {
+            acs_readings[i] = acs_readings[i - 1];
+            sum += acs_readings[i];
+        }
+
+        float r = (float)sum / (float)ACS_N;
+        float v = (r - acs_offset) / 4095 * 3.3;
+        float i = v * 15.0;
+
+        #if (NODE_ID == NODE_A3 || NODE_ID == NODE_A4 || NODE_ID == NODE_H1)
+            state.torque = i * 1.9;
+        #else
+            state.torque = i * 1.1;
+        #endif
 
         int reading = analogRead(PIN_TMP36);
         float voltage = reading / 1023.0;

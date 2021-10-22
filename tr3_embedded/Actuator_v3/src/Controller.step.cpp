@@ -33,7 +33,9 @@ void Controller::step () {
             break;
         case MODE_SERVO:
             step_servo();
-            step_motor();
+            #if (NODE_ID != NODE_G0)
+                step_motor();
+            #endif
             break;
         case MODE_VELOCITY:
             step_velocity();
@@ -113,18 +115,18 @@ void Controller::step_servo (bool pulseLED) {
         pidPosSetpoint = constrain(pidPosSetpoint, MIN_POSITION, MAX_POSITION);
 
         // compute limits for torque based on set position
-        if (limitTimer.ready()) {
+        /*if (limitTimer.ready()) {
             #if (NODE_ID == NODE_A1)
                 if (a2_pos_recv && a3_pos_recv) {
-                    double et = Dynamics::torque_a1(pidPosSetpoint, a2_pos, a3_pos);
-                    expected_torque_min = et - 15.0;
-                    expected_torque_max = et + 15.0;
+                    expected_torque = Dynamics::torque_a1(pidPosSetpoint, a2_pos, a3_pos);
+                    expected_torque_min = expected_torque - 15.0;
+                    expected_torque_max = expected_torque + 15.0;
                 }
             #elif (NODE_ID == NODE_A2)
                 if (a1_pos_recv && a3_pos_recv) {
-                    double et = Dynamics::torque_a2(a1_pos, pidPosSetpoint, a3_pos);
-                    expected_torque_min = et - 15.0;
-                    expected_torque_max = et + 15.0;
+                    expected_torque = Dynamics::torque_a2(a1_pos, pidPosSetpoint, a3_pos);
+                    expected_torque_min = expected_torque - 15.0;
+                    expected_torque_max = expected_torque + 15.0;
                 }
             #elif (NODE_ID == NODE_A3)
                 //expected_torque = Dynamics::torque_a3(a1_pos, a2_pos, state.position);
@@ -132,7 +134,7 @@ void Controller::step_servo (bool pulseLED) {
                 expected_torque_min = -15.0;
                 expected_torque_max = 15.0;
             #endif
-        }
+        }*/
 
         pidPos.Compute();
 
@@ -145,7 +147,8 @@ void Controller::step_servo (bool pulseLED) {
             pidVel.clear();
         }
 
-        pidTrqSetpoint = pidPosOutput + (expected_torque * 0.33) + (state.torque * 0.67);
+        //pidTrqSetpoint = pidPosOutput + (expected_torque * 0.33) + (state.torque * 0.67);
+        pidTrqSetpoint = pidPosOutput;
         step_torque(false);
     #endif
 }

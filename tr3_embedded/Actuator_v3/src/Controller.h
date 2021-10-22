@@ -22,6 +22,8 @@
 #include "Dynamics.h"
 #include "LinearRegression.h"
 
+#define ACS_N 64
+
 class Controller {
   private:
     int mode = MODE_ROTATE;
@@ -45,6 +47,9 @@ class Controller {
     double pidTrqSetpoint = 0.0;
     double pidTrqOutput = 0.0;
     double pidPwrSetpoint = 0.0;
+
+    int acs_readings[ACS_N];
+    float acs_offset = 2048;
 
     PID pidPos = PID(&pidPosInput, &pidPosOutput, &pidPosSetpoint);
     PID pidVel = PID(&pidVelInput, &pidVelOutput, &pidVelSetpoint);

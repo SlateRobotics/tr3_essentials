@@ -100,7 +100,14 @@ class Encoder {
     }
     
     int readPosition() {
-      unsigned int dataOut = ams.angleR(U_RAW, true);
+      double dataOut = ams.angleR(U_RAW, true);
+
+      // protects against bad readings ruining state
+      if (dataOut <= 0 || dataOut >= 16383) {
+        return prevPosition[0];
+      }
+
+      recordPosition((int)dataOut);
       
       int16_t dif = prevPosition[0] - prevPosition[1];
       if (dif < -encoderResolution / 2) {
@@ -109,14 +116,21 @@ class Encoder {
         dif = dif - encoderResolution;
       }
 
-      pos -= dif;
+      if (abs(dif) > 250) {
+        Serial.print(prevPosition[2]);
+        Serial.print(", ");
+        Serial.print(prevPosition[1]);
+        Serial.print(", ");
+        Serial.println(prevPosition[0]);
+      } else {
+        pos -= dif;
+        recordDiff(dif);
 
-      recordPosition(dataOut);
-      recordDiff(dif);
-      recordAngle();
-      recordVelocity();
+        recordAngle();
+        recordVelocity();
+      }
       
-      return dataOut;
+      return (int)dataOut;
     }
 
     void writeChanges() {
@@ -192,12 +206,11 @@ class Encoder {
     }
 
     double getAcceleration () {
-      return prevVelocity[0] - prevVelocity[1];
+      return -(prevVelocity[0] - prevVelocity[1]);
     }
 
     double getVelocity () {
-      //return velocity;
-      return prevVelocity[0];
+      return -prevVelocity[0];
     }
 
     bool isUp() {

@@ -19,9 +19,8 @@ void Controller::cmd_setMode (uint8_t m) {
 }
 
 void Controller::cmd_setPosition (float position, int duration) {
-    Serial.println(position);
     #if (NODE_ID == NODE_G0)
-        if (abs(position) < 0.5 ) {
+        if (position < 0.5 ) {
             if (state.position > 0.5) {
                 motor.prepareCommand(100, 3000);
             }
@@ -87,19 +86,28 @@ void Controller::cmd_resetPosition () {
 }
 
 void Controller::cmd_resetTorque () {
-    encoderTorque.resetPos(expected_torque / SEA_SPRING_RATE);
+    /*encoderTorque.resetPos(expected_torque / SEA_SPRING_RATE);
     if (abs(SEA_COEFF_M) < 0.1) {
         //encoderTorque.resetPos(expected_torque / -350.0);
     } else {
         //encoderTorque.resetPos((expected_torque - SEA_COEFF_B) / SEA_COEFF_M);
+    }*/
+
+    int sum = 0;
+    for (int i = ACS_N - 1; i >= 0; i--) {
+        acs_readings[i] = analogRead(PIN_ACS712);
+        sum += acs_readings[i];
+        delay(5);
     }
+
+    acs_offset = (float)sum / (float)ACS_N;
 
     pidPos.clear();
     pidVel.clear();
 
-    uint16_t enc_offset = encoderTorque.getOffset();
-    storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, enc_offset);
-    storage.commit();
+    //uint16_t enc_offset = encoderTorque.getOffset();
+    //storage.writeUInt16(EEADDR_ENC_TRQ_OFFSET, enc_offset);
+    //storage.commit();
 }
 
 void Controller::cmd_flipMotorPins () {
@@ -122,6 +130,7 @@ void Controller::cmd_stop () {
         modePrev = MODE_ROTATE;
     }
     mode = MODE_STOP;
+    motor.stop();
 }
 
 void Controller::cmd_calibrateStart () {

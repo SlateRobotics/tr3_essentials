@@ -26,7 +26,8 @@ namespace RosHandle {
 
   Timer configTimer(0.5); // hz
   Timer posTimer(20); // hz
-  Timer stateTimer(150); // hz
+  Timer stateTimer(50); // hz
+  Timer spinTimer(150); // hz
 
   tr3_msgs::ActuatorState state;
   std_msgs::Float64 state_pos;
@@ -294,9 +295,11 @@ namespace RosHandle {
         controller->flag_send_commands = false;
       }
 
-      int result = nh.spinOnce();
-      if (result != ros::SPIN_OK) {
-        RosHandleBase::connectRecovery();
+      if (spinTimer.ready()) {
+        int result = nh.spinOnce();
+        if (result != ros::SPIN_OK) {
+          RosHandleBase::connectRecovery();
+        }
       }
     } else {
       RosHandleBase::connectRecovery();

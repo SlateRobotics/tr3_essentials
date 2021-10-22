@@ -147,6 +147,7 @@ namespace RosHandleBase {
                 waitForConnect(conn_failure_delay);
             } else {
                 Serial.println("Max try limit reached. Restarting...");
+                RosHandleEvents::handle_ConnectionFailure();
                 delay(2000);
                 ESP.restart();
             }

@@ -6,6 +6,8 @@
 
 Controller controller;
 
+long start;
+
 void setup() {
   Serial.begin(115200);
 
@@ -20,12 +22,11 @@ void setup() {
   
   #if NODE_INIT_CALIBRATION == 1
     controller.storage.reset();
-    controller.cmd_resetTorque();
-    controller.cmd_resetPosition();
-    controller.cmd_setMode(MODE_CALIBRATE);
   #else
     RosHandle::setup(&controller);
   #endif
+
+  start = millis();
 }
 
 void loop() {

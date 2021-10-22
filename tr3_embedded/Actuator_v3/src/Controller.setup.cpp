@@ -5,7 +5,9 @@ void Controller::setUp () {
     motor.setUp();
     led.white();
 
+    pinMode(PIN_ACS712, INPUT);
     pinMode(PIN_FAN, OUTPUT);
+
     fanOff();
 
     encoderTorque.setUp();
@@ -28,6 +30,8 @@ void Controller::setUp () {
     
     //setUpImu();
     //step_imu();
+
+    cmd_resetTorque();
 }
 
 void Controller::setUpImu() {

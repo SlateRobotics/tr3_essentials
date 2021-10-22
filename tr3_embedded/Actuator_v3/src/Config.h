@@ -18,7 +18,7 @@
 #define NODE_G0 10
 
 // NODE DETAILS
-#define NODE_ID NODE_A1
+#define NODE_ID NODE_A4
 #define NODE_VERSION "v3.1.0"
 #define NODE_INIT_CALIBRATION 0
 
@@ -94,15 +94,16 @@
 #define PIN_MTR_PWM 23 // ENABLE / PWM
 #define PIN_MTR_IN1 27 // IN1 / DRIVE 1
 #define PIN_MTR_IN2 14 // IN2 / DRIVE 2
-#define PIN_ENC_TRQ_CS  33
-#define PIN_ENC_TRQ_CLK 25
-#define PIN_ENC_TRQ_DO  26
-#define PIN_ENC_OUT_CS  32
-#define PIN_ENC_OUT_CLK 22
-#define PIN_ENC_OUT_DO  34
+//#define PIN_ENC_TRQ_CS  33
+//#define PIN_ENC_TRQ_CLK 25
+//#define PIN_ENC_TRQ_DO  26
+//#define PIN_ENC_OUT_CS  32
+//#define PIN_ENC_OUT_CLK 22
+//#define PIN_ENC_OUT_DO  34
 #define PIN_FAN 2
 #define LED_DATA_PIN 5
 #define PIN_TMP36 35
+#define PIN_ACS712 34
 
 // MODES
 #define MODE_STOP 0

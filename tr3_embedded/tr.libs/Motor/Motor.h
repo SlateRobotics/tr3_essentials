@@ -130,9 +130,11 @@ class Motor {
       flagExecuteDuration = duration;
       flagExecuteExpiration = millis() + duration;
     
-      if (flagExecuteExpiration > millis() + 1000) {
-        flagExecuteExpiration = millis() + 1000;
-      }
+      #if (NODE_ID != NODE_G0)
+        if (flagExecuteExpiration > millis() + 1000) {
+          flagExecuteExpiration = millis() + 1000;
+        }
+      #endif
     
       lastPreparedCommand[0] = motorSpeed;
       lastPreparedCommand[1] = duration;
